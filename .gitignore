@@ -1,0 +1,40 @@
+# Datos crudos descargados (nunca versionar)
+data/raw/*
+data/processed/*
+data/curated/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/curated/.gitkeep
+!data/external/.gitkeep
+
+# Entornos virtuales
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Variables de entorno / secretos
+.env
+.env.*
+!.env.example
+
+# Notebooks de exploración
+.ipynb_checkpoints/
+
+# Reportes generados
+reports/*.pdf
+reports/*.csv
+reports/*.json
+!reports/.gitkeep
+
+# IDE
+.idea/
+.vscode/
+.DS_Store
+
+# Docker
+postgres-data/
+*.sql.gz
