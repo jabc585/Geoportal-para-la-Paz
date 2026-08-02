@@ -270,6 +270,10 @@ el shape real encontrado (mismo patrón que
    departamento-año (acled_eventos_departamento: 38.747 eventos 2017–2026;
    acled_fatalidades_departamento: 16.529). Atribución obligatoria. Ficha
    `docs/fuentes/acled.md`.
+7. **PDET (ART)** ✅ — dataset de iniciativas activado (`PDET_URL`):
+   `gmvf-t63e.json`, 33.007 filas → **965 proyectos en 170 municipios PDET**
+   en `curated.pdet_proyectos`. Sin inversión/año en la fuente (documentado).
+   Nuevo endpoint `GET /api/v1/pdet/proyectos` + KPI del dashboard (2026-08-02).
 
 `etl/run_all.py` ejecuta: DANE, Víctimas, PDET, WB, UNHCR, HDX, ACLED, 6 CNMH,
 3 Policía + homicidios, IDEAM. Nota verificada en la corrida completa: la

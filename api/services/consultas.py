@@ -123,6 +123,21 @@ def listar_fuentes() -> list[dict]:
         return cur.fetchall()
 
 
+def contar_proyectos_pdet() -> dict:
+    """Conteos del módulo PDET (sección 11 del plan): proyectos, municipios PDET
+    y valor de inversión agregado (si lo reportara la fuente)."""
+    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT
+                (SELECT COUNT(*) FROM curated.pdet_proyectos) AS proyectos,
+                (SELECT COUNT(DISTINCT municipio_id) FROM curated.pdet_proyectos) AS municipios
+            """
+        )
+        fila = cur.fetchone()
+        return {"proyectos": fila["proyectos"], "municipios": fila["municipios"]}
+
+
 def consultar_territorio(codigo_divipola: str) -> dict | None:
     with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(

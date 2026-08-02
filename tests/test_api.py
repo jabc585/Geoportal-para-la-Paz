@@ -135,6 +135,11 @@ def simular_servicios(monkeypatch):
             }
         ],
     )
+    monkeypatch.setattr(
+        rutas,
+        "contar_proyectos_pdet",
+        lambda: {"proyectos": 965, "municipios": 170},
+    )
 
 
 def test_raiz():
@@ -243,3 +248,11 @@ def test_health_reporta_estado_de_fuentes():
     assert cuerpo["estado"] == "ok"
     assert cuerpo["fuentes"][0]["variable"] == "PDET_URL"
     assert cuerpo["fuentes"][0]["configurada"] is True
+
+
+def test_pdet_proyectos_reporta_conteos():
+    resp = client.get("/api/v1/pdet/proyectos")
+    assert resp.status_code == 200
+    cuerpo = resp.json()
+    assert cuerpo["proyectos"] == 965
+    assert cuerpo["municipios"] == 170

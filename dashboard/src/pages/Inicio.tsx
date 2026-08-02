@@ -1,12 +1,14 @@
 import { KPIFuentes } from "../components/KPIFuentes";
 import { KPIIndicador } from "../components/KPIIndicador";
+import { KPIPdet } from "../components/KPIPdet";
 import { MapaNacional } from "../maps/MapaNacional";
 
 // KPIs con pipeline real cargado a curated: homicidios (Policía Nacional,
-// Excel SIEDCO 2025) y víctimas (UARIV, dataset municipal datos.gov.co).
-// Los planificados sin carga (ver auditoría) se marcan como "próximamente"
-// en vez de inventar una cifra.
-const KPIS_PLANIFICADOS = ["Proyectos PDET"];
+// Excel SIEDCO 2025), víctimas (UARIV, dataset municipal datos.gov.co),
+// población (DANE, Excel oficial) y proyectos PDET (ART). Los planificados
+// sin carga (ver auditoría) se marcan como "próximamente" en vez de inventar
+// una cifra.
+const KPIS_PLANIFICADOS: string[] = [];
 
 export function Inicio() {
   return (
@@ -16,6 +18,7 @@ export function Inicio() {
         <KPIIndicador codigo="homicidios" etiqueta="Homicidios (Policía Nacional)" unidad="delitos" />
         <KPIIndicador codigo="victimas_ruv" etiqueta="Personas incluidas en el RUV (UARIV)" unidad="personas" />
         <KPIIndicador codigo="poblacion" etiqueta="Población proyectada (DANE)" unidad="personas" />
+        <KPIPdet />
         {KPIS_PLANIFICADOS.map((etiqueta) => (
           <div className="kpi es-placeholder" key={etiqueta}>
             <div className="kpi-etiqueta">{etiqueta}</div>

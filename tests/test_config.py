@@ -37,7 +37,10 @@ def test_divipola_tiene_defaults_socrata():
 def test_get_source_url_devuelve_valor(tmp_path, monkeypatch):
     env_tmp = tmp_path / ".env"
     env_tmp.write_text("PDET_URL=https://example.test/datos.json\n")
-    s = config_mod.Settings(_env_file=env_tmp)
+    # _inyectar_al_entorno() deja PDET_URL en os.environ; el entorno real gana
+    # sobre cualquier _env_file, así que se limpia para aislar el .env temporal.
+    monkeypatch.delenv("PDET_URL", raising=False)
+    s = config_mod.Settings(_env_file=env_tmp, _env_file_priority=1)
     monkeypatch.setattr(config_mod, "settings", s)
     assert get_source_url("PDET_URL") == "https://example.test/datos.json"
 
@@ -58,10 +61,11 @@ def test_fuentes_activas_referencian_campos_reales():
         assert fuente and ayuda, f"entrada incompleta para {variable}"
 
 
-def test_settings_carga_desde_env_temporal(tmp_path):
+def test_settings_carga_desde_env_temporal(tmp_path, monkeypatch):
     env_tmp = tmp_path / ".env"
     env_tmp.write_text("PDET_URL=https://example.test/datos.json\n")
-    s = config_mod.Settings(_env_file=env_tmp)
+    monkeypatch.delenv("PDET_URL", raising=False)
+    s = config_mod.Settings(_env_file=env_tmp, _env_file_priority=1)
     assert s.pdet_url == "https://example.test/datos.json"
 
 
@@ -89,10 +93,14 @@ def test_investigacion_yaml_carga():
 
 
 def test_check_cli_reporta_variables_ausentes(tmp_path):
+    # _inyectar_al_entorno() deja las fuentes configuradas en os.environ; se
+    # filtran para que el subproceso arranque limpio (cwd temporal sin .env).
+    variables_fuente = {var.lower() for var, _, _ in FUENTES_ACTIVAS}
+    env_limpio = {k: v for k, v in os.environ.items() if k.lower() not in variables_fuente}
     proc = subprocess.run(
         [sys.executable, "-m", "etl.common.config", "--check"],
         cwd=tmp_path,  # sin .env: Settings con defaults → variables ausentes
-        env={**os.environ, "PYTHONPATH": str(RAIZ)},
+        env={**env_limpio, "PYTHONPATH": str(RAIZ)},
         capture_output=True,
         text=True,
     )

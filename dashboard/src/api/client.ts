@@ -42,6 +42,11 @@ export interface MapaIndicador {
   features: MapaFeature[];
 }
 
+export interface PdetProyectos {
+  proyectos: number;
+  municipios: number;
+}
+
 const BASE = "/api/v1";
 
 async function obtener<T>(ruta: string): Promise<T> {
@@ -62,6 +67,10 @@ export function obtenerTotalIndicador(indicador: string): Promise<IndicadorTotal
 
 export function obtenerMapa(indicador: string): Promise<MapaIndicador> {
   return obtener<MapaIndicador>(`/mapas/${indicador}`);
+}
+
+export function obtenerProyectosPdet(): Promise<PdetProyectos> {
+  return obtener<PdetProyectos>("/pdet/proyectos");
 }
 
 export function descargarCSV(indicador: string): void {

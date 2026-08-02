@@ -24,6 +24,8 @@ Proyectos de los Programas de Desarrollo con Enfoque Territorial (PDET), con su 
 - **Iniciativas PDET** — `https://www.datos.gov.co/resource/gmvf-t63e.json` (~18.6k iniciativas de los 16 PDET). Columnas reales: `codigodane` (código DANE del municipio), `t_tulo_iniciativa`, `subregi_n`, `municipio_sujeto_concertaci`, `pilar`, `sector`, etc. **No reporta estado, avance, inversión ni año** → el conector los trata como opcionales (migración 0008 permite `anio` nulo).
 - **Contratación Municipios PDET** — `https://www.datos.gov.co/resource/xqtq-puna.json`: sí trae `valor_contrato` y `estado_del_proceso`, pero **sin columna de municipio** (el código DANE está embebido en el nombre de la entidad) — no se usa todavía; candidato para enriquecer inversión en una iteración futura.
 
+**Carga verificada (2026-08-02):** dataset de iniciativas activado (`PDET_URL`), 33.007 filas crudas → **965 proyectos** en **170 municipios PDET** cargados a `curated.pdet_proyectos`. El dataset de iniciativas no reporta inversión/año → no agrega serie (comportamiento documentado). Endpoint `GET /api/v1/pdet/proyectos` (proyectos + municipios) alimenta el KPI del dashboard.
+
 Variable de entorno: `PDET_URL` (cualquier dataset Socrata con `codigodane` + columna de nombre).
 
 > Nota operativa: las filas con `codigodane` `00000`/`99999` (mesas de concertación, cabildos, nivel "SUBREGIONAL") no son municipios y se descartan con aviso — comportamiento esperado, no es pérdida de datos.

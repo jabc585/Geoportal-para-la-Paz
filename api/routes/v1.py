@@ -17,6 +17,7 @@ from api.models.schemas import (
     MapaOut,
     MunicipioOut,
     Pagina,
+    PdetOut,
     SerieOut,
 )
 from api.services.consultas import (
@@ -24,6 +25,7 @@ from api.services.consultas import (
     consultar_serie,
     consultar_territorio,
     consultar_total,
+    contar_proyectos_pdet,
     exportar_serie_csv,
     listar_fuentes,
 )
@@ -44,6 +46,19 @@ router = APIRouter(prefix="/api/v1", tags=["v1"])
 )
 def get_health() -> HealthOut:
     return HealthOut(estado="ok", fuentes=[FuenteEstadoOut(**f) for f in estado_fuentes()])
+
+
+@router.get(
+    "/pdet/proyectos",
+    response_model=PdetOut,
+    summary="Conteos del módulo PDET",
+    description=(
+        "Proyectos y municipios PDET cargados desde el dataset de iniciativas "
+        "de la ART (sección 11 del plan)."
+    ),
+)
+def get_pdet_proyectos() -> PdetOut:
+    return PdetOut(**contar_proyectos_pdet())
 
 
 @router.get(

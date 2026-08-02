@@ -60,6 +60,11 @@ class HealthOut(BaseModel):
     fuentes: list[FuenteEstadoOut]
 
 
+class PdetOut(BaseModel):
+    proyectos: int
+    municipios: int
+
+
 class TotalAnualOut(BaseModel):
     anio: int
     valor: float
