@@ -1,0 +1,101 @@
+# Registro de la investigación en vivo de endpoints (plan2.md, Fase A punto 6).
+# Resultados verificados el 2026-08-02 contra el catálogo de Socrata
+# (datos.gov.co) y las APIs públicas directamente — no placeholders.
+# Al retomar una fuente de Fase B/C, leer esta entrada antes de re-investigar.
+
+fuentes:
+  policia:
+    estado: "parcialmente accesible"
+    categoria: "nacional"
+    datasets_socrata:
+      fpe5-yrmw: "delitos sexuales"
+      ha6j-pa2r: "homicidios en accidente de tránsito (NO es el homicidio intencional que necesita vw_homicidios_reconciliado)"
+      vuyt-mqpw: "violencia intrafamiliar"
+      d4fr-sbn2: "hurto"
+    columnas_observadas: ["CODIGO DANE", "MUNICIPIO", "FECHA HECHO", "CANTIDAD"]
+    bloqueo:
+      "No apareció un dataset general de homicidios en la búsqueda; falta una ronda más específica antes de alimentar la vista de reconciliación."
+
+  fiscalia:
+    estado: "accesible pero inviable a escala (hallazgo 2026-08-02)"
+    categoria: "nacional"
+    datasets_socrata:
+      dbdv-iihs: "Procesos Fiscalía V3 (23.212.036 filas)"
+      hr73-zqjf: "Víctimas Fiscalía V3 (17.534.229 filas)"
+      piva-db2c: "Procesados Fiscalía V3 (15.414.424 filas)"
+    columnas_observadas:
+      - "procesos: a_o_hecho, cod_dane_hecho, titulo_delito, delito, etapa, estado"
+      - "víctimas: a_o_hecho_origen, cod_dane_hecho_origen, titulo_delito, id_victima_anonimizado"
+    bloqueo:
+      "Descartado para Fase B por volumen: la agregación SoQL ($group) reescanea
+      decenas de millones de filas y tarda ~10 min por página de 50.000 grupos
+      (2020+ ya supera las 50.000 combinaciones municipio-año-título), con ~200.000
+      grupos esperados en todo el rango → horas por dataset. Sin app token que
+      acelere el escaneo. El pipeline etl/fiscalia/pipeline.py queda escrito y
+      probado (SoQL), listo para activarse si la Fiscalía publica datos agregados
+      o si se acepta una corrida programada de horas. Se requiere: nueva ronda de
+      búsqueda de datasets agregados o token Socrata con SLA."
+
+  cnmh:
+    estado: "accesible (la mejor encontrada)"
+    categoria: "memoria historica"
+    datasets_socrata:
+      "52eu-ic7d": "minas antipersonal"
+      "yfd7-8c9d": "atentados terroristas"
+      "c59y-p4sz": "desaparición forzada"
+      "a2ga-ur2i": "daño a bienes civiles"
+      "hzd2-7ea7": "reclutamiento NNA"
+      "chb6-bfmq": "acciones bélicas"
+    nota: "Sistema SIEVCAC del CNMH; uno por tipo de hecho (CNMH_<HECHO>_URL)."
+    bloqueo: null
+
+  ideam:
+    estado: "archivo, no API JSON"
+    categoria: "nacional"
+    dataset: "39dh-rc72"
+    nombre: "Cambio en la superficie cubierta por bosque natural — Nacional"
+    bloqueo: "Tipo file (no dataset Socrata estándar): requiere un lector de archivo tipo _leer_excel_dane; formato real (Excel/CSV/shapefile) aún sin confirmar."
+
+  defensoria:
+    estado: "sin dato abierto público"
+    categoria: "nacional"
+    bloqueo: "Cero resultados en el catálogo Socrata; el SAT se publica como informes PDF. El esqueleto se queda como está."
+
+  unhcr:
+    estado: "accesible sin autenticación"
+    categoria: "internacional"
+    url: "https://api.unhcr.org/population/v1/population/?coo=COL"
+    nota: "Responde JSON real con series de refugiados/desplazados de Colombia por año. Lista para implementar después de World Bank."
+    bloqueo: null
+
+  hdx:
+    estado: "accesible sin autenticación"
+    categoria: "internacional"
+    url: "https://data.humdata.org/api/3/action/package_search?fq=groups:col"
+    nota: "541 datasets de Colombia, incluido hdx-hapi-col (HAPI dedicado a Colombia)."
+    bloqueo: null
+
+  ucdp:
+    estado: "requiere token"
+    categoria: "internacional"
+    url: "https://ucdpapi.pcr.uu.se/api/gedevents/25.1"
+    nota: "Responde 401 API token required (header x-ucdp-access-token)."
+    bloqueo: "Registrarse en ucdp.uu.se para obtener UCDP_API_TOKEN."
+
+  acled:
+    estado: "implementado sin API (archivos locales)"
+    categoria: "internacional"
+    archivos_descargados_2026_08_02:
+      - "number_of_political_violence_events_by_country-year_as-of-24Jul2026.xlsx (Colombia: 9 años, 2018-2026)"
+      - "number_of_demonstration_events_by_country-year_as-of-24Jul2026.xlsx (Colombia: 9 años)"
+      - "number_of_events_targeting_civilians_by_country-year_as-of-24Jul2026.xlsx (Colombia: 9 años)"
+      - "number_of_political_violence_events_by_country-month-year_as-of-24Jul2026.xlsx (Colombia: 103 meses)"
+      - "Latin-America-the-Caribbean_aggregated_data_up_to_week_of-2026-07-18.xlsx (agregado semanal por admin1; no cargado aún)"
+    bloqueo: "La API exige cuenta registrada (email + key). El pipeline usa los exports
+      oficiales descargados a data/external/ (ACLED_DATA_DIR); la capa por
+      departamento (admin1) queda pendiente de mapeo ADMIN1→DIVIPOLA."
+
+  iom_dtm:
+    estado: "sin resolver"
+    categoria: "internacional"
+    bloqueo: "dtm.iom.int/api devuelve el HTML del sitio (protección anti-bot); probablemente sea un portal de descarga por país, no una API REST."

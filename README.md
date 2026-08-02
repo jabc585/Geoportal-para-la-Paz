@@ -10,10 +10,11 @@ Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
 - Esquema PostgreSQL con separación `raw/staging/curated` (sección 7.3), versionado SCD tipo 2 (7.2), `data_quality_metrics` (7.4) y vista de reconciliación (7.5)
 - Entorno Docker de desarrollo (PostgreSQL + PostGIS, ETL, API)
 - **ETL piloto completo end-to-end**: DANE, Unidad de Víctimas y ART/PDET con extracción → validación Pandera → carga a `curated` con linaje (sección 21, paso 1 cerrado); catálogo DIVIPOLA con seed real desde datos.gov.co y logs de filas descartadas por territorio no resuelto
-- Conector internacional World Bank activo (sección 5.2); esqueletos de Fiscalía, Policía, IDEAM y memoria histórica (paso 11 en curso)
-- API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8)
+- Conectores internacionales activos: World Bank, UNHCR, HDX (eventos de conflicto por municipio) y ACLED (agregados país-año desde archivos locales) — ver `docs/fuentes/`
+- Memoria histórica (CNMH SIEVCAC, 6 datasets) y Policía Nacional (3 delitos) implementados y verificados en vivo; Fiscalía documentada como inviable por volumen (ficha y `config/investigacion_fuentes.yaml`)
+- API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8); `GET /api/v1/health` con estado por fuente
 - Frontend React + TypeScript + MapLibre inicializado con KPI contra `/api/v1/fuentes` (paso 5)
-- Tests: 28 pruebas pasando (linaje, validación, pipelines, API, internacional)
+- Tests: 88 pruebas pasando (linaje, validación, pipelines, API, internacional, configuración)
 - Documentación: gobernanza, checklist de privacidad ejecutado para víctimas, fichas de fuente (pasos 3 y 4)
 
 ## Requisitos
@@ -59,15 +60,53 @@ Los conectores requieren variables de entorno (documentadas en `docs/fuentes/`; 
 - `PDET_URL` — endpoint de proyectos PDET (obligatoria: la ART no tiene API JSON pública documentada; gestionar con `mesa.go@renovacionterritorio.gov.co`)
 - `DIVIPOLA_DEPT_DATASET` / `DIVIPOLA_MUN_DATASET` — datasets DIVIPOLA en datos.gov.co (opcional; defaults: `vcjz-niiq`, `gdxc-w37w`)
 
+## Configuración centralizada (plan2.md, Fase A)
+
+El `.env` se carga automáticamente al importar `etl.common.config` (vía
+pydantic-settings, disparado desde `etl/common/pipeline.py`) — ya no hace falta
+exportar variables a mano ni depender de que Compose las inyecte.
+
+- `python -m etl.common.config --check` — reporta qué variables de fuentes
+  activas faltan (fail-fast opt-in; nada falla al importar).
+- `GET /api/v1/health` — estado por fuente: variable configurada + última
+  corrida `data_quality_metrics` exitosa.
+- `config/fuentes.yaml` — catálogo estructurado de las fuentes nuevas (Fase B/C).
+- `config/investigacion_fuentes.yaml` — registro de la investigación en vivo de
+  endpoints (resource-ids y bloqueos reales, para no repetir el rastreo).
+
+Los 4 pipelines reales (DANE, Víctimas, PDET, World Bank) siguen leyendo sus
+variables con `os.getenv(...)`: no fueron tocados. `etl/common/config.py`
+inyecta los valores no vacíos del `.env` al entorno al importarse, así esos
+pipelines leen el `.env` sin cambios (las variables ya exportadas en el shell
+tienen prioridad).
+
+## Fuentes de Fase B (plan2.md)
+
+Pipelines implementados y verificados en vivo (2026-08-02):
+
+| Fuente | Pipeline | Cobertura cargada |
+|---|---|---|
+| UNHCR | `etl/internacional/unhcr.py` | país, 8 tipos de población, 1981–2025 |
+| CNMH SIEVCAC | `etl/memoria/pipeline.py` (6 hechos) | municipio-año, 1980–2027 |
+| HDX Conflict Events | `etl/internacional/hdx.py` | municipio-año, eventos y fatalidades, 2018–2026 |
+| Policía | `etl/policia/pipeline.py` (3 delitos) | municipio-año-tipo, 2010–2025 |
+| ACLED | `etl/internacional/acled.py` | país-año, 3 series, 1997–2026 (archivos en `data/external/`) |
+| Fiscalía | `etl/fiscalia/pipeline.py` | **no activa**: agregación inviable por volumen (23M filas) — ver ficha |
+
+`etl/run_all.py` ejecuta los conectores activos; los pendientes se suman al
+confirmar su viabilidad (`config/investigacion_fuentes.yaml` documenta qué
+falta y por qué).
+
 ## Estructura (sección 6 del plan)
 
 ```
-data/          raw (inmutable) -> processed -> curated -> external (shapefiles)
+data/          raw (inmutable) -> processed -> curated -> external (ACLED, shapefiles)
 etl/           pipelines por fuente + common (linaje, validación, calidad)
 database/      schema.sql + migrations + views + functions
 api/           FastAPI v1: routes / models / services
 dashboard/     React + MapLibre (pendiente de fase 5)
 docs/          fuentes (ficha por fuente) + metodologia (indicadores, privacidad)
+config/        catálogo de fuentes (fuentes.yaml) + investigación de endpoints
 tests/         pruebas de ETL y API
 ```
 

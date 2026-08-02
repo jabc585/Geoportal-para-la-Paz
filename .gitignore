@@ -6,6 +6,10 @@ data/curated/*
 !data/processed/.gitkeep
 !data/curated/.gitkeep
 !data/external/.gitkeep
+# Descargas con licencia de terceros (ACLED XLSX): re-descargar con
+# `etl/internacional/acled.py` (ver docs/fuentes/acled.md y ficha de licencia)
+data/external/*.xlsx
+grafiphy
 
 # Entornos virtuales
 .venv/

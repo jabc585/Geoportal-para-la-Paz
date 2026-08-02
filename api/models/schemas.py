@@ -45,3 +45,16 @@ class Pagina(BaseModel, Generic[T]):
 
 class ErrorOut(BaseModel):
     detalle: str
+
+
+class FuenteEstadoOut(BaseModel):
+    variable: str
+    fuente: str
+    configurada: bool
+    ayuda: str
+    ultima_corrida_exitosa: datetime | None
+
+
+class HealthOut(BaseModel):
+    estado: str
+    fuentes: list[FuenteEstadoOut]

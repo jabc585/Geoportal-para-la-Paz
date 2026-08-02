@@ -1,19 +1,33 @@
 import { KPIFuentes } from "../components/KPIFuentes";
 import { MapaNacional } from "../maps/MapaNacional";
 
+// KPIs planificados en el wireframe del dashboard (sección 9.1 del plan) que
+// todavía no tienen pipeline con carga a curated (ver auditoría): se marcan
+// como "próximamente" en vez de inventar una cifra.
+const KPIS_PLANIFICADOS = ["Víctimas", "Homicidios", "Proyectos PDET"];
+
 export function Inicio() {
   return (
     <>
-      <section className="kpis" aria-label="Indicadores principales">
+      <section className="kpis" id="inicio" aria-label="Indicadores principales">
         <KPIFuentes />
+        {KPIS_PLANIFICADOS.map((etiqueta) => (
+          <div className="kpi es-placeholder" key={etiqueta}>
+            <div className="kpi-etiqueta">{etiqueta}</div>
+            <div className="kpi-valor">Próximamente</div>
+          </div>
+        ))}
       </section>
 
-      <section className="panel">
-        <h2 className="panel-titulo">Mapa Nacional</h2>
+      <section className="panel" id="mapa">
+        <div className="panel-cabecera">
+          <h2 className="panel-titulo">Mapa Nacional</h2>
+          <span className="panel-nota">Capas de indicadores: fase 5 del plan</span>
+        </div>
         <MapaNacional />
-        <p>
-          <a href="#metodologia" title="¿Cómo se calcula?">¿Cómo se calcula?</a>
-        </p>
+        <a className="enlace-metodologia" href="#metodologia" title="¿Cómo se calcula?">
+          ¿Cómo se calcula? →
+        </a>
       </section>
 
       <section className="panel" id="metodologia">

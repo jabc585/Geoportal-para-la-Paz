@@ -64,6 +64,19 @@ def simular_servicios(monkeypatch):
         if codigo == "05002"
         else None,
     )
+    monkeypatch.setattr(
+        rutas,
+        "estado_fuentes",
+        lambda: [
+            {
+                "variable": "PDET_URL",
+                "fuente": "PDET",
+                "configurada": True,
+                "ayuda": "Dataset Socrata de proyectos PDET",
+                "ultima_corrida_exitosa": None,
+            }
+        ],
+    )
 
 
 def test_raiz():
@@ -117,3 +130,12 @@ def test_openapi_disponible():
     resp = client.get("/openapi.json")
     assert resp.status_code == 200
     assert "/api/v1/fuentes" in resp.json()["paths"]
+
+
+def test_health_reporta_estado_de_fuentes():
+    resp = client.get("/api/v1/health")
+    assert resp.status_code == 200
+    cuerpo = resp.json()
+    assert cuerpo["estado"] == "ok"
+    assert cuerpo["fuentes"][0]["variable"] == "PDET_URL"
+    assert cuerpo["fuentes"][0]["configurada"] is True

@@ -2,15 +2,18 @@
 
 Diagramas de arquitectura del proyecto generados con [Graphify](https://graphify.com/) (`graphifyy` en PyPI, v0.9.32) a partir del código fuente y del esquema de la base de datos PostgreSQL viva (Docker).
 
-Generado el 2026-08-02 contra el árbol de trabajo tras la ronda de fixes `6a0e5a2` + hallazgos de la tercera pasada de auditoría.
+Regenerado el 2026-08-02 contra el árbol de trabajo actual (incluye el rediseño
+sin commitear de `dashboard/`) + esquema real de PostgreSQL 17/PostGIS (nativo,
+no Docker — ver `AUDITORIA.md`).
 
 ## Artefactos
 
 | Archivo | Qué es |
 |---|---|
+| `AUDITORIA.md` | Síntesis de esta corrida: god nodes, comunidades, y verificación en vivo de que el pipeline de DANE ya carga datos reales a `curated` de punta a punta. |
 | `ARQUITECTURA_TREE.html` | Árbol colapsable (D3 v7) de todo el proyecto: módulos, clases, funciones y la BD. Abrir en navegador (`file://`). |
 | `graphify-out/grafiphy-callflow.html` | Diagramas Mermaid de arquitectura y call-flow con zoom/pan interactivo. |
-| `graphify-out/graph.html` | Grafo interactivo completo: 309 nodos, 568 aristas, 19 comunidades. |
+| `graphify-out/graph.html` | Grafo interactivo completo: 862 nodos, 1139 aristas, 19 comunidades. |
 | `graphify-out/graph.json` | Grafo completo en JSON (linaje consultable con `graphify query/path/explain`). |
 | `graphify-out/GRAPH_REPORT.md` | Reporte del grafo: comunidades, hubs de arquitectura, mediciones. |
 

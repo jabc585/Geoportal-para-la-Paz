@@ -20,11 +20,13 @@ Indicadores configurados con la variable `WB_INDICADORES` (lista `codigo:nombre`
 export WB_INDICADORES="NY.GDP.PCAP.PP.CD:PIB per cápita (PPA),SI.POV.GINI:Índice de Gini"
 ```
 
-## HDX (Humanitarian Data Exchange)
+## HDX (Humanitarian Data Exchange) — implementado
 
-- URL: https://data.humdata.org/
-- Estado: pendiente — documentar método de acceso y dataset específico de Colombia (desplazamiento, respuesta humanitaria).
-- Licencia: verificar por dataset.
+- URL: https://data.humdata.org/ — dataset dedicado a Colombia (hdx-hapi-col).
+- Conector: `etl/internacional/hdx.py` — ficha: [hdx.md](hdx.md). Carga eventos
+  de conflicto y fatalidades (subyacente ACLED) por municipio/año a
+  `curated.serie_historica`.
+- Licencia: verificar por dataset (sección 3, punto 5).
 
 ## UCDP (Uppsala Conflict Data Program)
 
@@ -32,11 +34,11 @@ export WB_INDICADORES="NY.GDP.PCAP.PP.CD:PIB per cápita (PPA),SI.POV.GINI:Índi
 - Estado: pendiente — eventos georreferenciados; evaluar granularidad mínima contra checklist de privacidad (3.1).
 - Licencia: abierta con atribución.
 
-## ACNUR (UNHCR)
+## ACNUR (UNHCR) — implementado
 
-- URL: https://www.unhcr.org/refugee-statistics/
-- Estado: pendiente.
-- Licencia: abierta.
+- API: https://api.unhcr.org/population/v1/ (sin autenticación)
+- Conector: `etl/internacional/unhcr.py` — ficha: [unhcr.md](unhcr.md)
+- Licencia: abierta (acceso público).
 
 ## ACLED
 

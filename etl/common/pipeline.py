@@ -15,6 +15,7 @@ import psycopg
 
 from etl.common.db import conectar, insertar_raw, registrar_metricas
 from etl.common.lineage import Lineage, hash_registro
+from etl.common.config import settings  # noqa: F401 — dispara la carga de .env al importar
 
 
 class PipelineETL(ABC):

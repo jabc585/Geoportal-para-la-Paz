@@ -4,10 +4,25 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query
 
-from api.models.schemas import ErrorOut, FuenteOut, MunicipioOut, Pagina, SerieOut
+from api.models.schemas import ErrorOut, FuenteEstadoOut, FuenteOut, HealthOut, MunicipioOut, Pagina, SerieOut
 from api.services.consultas import consultar_serie, consultar_territorio, listar_fuentes
+from api.services.health import estado_fuentes
 
 router = APIRouter(prefix="/api/v1", tags=["v1"])
+
+
+@router.get(
+    "/health",
+    response_model=HealthOut,
+    summary="Estado de configuración de fuentes y últimas corridas",
+    description=(
+        "Reporta por fuente si su variable de entorno está configurada y la "
+        "fecha de la última corrida ETL exitosa (curated.data_quality_metrics). "
+        "No expone valores de variables, solo su presencia (plan2.md, Fase A)."
+    ),
+)
+def get_health() -> HealthOut:
+    return HealthOut(estado="ok", fuentes=[FuenteEstadoOut(**f) for f in estado_fuentes()])
 
 
 @router.get(
