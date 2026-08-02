@@ -11,6 +11,7 @@
 4. [Arquitectura de la plataforma](#4-arquitectura-de-la-plataforma)
 5. [Fuentes de datos oficiales](#5-fuentes-de-datos-oficiales)
 6. [Estructura del proyecto](#6-estructura-del-proyecto)
+   - 6.1 [Estado actual de implementación](#61-estado-actual-de-implementación-auditoría-2026-08-02)
 7. [Modelo de datos y almacenamiento](#7-modelo-de-datos-y-almacenamiento)
 8. [API](#8-api)
 9. [Dashboard / Frontend](#9-dashboard--frontend)
@@ -270,6 +271,25 @@ observatorio-paz/
 ├── tests/                  # Pruebas unitarias, integración y carga (ETL + API)
 └── docker/
 ```
+
+### 6.1 Estado actual de implementación (auditoría 2026-08-02)
+
+El repositorio contiene un único commit (`960013f`, "Esqueleto inicial…"). Ya hay una base real de infraestructura ETL/BD/API — no son solo carpetas vacías — pero el pipeline todavía no produce un solo dato en `curated`, y el frontend no ha empezado. Esta tabla reemplaza la intención de diseño por el estado verificado, para que las fases (sección 16) y los próximos pasos (sección 21) partan de la realidad:
+
+| Área | Estado | Detalle |
+|---|---|---|
+| `database/schema.sql` + `migrations/` | 🟡 Parcial | Esquemas `raw`/`staging`/`curated` definidos; SCD2 real en `Territorio`; vista `vw_homicidios_reconciliado` y función `cerrar_version_scd()` ya escritas (sección 7.5, 7.2). `staging` no tiene ninguna tabla real todavía y `database/views/`, `database/functions/` están vacías (ese contenido vive suelto dentro de `schema.sql`/`migrations`). Riesgo detectado: `docker-compose` monta `migrations/` como subdirectorio de `docker-entrypoint-initdb.d/`, que Postgres **no** ejecuta recursivamente — hay que confirmar si las 3 migraciones se están aplicando al levantar el contenedor. |
+| `etl/` — dane, pdet, victimas | 🟡 Parcial (3 de 15 fuentes nacionales) | Extracción real desde Socrata/URLs, con linaje y hash escritos a `raw.*`. `cargar_curated()` es un `TODO`/`pass` en los tres — **ningún dato llega a `curated` todavía**. La capa de validación con Pandera (`etl/common/validation.py`) ya existe pero ningún pipeline la invoca. |
+| `etl/` — fiscalia, ideam, internacional, memoria, policia | 🔴 Vacío | Sin un solo archivo. Cubre 5 fuentes nacionales del catálogo (sección 5) y toda la capa de comparabilidad internacional (sección 5.2: Banco Mundial, UN Data, HDX, UCDP, ACLED, ACNUR, IOM DTM). |
+| `api/` | 🟡 Parcial | 3 endpoints reales (`territorios`, `indicadores` con paginación por cursor, `fuentes`); CORS configurado. Sin autenticación de escritura, sin rate limiting, sin caché HTTP, sin tests, sin endpoints de capas geoespaciales ni de `IndicadorInternacional`. Faltan `__init__.py` en `api/routes/`, `api/models/`, `api/services/`. |
+| `dashboard/` | 🔴 Vacío | Cero archivos en `pages/`, `components/`, `charts/`, `maps/`, `filters/`; sin `package.json` ni stack de frontend inicializado. |
+| `data/raw|processed|curated|external` | 🔴 Vacío | Solo `.gitkeep`; el pipeline persiste directo a Postgres, no a archivo (el comentario en el código sobre "extract → data/raw → raw.*" no corresponde a la implementación actual). |
+| `docs/fuentes/` | 🔴 Esqueleto | Solo `PLANTILLA_FUENTE.md`; el código de `etl/dane` y `etl/pdet` ya referencia `docs/fuentes/dane.md` y `docs/fuentes/art.md`, que no existen. |
+| `docs/metodologia/` | 🟡 Borrador | `gobernanza_datos.md` y `checklist_privacidad.md` (sección 3, 3.1) redactados pero marcados "pendiente de validación externa"; el checklist nunca se ha diligenciado para un dataset real. |
+| `tests/`, `notebooks/`, `reports/` | 🔴 Vacío | Sin cobertura de pruebas; `pytest` ni está en `requirements.txt`. |
+| `requirements.txt` | 🟡 Parcial | `dagster` y `sqlalchemy` declarados sin uso real en el código (la API usa `psycopg` directo, la orquestación es un script secuencial). Faltan `pytest`, `geopandas`/`shapely`, `alembic`. |
+
+**Lectura respecto a las fases (sección 16):** el proyecto está a medio camino de la **fase 2** (ETL inicial — 3/5 fuentes piloto con extracción pero 0 con carga a `curated`), ha adelantado trabajo de la **fase 3** (`schema.sql` ya escrito) y parte de la **fase 4** (API v1 con paginación). La fase 0 (gobernanza) tiene borradores sin validar externamente. Las fases 5-8 (dashboard, análisis complementario, QA, adopción) no han iniciado.
 
 ---
 
@@ -563,9 +583,16 @@ Se incorpora una etapa de pruebas de estrés sobre la API y sobre el mapa (parti
 
 ## 21. Próximos pasos inmediatos
 
-1. Validar y priorizar la lista de indicadores del catálogo (sección 7) con al menos un experto de dominio y dos organizaciones aliadas.
-2. Redactar el documento de gobernanza y ética de datos (sección 3) como artefacto formal, incluyendo el checklist de privacidad (3.1) y la conformación inicial del comité asesor plural.
-3. Iniciar conversaciones tempranas con posibles anfitriones institucionales a largo plazo (sección 19).
-4. Elegir 3 fuentes piloto (recomendado: DANE, Datos Paz, ART/PDET) y construir el primer pipeline ETL de extremo a extremo, incluyendo los esquemas `raw/staging/curated` (sección 7.3).
-5. Levantar el esqueleto del repositorio (estructura de la sección 6) y el entorno Docker de desarrollo.
-6. Diseñar el esquema inicial de base de datos (sección 7), incluyendo versionado de dimensiones (7.2) y la tabla `data_quality_metrics` (7.4), y correr la primera migración.
+Los pasos 1-6 de la versión anterior de esta sección (indicadores, gobernanza, anfitrión institucional, pipeline piloto, esqueleto de repo, esquema de BD) ya están cubiertos en distinto grado — ver el detalle verificado en la sección 6.1. Esta lista reordena lo que sigue según lo que bloquea llegar a un pipeline end-to-end real, no según el diseño teórico:
+
+1. **Cerrar el ciclo ETL piloto.** Implementar `cargar_curated()` en `etl/dane`, `etl/pdet` y `etl/victimas` (hoy son `TODO`/`pass`), conectando la transformación con `etl/common/validation.py` (Pandera), que ya existe pero ningún pipeline invoca todavía. Sin esto no hay un solo dato real en `curated` para probar la API o el dashboard.
+2. **Verificar el arranque de Docker Compose.** Confirmar si las migraciones en `database/migrations/` se aplican al levantar `postgres` (Postgres no ejecuta subdirectorios de `docker-entrypoint-initdb.d/` de forma recursiva por defecto); si no se aplican, mover los `.sql` al nivel raíz montado o concatenarlos en el entrypoint.
+3. **Escribir las fichas de fuente que ya se referencian en el código pero no existen**: `docs/fuentes/dane.md`, `docs/fuentes/victimas.md`, `docs/fuentes/art.md`, a partir de `PLANTILLA_FUENTE.md`.
+4. **Ejecutar el checklist de privacidad (3.1)** sobre el primer dataset candidato a `curated` (recomendado: `victimas`, por ser el más sensible) y archivar la evidencia, antes de habilitar cualquier endpoint de la API sobre él.
+5. **Elegir y levantar el esqueleto del frontend.** `dashboard/` está 100% vacío hoy: decidir stack definitivo (React + TypeScript + MapLibre, sección 4.1), inicializar el proyecto y conectar un primer KPI real contra `GET /api/v1/fuentes`.
+6. **Añadir cobertura de pruebas mínima.** Agregar `pytest` a `requirements.txt` y escribir tests para `etl/common/pipeline.py`, `etl/common/validation.py` y los 3 endpoints de `api/routes/v1.py` — `tests/` está vacío hoy.
+7. **Resolver dependencias declaradas sin uso real:** decidir si se adopta `dagster` para orquestación (hoy `run_all.py` es un script secuencial simple) y si se usa `sqlalchemy` o se documenta que la API usa `psycopg` directo de forma deliberada; retirar lo que no se vaya a usar.
+8. **Completar los `__init__.py` faltantes** en `api/routes/`, `api/models/`, `api/services/` para que sean paquetes explícitos.
+9. Validar y priorizar la lista de indicadores del catálogo (sección 7) con al menos un experto de dominio y dos organizaciones aliadas.
+10. Conformar el comité asesor plural (sección 3, punto 6) e iniciar conversaciones tempranas con posibles anfitriones institucionales a largo plazo (sección 19).
+11. **Extender `etl/` más allá del piloto** una vez estable el patrón: Fiscalía, Policía, IDEAM, memoria histórica y la capa internacional (sección 5.2) siguen sin un solo archivo.

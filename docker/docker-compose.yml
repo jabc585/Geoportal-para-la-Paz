@@ -10,8 +10,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      # docker-entrypoint-initdb.d NO se ejecuta recursivamente: cada SQL se
+      # monta como archivo individual en orden de prefijo (sección 21, paso 2)
       - ../database/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
-      - ../database/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ../database/migrations/0001_raw_storage.sql:/docker-entrypoint-initdb.d/02_raw_storage.sql:ro
+      - ../database/migrations/0002_quality_metrics.sql:/docker-entrypoint-initdb.d/03_quality_metrics.sql:ro
+      - ../database/migrations/0003_geospatial_indexes.sql:/docker-entrypoint-initdb.d/04_geospatial_indexes.sql:ro
+      - ../database/migrations/0004_seed_catalog.sql:/docker-entrypoint-initdb.d/05_seed_catalog.sql:ro
+      - ../database/migrations/0005_pdet_proyectos.sql:/docker-entrypoint-initdb.d/06_pdet_proyectos.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U observatorio -d observatorio"]
       interval: 5s

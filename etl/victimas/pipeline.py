@@ -2,7 +2,9 @@
 
 Acceso: API de Datos Paz (sección 5). Los hechos victimizantes se publican
 agregados (municipio/periodo/tipo de hecho), nunca a nivel individual
-(sección 3, punto 2: principio de no daño).
+(sección 3, punto 2: principio de no daño). Antes de habilitar este dataset
+en la API se ejecuta el checklist de privacidad (sección 3.1) — evidencia en
+docs/metodologia/checklist_victimas.md.
 """
 
 from __future__ import annotations
@@ -10,12 +12,27 @@ from __future__ import annotations
 import os
 
 import pandas as pd
-import requests
 
+from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
+from etl.common.validation import EsquemaSerieNormalizada, validar
 
 URL_DATOSPAZ = os.getenv("VICTIMAS_URL", "https://datospaz.unidadvictimas.gov.co/api/v1/")
+
+ALIASES = {
+    "codigo": ["codigo_municipio", "cod_municipio", "cod_divipola", "codigomunicipio", "codigo_mun"],
+    "anio": ["anio", "ano", "año", "year", "periodo"],
+    "hecho": ["hecho", "tipo_hecho", "hecho_victimizante", "tipo", "modalidad"],
+    "valor": ["casos", "victimas", "personas", "numero_casos", "cantidad"],
+}
+
+
+def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
+    for alias in aliases:
+        if alias in df.columns:
+            return alias
+    raise ValueError(f"No se encontró columna para {etiqueta} (buscadas: {aliases}). Revisar ficha docs/fuentes/victimas.md")
 
 
 class Victimas_Hechos(PipelineETL):
@@ -24,6 +41,8 @@ class Victimas_Hechos(PipelineETL):
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
         url = f"{URL_DATOSPAZ}hechos_victimizantes"
+        import requests
+
         resp = requests.get(url, timeout=60)
         resp.raise_for_status()
         df = pd.DataFrame(resp.json())
@@ -39,12 +58,64 @@ class Victimas_Hechos(PipelineETL):
         if df.empty:
             return df
         df = df.rename(columns={c: c.lower() for c in df.columns})
-        return df
+        col_codigo = _columna(df, ALIASES["codigo"], "código DIVIPOLA")
+        col_anio = _columna(df, ALIASES["anio"], "año")
+        col_hecho = _columna(df, ALIASES["hecho"], "tipo de hecho")
+        col_valor = _columna(df, ALIASES["valor"], "casos")
+
+        agregado = (
+            df.assign(
+                codigo_divipola=df[col_codigo].astype(str).str.zfill(5),
+                anio=pd.to_numeric(df[col_anio], errors="coerce"),
+                hecho=df[col_hecho].astype(str).str.strip(),
+                valor=pd.to_numeric(df[col_valor], errors="coerce"),
+            )
+            .dropna(subset=["anio", "valor"])
+            .groupby(["codigo_divipola", "anio", "hecho"], as_index=False)["valor"]
+            .sum()
+        )
+
+        periodo = agregado["anio"].apply(periodo_anual)
+        agregado["periodo_inicio"] = periodo.apply(lambda p: p[0])
+        agregado["periodo_fin"] = periodo.apply(lambda p: p[1])
+        return agregado.drop(columns=["anio"])
 
     def cargar_curated(self, df: pd.DataFrame) -> None:
-        # TODO fase 2: mapear a curated.serie_historica con agregación mínima
-        # municipio/año + checklist de privacidad (sección 3.1) antes de habilitar
-        pass
+        if df.empty:
+            return
+        with self.conn:
+            fuente_id = upsert_fuente(
+                self.conn,
+                nombre="Unidad para las Víctimas",
+                entidad="Unidad Administrativa Especial para la Atención y Reparación a las Víctimas",
+                tipo="nacional",
+                descripcion="Víctimas, desplazamiento, retornos, reparación (sección 5)",
+                url_base="https://datospaz.unidadvictimas.gov.co/",
+                metodo_acceso="api",
+                periodicidad="trimestral",
+                formato="JSON",
+                licencia=self.lineage.licencia,
+                ficha_doc="docs/fuentes/victimas.md",
+            )
+            insertadas = 0
+            for hecho, grupo in df.groupby("hecho"):
+                codigo_indicador = f"victimas_{slugificar(hecho)}"
+                indicador_id = upsert_indicador(
+                    self.conn,
+                    codigo=codigo_indicador,
+                    nombre=f"Hechos victimizantes: {hecho}",
+                    descripcion=f"Hechos victimizantes de tipo '{hecho}' agregados por municipio/año",
+                    unidad="casos",
+                    granularidad_min="municipio",
+                    periodicidad="trimestral",
+                    metodologia_doc="docs/metodologia/indicadores.md",
+                )
+                grupo = grupo.assign(indicador_id=indicador_id)
+                grupo = validar(grupo, EsquemaSerieNormalizada)[0]
+                insertadas += insertar_serie(
+                    self.conn, grupo, fuente_id, self.lineage.url_origen, self.lineage.fecha_extraccion
+                )
+            print(f"[victimas] filas cargadas a serie_historica: {insertadas}")
 
 
 if __name__ == "__main__":

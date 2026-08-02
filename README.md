@@ -4,14 +4,17 @@ Plataforma de datos sobre paz, conflicto y desarrollo territorial en Colombia, b
 
 ## Estado actual
 
-Esqueleto técnico inicial (secciones 6 y 21 del plan):
+Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
 
 - Estructura de directorios (`data/`, `etl/`, `database/`, `api/`, `dashboard/`, `docs/`)
 - Esquema PostgreSQL con separación `raw/staging/curated` (sección 7.3), versionado SCD tipo 2 (7.2), `data_quality_metrics` (7.4) y vista de reconciliación (7.5)
 - Entorno Docker de desarrollo (PostgreSQL + PostGIS, ETL, API)
-- Esqueleto ETL con 3 conectores piloto: DANE, Unidad de Víctimas, ART/PDET (sección 21, paso 4)
+- **ETL piloto completo end-to-end**: DANE, Unidad de Víctimas y ART/PDET con extracción → validación Pandera → carga a `curated` con linaje (sección 21, paso 1 cerrado)
+- Conector internacional World Bank activo (sección 5.2); esqueletos de Fiscalía, Policía, IDEAM y memoria histórica (paso 11 en curso)
 - API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8)
-- Documentación de gobernanza y checklist de privacidad (secciones 3 y 3.1)
+- Frontend React + TypeScript + MapLibre inicializado con KPI contra `/api/v1/fuentes` (paso 5)
+- Tests: 28 pruebas pasando (linaje, validación, pipelines, API, internacional)
+- Documentación: gobernanza, checklist de privacidad ejecutado para víctimas, fichas de fuente (pasos 3 y 4)
 
 ## Requisitos
 
@@ -68,9 +71,19 @@ tests/         pruebas de ETL y API
 - **Neutralidad**: solo fuentes oficiales, metodología pública, comité asesor plural (sección 3, punto 6).
 - **Licencias**: código open source; datos curados CC BY 4.0; datos crudos conservan licencia de su fuente (sección 19).
 
+## Pruebas
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+pytest tests/ -v
+```
+
 ## Próximos pasos (sección 21)
 
-1. Validar catálogo de indicadores con expertos y organizaciones aliadas
-2. Conformar comité asesor y aprobar documento de gobernanza (`docs/metodologia/gobernanza_datos.md`)
-3. Configurar los endpoints reales de los 3 conectores piloto y completar el mapeo a `curated`
-4. Iniciar conversaciones con anfitriones institucionales potenciales
+1. Configurar los endpoints reales de los conectores piloto (`DANE_POBLACION_DATASET`, `PDET_URL`) y verificar la carga end-to-end contra una BD real
+2. Confirmar umbral de supresión k ≥ 5 con el comité asesor (checklist de víctimas)
+3. Inicializar el frontend con `npm install` (requiere Node) y conectar más KPIs
+4. Validar catálogo de indicadores con organizaciones aliadas
+5. Completar conectores de Fiscalía, Policía, IDEAM y memoria al confirmarse sus endpoints
+6. Añadir paginación de teselas y capas coropléticas al mapa (fase 5)

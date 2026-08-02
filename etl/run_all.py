@@ -1,8 +1,14 @@
-"""Ejecuta todos los pipelines de la fase piloto (sección 21, paso 4)."""
+"""Ejecuta los pipelines activos (sección 21, pasos 4 y 11).
+
+Los conectores de la fase piloto (DANE, Víctimas, PDET) y el internacional
+World Bank se ejecutan en orden. Los esqueletos pendientes (Fiscalía,
+Policía, IDEAM, memoria) se agregan a medida que se confirme su endpoint.
+"""
 
 from __future__ import annotations
 
 from etl.dane.pipeline import DANE_Poblacion
+from etl.internacional.world_bank import Internacional_WorldBank
 from etl.pdet.pipeline import ART_PDET
 from etl.victimas.pipeline import Victimas_Hechos
 
@@ -10,6 +16,7 @@ PIPELINES = [
     DANE_Poblacion,
     Victimas_Hechos,
     ART_PDET,
+    Internacional_WorldBank,
 ]
 
 

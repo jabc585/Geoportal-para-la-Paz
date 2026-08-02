@@ -1,0 +1,101 @@
+/* Sistema de diseño (sección 10 del plan): claridad y neutralidad visual */
+
+:root {
+  --color-fondo: #ffffff;
+  --color-primario: #0b5394;
+  --color-positivo: #2e7d32;
+  --color-alerta: #fb8c00;
+  --color-critico: #d32f2f;
+  --color-fondo-secundario: #f4f6f8;
+  --fuente: "Inter", "Source Sans Pro", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--fuente);
+  background: var(--color-fondo);
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-primario);
+}
+
+header.observatorio-header {
+  background: var(--color-primario);
+  color: #fff;
+  padding: 1rem 1.5rem;
+}
+
+header.observatorio-header h1 {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+nav.observatorio-nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-right: 1rem;
+}
+
+main {
+  padding: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* KPIs (sección 9.1) */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi {
+  background: var(--color-fondo-secundario);
+  border-radius: 8px;
+  padding: 1rem;
+  border-top: 4px solid var(--color-primario);
+}
+
+.kpi .kpi-valor {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.25rem 0;
+}
+
+.kpi .kpi-etiqueta {
+  color: #555;
+  font-size: 0.85rem;
+}
+
+.panel {
+  background: var(--color-fondo-secundario);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-titulo {
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+}
+
+/* Mapas (sección 10: paleta verificada para daltonismo) */
+.mapa-contenedor {
+  height: 420px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .mapa-contenedor {
+    height: 320px;
+  }
+}

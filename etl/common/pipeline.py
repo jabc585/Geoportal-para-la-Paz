@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 
 import pandas as pd
+import psycopg
 
 from etl.common.db import conectar, insertar_raw, registrar_metricas
 from etl.common.lineage import Lineage, hash_registro
@@ -24,7 +25,14 @@ class PipelineETL(ABC):
 
     def __init__(self) -> None:
         self.lineage: Lineage | None = None
-        self._conn = conectar()
+        self._conn: psycopg.Connection | None = None
+
+    @property
+    def conn(self) -> psycopg.Connection:
+        """Conexión perezosa: solo se abre al ejecutar el pipeline."""
+        if self._conn is None or self._conn.closed:
+            self._conn = conectar()
+        return self._conn
 
     @abstractmethod
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
@@ -55,7 +63,7 @@ class PipelineETL(ABC):
                 }
                 for _, fila in df.iterrows()
             ]
-            insertar_raw(self._conn, self.tabla_raw, filas_raw)
+            insertar_raw(self.conn, self.tabla_raw, filas_raw)
 
             df_staging = self.transformar(df)
             validos = len(df_staging)
@@ -65,7 +73,7 @@ class PipelineETL(ABC):
             estado, error = "fallido", str(exc)
         finally:
             registrar_metricas(
-                self._conn,
+                self.conn,
                 self.pipeline_id,
                 leidos,
                 validos,

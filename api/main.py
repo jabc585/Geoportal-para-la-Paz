@@ -6,10 +6,16 @@ CORS configurado explícitamente para consumo desde dashboards de terceros
 
 from __future__ import annotations
 
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes.v1 import router as v1_router
+
+
+def os_env_list(nombre: str, default: str) -> list[str]:
+    return [o.strip() for o in os.getenv(nombre, default).split(",") if o.strip()]
 
 app = FastAPI(
     title="Observatorio para la Paz en Colombia - API",
@@ -42,9 +48,3 @@ def raiz() -> dict:
         "api_v1": "/api/v1",
         "nota": "Datos agregados, sin PII (secciones 3 y 13 del plan).",
     }
-
-
-def os_env_list(nombre: str, default: str) -> list[str]:
-    import os
-
-    return [o.strip() for o in os.getenv(nombre, default).split(",") if o.strip()]
