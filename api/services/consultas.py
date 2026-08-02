@@ -94,3 +94,42 @@ def consultar_territorio(codigo_divipola: str) -> dict | None:
             (codigo_divipola,),
         )
         return cur.fetchone()
+
+
+def consultar_total(indicador: str) -> dict | None:
+    """Total nacional por año de un indicador (para KPIs del dashboard).
+
+    Suma todas las fuentes que cargan el indicador (cada una conserva su
+    linaje); el dashboard muestra el año más reciente.
+    """
+    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT i.codigo, i.nombre, i.unidad
+            FROM curated.indicadores i
+            WHERE i.codigo = %s
+            """,
+            (indicador,),
+        )
+        meta = cur.fetchone()
+        if not meta:
+            return None
+        cur.execute(
+            """
+            SELECT EXTRACT(YEAR FROM s.periodo_inicio)::int AS anio,
+                   round(sum(s.valor))::float AS valor
+            FROM curated.serie_historica s
+            JOIN curated.indicadores i ON i.indicador_id = s.indicador_id
+            WHERE i.codigo = %s
+            GROUP BY 1
+            ORDER BY 1 DESC
+            """,
+            (indicador,),
+        )
+        totales = cur.fetchall()
+    return {
+        "indicador": meta["codigo"],
+        "nombre": meta["nombre"],
+        "unidad": meta["unidad"],
+        "totales": totales,
+    }

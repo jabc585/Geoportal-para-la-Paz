@@ -4,8 +4,17 @@ from __future__ import annotations
 
 from fastapi import APIRouter, HTTPException, Query
 
-from api.models.schemas import ErrorOut, FuenteEstadoOut, FuenteOut, HealthOut, MunicipioOut, Pagina, SerieOut
-from api.services.consultas import consultar_serie, consultar_territorio, listar_fuentes
+from api.models.schemas import (
+    ErrorOut,
+    FuenteEstadoOut,
+    FuenteOut,
+    HealthOut,
+    IndicadorTotalOut,
+    MunicipioOut,
+    Pagina,
+    SerieOut,
+)
+from api.services.consultas import consultar_serie, consultar_territorio, consultar_total, listar_fuentes
 from api.services.health import estado_fuentes
 
 router = APIRouter(prefix="/api/v1", tags=["v1"])
@@ -57,6 +66,18 @@ def get_indicador(
 ) -> Pagina[SerieOut]:
     filas, next_cursor = consultar_serie(indicador, territorio, desde, hasta, limit, cursor)
     return Pagina(items=[SerieOut(**f) for f in filas], next_cursor=next_cursor)
+
+
+@router.get(
+    "/indicadores/{indicador}/total",
+    response_model=IndicadorTotalOut,
+    summary="Total nacional por año de un indicador (KPIs del dashboard)",
+)
+def get_indicador_total(indicador: str) -> IndicadorTotalOut:
+    resultado = consultar_total(indicador)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Indicador no encontrado")
+    return IndicadorTotalOut(**resultado)
 
 
 @router.get(

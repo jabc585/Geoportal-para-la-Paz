@@ -180,9 +180,9 @@
     "semantic_hash": "c6d77df60704b12731dad5080dc069f8"
   },
   "etl/ideam/pipeline.py": {
-    "mtime": 1785669680.3298047,
-    "ast_hash": "95269b55ba665a71db2846e5f6ae1a2e",
-    "semantic_hash": "95269b55ba665a71db2846e5f6ae1a2e"
+    "mtime": 1785690322.2524703,
+    "ast_hash": "483eabadacef24aa995b85749f94d52f",
+    "semantic_hash": "483eabadacef24aa995b85749f94d52f"
   },
   "etl/internacional/__init__.py": {
     "mtime": 1785669671.8690045,
@@ -205,14 +205,14 @@
     "semantic_hash": "ef4d7c69739bfd69a7f1e064975664a5"
   },
   "etl/policia/pipeline.py": {
-    "mtime": 1785683438.4767532,
-    "ast_hash": "0b55bcf64e7bbc49775f6f95bca9f753",
-    "semantic_hash": "0b55bcf64e7bbc49775f6f95bca9f753"
+    "mtime": 1785691646.8347118,
+    "ast_hash": "6b371492dc9e97f29b737cb2d499e94d",
+    "semantic_hash": "6b371492dc9e97f29b737cb2d499e94d"
   },
   "etl/run_all.py": {
-    "mtime": 1785687943.289224,
-    "ast_hash": "1d1c4c7d780edf830845e084725353cd",
-    "semantic_hash": "1d1c4c7d780edf830845e084725353cd"
+    "mtime": 1785691469.655485,
+    "ast_hash": "77eb79bf8d746a09ebc92906cc8c1d59",
+    "semantic_hash": "77eb79bf8d746a09ebc92906cc8c1d59"
   },
   "etl/victimas/pipeline.py": {
     "mtime": 1785672878.7804081,
@@ -260,9 +260,9 @@
     "semantic_hash": "c07884a0db03a08ba22a66e71991116e"
   },
   "api/services/health.py": {
-    "mtime": 1785688476.1468227,
-    "ast_hash": "d426ffe334c9e3ac8742ecccc7b9958f",
-    "semantic_hash": "d426ffe334c9e3ac8742ecccc7b9958f"
+    "mtime": 1785691413.9307292,
+    "ast_hash": "538af0b8188eb810aba3a88db1b068c4",
+    "semantic_hash": "538af0b8188eb810aba3a88db1b068c4"
   },
   "database/migrations/0009_fase_b_raw.sql": {
     "mtime": 1785688130.3508403,
@@ -270,14 +270,14 @@
     "semantic_hash": "f3834810cfc45c0c1c05c1e350068f20"
   },
   "etl/common/config.py": {
-    "mtime": 1785688470.4267802,
-    "ast_hash": "3f0a203b8015b515fa2fd5821c3a5e85",
-    "semantic_hash": "3f0a203b8015b515fa2fd5821c3a5e85"
+    "mtime": 1785691422.2458851,
+    "ast_hash": "4ec01b6ab4cfd379b8f337a6ab27d9c3",
+    "semantic_hash": "4ec01b6ab4cfd379b8f337a6ab27d9c3"
   },
   "etl/internacional/acled.py": {
-    "mtime": 1785687989.5225804,
-    "ast_hash": "364466cfa4b0c74f8f29d8ae0890265f",
-    "semantic_hash": "364466cfa4b0c74f8f29d8ae0890265f"
+    "mtime": 1785692439.915761,
+    "ast_hash": "7496f1e99440144a72709b1fd380c74c",
+    "semantic_hash": "7496f1e99440144a72709b1fd380c74c"
   },
   "etl/internacional/hdx.py": {
     "mtime": 1785683234.3819668,
@@ -290,9 +290,9 @@
     "semantic_hash": "a4c871a0b8374b7515fdec98d52d500e"
   },
   "tests/test_acled.py": {
-    "mtime": 1785687970.6743517,
-    "ast_hash": "e35b15e796f4f17165fbf97795fd7d01",
-    "semantic_hash": "e35b15e796f4f17165fbf97795fd7d01"
+    "mtime": 1785692343.1112874,
+    "ast_hash": "7ab235bf0316f438bb8f2a947318fd9d",
+    "semantic_hash": "7ab235bf0316f438bb8f2a947318fd9d"
   },
   "tests/test_cnmh.py": {
     "mtime": 1785678173.5195918,
@@ -315,8 +315,28 @@
     "semantic_hash": "fcb16af3d7721dc2cd6541d7f2ddeede"
   },
   "tests/test_policia.py": {
-    "mtime": 1785683490.2758908,
-    "ast_hash": "9cfb960456d21ba08a7e57b318cf56ee",
-    "semantic_hash": "9cfb960456d21ba08a7e57b318cf56ee"
+    "mtime": 1785691516.7161672,
+    "ast_hash": "08e048949f01b89bdf2a49953d500fb8",
+    "semantic_hash": "08e048949f01b89bdf2a49953d500fb8"
+  },
+  "database/migrations/0010_geo_ideam.sql": {
+    "mtime": 1785689413.0787332,
+    "ast_hash": "4cde2603fb4d146fc3a1ee5c9766ba1b",
+    "semantic_hash": "4cde2603fb4d146fc3a1ee5c9766ba1b"
+  },
+  "database/migrations/0011_policia_homicidios.sql": {
+    "mtime": 1785691450.748381,
+    "ast_hash": "45c863ee17c40d343873396f3eb4f356",
+    "semantic_hash": "45c863ee17c40d343873396f3eb4f356"
+  },
+  "etl/common/capas_geo.py": {
+    "mtime": 1785689697.283851,
+    "ast_hash": "26a9e7fedf7be4bdab8084d85641a176",
+    "semantic_hash": "26a9e7fedf7be4bdab8084d85641a176"
+  },
+  "tests/test_ideam.py": {
+    "mtime": 1785689523.542061,
+    "ast_hash": "277ea17062e238575c2ccedac9efb4f4",
+    "semantic_hash": "277ea17062e238575c2ccedac9efb4f4"
   }
 }

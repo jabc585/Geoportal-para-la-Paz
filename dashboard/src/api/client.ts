@@ -7,6 +7,18 @@ export interface Fuente {
   url_base: string | null;
 }
 
+export interface TotalAnual {
+  anio: number;
+  valor: number;
+}
+
+export interface IndicadorTotal {
+  indicador: string;
+  nombre: string;
+  unidad: string;
+  totales: TotalAnual[];
+}
+
 const BASE = "/api/v1";
 
 async function obtener<T>(ruta: string): Promise<T> {
@@ -19,4 +31,8 @@ async function obtener<T>(ruta: string): Promise<T> {
 
 export function obtenerFuentes(): Promise<Fuente[]> {
   return obtener<Fuente[]>("/fuentes");
+}
+
+export function obtenerTotalIndicador(indicador: string): Promise<IndicadorTotal> {
+  return obtener<IndicadorTotal>(`/indicadores/${indicador}/total`);
 }

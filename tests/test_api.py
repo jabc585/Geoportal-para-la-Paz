@@ -66,6 +66,18 @@ def simular_servicios(monkeypatch):
     )
     monkeypatch.setattr(
         rutas,
+        "consultar_total",
+        lambda indicador: {
+            "indicador": indicador,
+            "nombre": "Homicidios (Policía Nacional)",
+            "unidad": "delitos",
+            "totales": [{"anio": 2025, "valor": 13722.0}],
+        }
+        if indicador == "homicidios"
+        else None,
+    )
+    monkeypatch.setattr(
+        rutas,
         "estado_fuentes",
         lambda: [
             {
@@ -123,6 +135,19 @@ def test_consultar_territorio_existente():
 
 def test_consultar_territorio_inexistente():
     resp = client.get("/api/v1/territorios/99999")
+    assert resp.status_code == 404
+
+
+def test_total_indicador_con_datos():
+    resp = client.get("/api/v1/indicadores/homicidios/total")
+    assert resp.status_code == 200
+    cuerpo = resp.json()
+    assert cuerpo["indicador"] == "homicidios"
+    assert cuerpo["totales"][0] == {"anio": 2025, "valor": 13722.0}
+
+
+def test_total_indicador_inexistente_404():
+    resp = client.get("/api/v1/indicadores/nada/total")
     assert resp.status_code == 404
 
 

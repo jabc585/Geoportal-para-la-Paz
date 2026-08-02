@@ -1,16 +1,18 @@
 import { KPIFuentes } from "../components/KPIFuentes";
+import { KPIIndicador } from "../components/KPIIndicador";
 import { MapaNacional } from "../maps/MapaNacional";
 
-// KPIs planificados en el wireframe del dashboard (sección 9.1 del plan) que
-// todavía no tienen pipeline con carga a curated (ver auditoría): se marcan
+// KPIs con pipeline real cargado a curated: homicidios (Policía Nacional,
+// Excel SIEDCO 2025). Los planificados sin carga (ver auditoría) se marcan
 // como "próximamente" en vez de inventar una cifra.
-const KPIS_PLANIFICADOS = ["Víctimas", "Homicidios", "Proyectos PDET"];
+const KPIS_PLANIFICADOS = ["Víctimas", "Proyectos PDET"];
 
 export function Inicio() {
   return (
     <>
       <section className="kpis" id="inicio" aria-label="Indicadores principales">
         <KPIFuentes />
+        <KPIIndicador codigo="homicidios" etiqueta="Homicidios (Policía Nacional)" unidad="delitos" />
         {KPIS_PLANIFICADOS.map((etiqueta) => (
           <div className="kpi es-placeholder" key={etiqueta}>
             <div className="kpi-etiqueta">{etiqueta}</div>

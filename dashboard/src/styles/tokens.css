@@ -204,6 +204,12 @@ section + section {
   color: var(--texto-mute);
 }
 
+.kpi-subetiqueta {
+  color: var(--texto-mute);
+  font-size: 0.75rem;
+  margin-top: 0.35rem;
+}
+
 /* Placeholder honesto para KPIs planificados sin datos reales aún
    (sección 9.1 del plan): nunca se inventa una cifra. */
 .kpi.es-placeholder {

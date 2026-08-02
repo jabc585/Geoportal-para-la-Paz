@@ -58,3 +58,15 @@ class FuenteEstadoOut(BaseModel):
 class HealthOut(BaseModel):
     estado: str
     fuentes: list[FuenteEstadoOut]
+
+
+class TotalAnualOut(BaseModel):
+    anio: int
+    valor: float
+
+
+class IndicadorTotalOut(BaseModel):
+    indicador: str
+    nombre: str
+    unidad: str
+    totales: list[TotalAnualOut]

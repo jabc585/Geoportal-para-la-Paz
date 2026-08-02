@@ -13,7 +13,7 @@ no Docker — ver `AUDITORIA.md`).
 | `AUDITORIA.md` | Síntesis de esta corrida: god nodes, comunidades, y verificación en vivo de que el pipeline de DANE ya carga datos reales a `curated` de punta a punta. |
 | `ARQUITECTURA_TREE.html` | Árbol colapsable (D3 v7) de todo el proyecto: módulos, clases, funciones y la BD. Abrir en navegador (`file://`). |
 | `graphify-out/grafiphy-callflow.html` | Diagramas Mermaid de arquitectura y call-flow con zoom/pan interactivo. |
-| `graphify-out/graph.html` | Grafo interactivo completo: 862 nodos, 1139 aristas, 19 comunidades. |
+| `graphify-out/graph.html` | Grafo interactivo completo: 1115 nodos, 1519 aristas, 42 comunidades. |
 | `graphify-out/graph.json` | Grafo completo en JSON (linaje consultable con `graphify query/path/explain`). |
 | `graphify-out/GRAPH_REPORT.md` | Reporte del grafo: comunidades, hubs de arquitectura, mediciones. |
 

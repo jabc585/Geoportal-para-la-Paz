@@ -540,16 +540,106 @@
       "postgresql_localhost_observatorio_raw_dane_poblacion",
       "postgresql_localhost_observatorio_raw_fiscalia_procesos",
       "postgresql_localhost_observatorio_raw_fiscalia_victimas",
+      "postgresql_localhost_observatorio_raw_ideam_ambiental",
       "postgresql_localhost_observatorio_raw_internacional_acled",
       "postgresql_localhost_observatorio_raw_internacional_hdx",
       "postgresql_localhost_observatorio_raw_internacional_unhcr",
       "postgresql_localhost_observatorio_raw_internacional_worldbank",
+      "postgresql_localhost_observatorio_raw_policia_homicidios",
       "postgresql_localhost_observatorio_raw_policia_hurto",
       "postgresql_localhost_observatorio_raw_policia_sexuales",
       "postgresql_localhost_observatorio_raw_policia_violencia",
       "postgresql_localhost_observatorio_raw_victimas_hechos"
     ],
     "1": [
+      "basesettings",
+      "etl_common_config",
+      "etl_common_config_check",
+      "etl_common_config_get_source_url",
+      "etl_common_config_inyectar_al_entorno",
+      "etl_common_config_rationale_1",
+      "etl_common_config_rationale_112",
+      "etl_common_config_rationale_130",
+      "etl_common_config_rationale_138",
+      "etl_common_config_settings",
+      "etl_internacional_unhcr",
+      "etl_internacional_unhcr_internacional_unhcr",
+      "etl_internacional_unhcr_internacional_unhcr_cargar_curated",
+      "etl_internacional_unhcr_internacional_unhcr_extraer",
+      "etl_internacional_unhcr_internacional_unhcr_fuente_id",
+      "etl_internacional_unhcr_internacional_unhcr_transformar",
+      "etl_internacional_unhcr_internacional_unhcr_url_base",
+      "etl_internacional_unhcr_py_dataframe",
+      "etl_internacional_unhcr_py_lineage",
+      "etl_internacional_unhcr_rationale_1",
+      "tests_test_config",
+      "tests_test_config_rationale_1",
+      "tests_test_config_rationale_27",
+      "tests_test_config_rationale_69",
+      "tests_test_config_test_check_cli_reporta_variables_ausentes",
+      "tests_test_config_test_dane_poblacion_hoja_por_defecto_es_none",
+      "tests_test_config_test_divipola_tiene_defaults_socrata",
+      "tests_test_config_test_fuentes_activas_referencian_campos_reales",
+      "tests_test_config_test_fuentes_yaml_referencian_campos_reales",
+      "tests_test_config_test_get_source_url_devuelve_valor",
+      "tests_test_config_test_get_source_url_lanza_si_falta",
+      "tests_test_config_test_investigacion_yaml_carga",
+      "tests_test_config_test_settings_carga_desde_env_temporal",
+      "tests_test_config_test_settings_sin_env_tiene_valores_por_defecto",
+      "tests_test_internacional",
+      "tests_test_internacional_rationale_1",
+      "tests_test_internacional_rationale_46",
+      "tests_test_internacional_rationale_83",
+      "tests_test_internacional_test_esqueleto_ideam_pendiente",
+      "tests_test_internacional_test_transformar_limpia_valores",
+      "tests_test_internacional_test_unhcr_extraer_shape_real",
+      "tests_test_internacional_test_unhcr_tipos_poblacion_completos",
+      "tests_test_internacional_test_unhcr_transformar_limpia_no_datos"
+    ],
+    "2": [
+      "api_services_consultas",
+      "api_services_consultas_consultar_serie",
+      "api_services_consultas_consultar_territorio",
+      "api_services_consultas_cursor_payload",
+      "api_services_consultas_listar_fuentes",
+      "api_services_consultas_rationale_1",
+      "api_services_consultas_rationale_25",
+      "connection",
+      "etl_common_capas_geo",
+      "etl_common_capas_geo_leer_municipios",
+      "etl_common_capas_geo_rationale_1",
+      "etl_common_capas_geo_reportar_cobertura",
+      "etl_common_capas_geo_sembrar",
+      "etl_common_capas_geo_url_firmada",
+      "etl_common_db",
+      "etl_common_db_conectar",
+      "etl_common_db_insertar_raw",
+      "etl_common_db_py_connection",
+      "etl_common_db_rationale_1",
+      "etl_common_db_rationale_17",
+      "etl_common_db_rationale_55",
+      "etl_common_db_rationale_88",
+      "etl_common_db_registrar_metricas",
+      "etl_common_db_sanear_json",
+      "etl_common_divipola",
+      "etl_common_divipola_descargar",
+      "etl_common_divipola_py_connection",
+      "etl_common_divipola_rationale_1",
+      "etl_common_divipola_sembrar_departamentos",
+      "etl_common_divipola_sembrar_municipios",
+      "etl_common_pipeline_pipelineetl_conn",
+      "etl_common_pipeline_rationale_33",
+      "geodataframe",
+      "tests_test_db",
+      "tests_test_db_rationale_1",
+      "tests_test_db_test_dict_anidado_sanea_recursivamente",
+      "tests_test_db_test_fecha_se_conserva",
+      "tests_test_db_test_nan_float_escala_a_none",
+      "tests_test_db_test_numpy_nan_a_none",
+      "tests_test_db_test_pandas_na_y_nat_a_none",
+      "tests_test_db_test_valores_validos_intactos"
+    ],
+    "3": [
       "api_main",
       "api_main_os_env_list",
       "api_main_py_get",
@@ -573,7 +663,7 @@
       "api_services_health",
       "api_services_health_estado_fuentes",
       "api_services_health_rationale_1",
-      "api_services_health_rationale_43",
+      "api_services_health_rationale_45",
       "basemodel",
       "get",
       "tests_test_api",
@@ -590,90 +680,118 @@
       "tests_test_api_test_openapi_disponible",
       "tests_test_api_test_raiz"
     ],
-    "2": [
-      "api_services_consultas",
-      "api_services_consultas_consultar_serie",
-      "api_services_consultas_consultar_territorio",
-      "api_services_consultas_cursor_payload",
-      "api_services_consultas_listar_fuentes",
-      "api_services_consultas_rationale_1",
-      "api_services_consultas_rationale_25",
-      "etl_common_db",
-      "etl_common_db_conectar",
-      "etl_common_db_insertar_raw",
-      "etl_common_db_py_connection",
-      "etl_common_db_rationale_1",
-      "etl_common_db_rationale_17",
-      "etl_common_db_rationale_55",
-      "etl_common_db_rationale_88",
-      "etl_common_db_registrar_metricas",
-      "etl_common_db_sanear_json",
-      "etl_common_divipola",
-      "etl_common_divipola_descargar",
-      "etl_common_divipola_py_connection",
-      "etl_common_divipola_rationale_1",
-      "etl_common_divipola_sembrar_departamentos",
-      "etl_common_divipola_sembrar_municipios",
-      "tests_test_db",
-      "tests_test_db_rationale_1",
-      "tests_test_db_test_dict_anidado_sanea_recursivamente",
-      "tests_test_db_test_fecha_se_conserva",
-      "tests_test_db_test_nan_float_escala_a_none",
-      "tests_test_db_test_numpy_nan_a_none",
-      "tests_test_db_test_pandas_na_y_nat_a_none",
-      "tests_test_db_test_valores_validos_intactos"
-    ],
-    "3": [
-      "etl_common_cargar",
-      "etl_common_cargar_insertar_serie",
-      "etl_common_cargar_py_connection",
-      "etl_common_cargar_py_dataframe",
-      "etl_common_cargar_rationale_1",
-      "etl_common_cargar_rationale_100",
-      "etl_common_cargar_rationale_21",
-      "etl_common_cargar_rationale_28",
-      "etl_common_cargar_rationale_50",
-      "etl_common_cargar_rationale_81",
-      "etl_common_cargar_resolver_territorio",
-      "etl_common_cargar_slugificar",
-      "etl_common_cargar_upsert_fuente",
-      "etl_common_cargar_upsert_indicador",
-      "etl_dane_pipeline_dane_poblacion_cargar_curated",
-      "etl_victimas_pipeline",
-      "etl_victimas_pipeline_rationale_1",
-      "etl_victimas_pipeline_victimas_hechos_cargar_curated"
-    ],
     "4": [
-      "etl_common_lineage_hash_registro",
-      "etl_common_lineage_lineage",
-      "etl_common_lineage_lineage_ahora",
-      "etl_common_lineage_py_date",
-      "etl_common_lineage_rationale_35",
-      "etl_dane_pipeline_dane_poblacion_extraer",
-      "etl_ideam_pipeline_ideam_ambiental",
-      "etl_ideam_pipeline_ideam_ambiental_cargar_curated",
-      "etl_ideam_pipeline_ideam_ambiental_extraer",
-      "etl_ideam_pipeline_ideam_ambiental_transformar",
-      "etl_ideam_pipeline_py_dataframe",
-      "etl_internacional_init",
-      "etl_internacional_init_rationale_1",
-      "etl_internacional_world_bank_internacional_worldbank",
-      "etl_internacional_world_bank_internacional_worldbank_cargar_curated",
-      "etl_internacional_world_bank_internacional_worldbank_extraer",
-      "etl_internacional_world_bank_internacional_worldbank_fuente_id",
-      "etl_internacional_world_bank_internacional_worldbank_indicadores",
-      "etl_internacional_world_bank_internacional_worldbank_transformar",
-      "etl_internacional_world_bank_py_dataframe",
-      "etl_internacional_world_bank_rationale_29",
-      "etl_pdet_pipeline_art_pdet_extraer",
-      "etl_victimas_pipeline_victimas_hechos_extraer",
-      "tests_test_lineage",
-      "tests_test_lineage_rationale_1",
-      "tests_test_lineage_test_hash_determinista",
-      "tests_test_lineage_test_hash_sensible_al_orden_y_contenido",
-      "tests_test_lineage_test_lineage_completo"
+      "etl_internacional_acled",
+      "etl_internacional_acled_internacional_acled",
+      "etl_internacional_acled_internacional_acled_cargar_curated",
+      "etl_internacional_acled_internacional_acled_cargar_curated_admin1",
+      "etl_internacional_acled_internacional_acled_directorio",
+      "etl_internacional_acled_internacional_acled_ejecutar",
+      "etl_internacional_acled_internacional_acled_extraer",
+      "etl_internacional_acled_internacional_acled_fuente_id",
+      "etl_internacional_acled_internacional_acled_mapeo_admin1",
+      "etl_internacional_acled_internacional_acled_rutas",
+      "etl_internacional_acled_internacional_acled_transformar",
+      "etl_internacional_acled_internacional_acled_transformar_admin1",
+      "etl_internacional_acled_normalizar",
+      "etl_internacional_acled_py_dataframe",
+      "etl_internacional_acled_py_lineage",
+      "etl_internacional_acled_py_path",
+      "etl_internacional_acled_py_pipelineetl",
+      "etl_internacional_acled_rationale_1",
+      "etl_internacional_acled_rationale_137",
+      "etl_internacional_acled_rationale_211",
+      "etl_internacional_acled_rationale_62",
+      "etl_internacional_acled_rationale_93",
+      "tests_test_acled",
+      "tests_test_acled_archivos_acled",
+      "tests_test_acled_df_admin1",
+      "tests_test_acled_py_fixture",
+      "tests_test_acled_rationale_1",
+      "tests_test_acled_rationale_14",
+      "tests_test_acled_test_directorio_relativo_a_repo",
+      "tests_test_acled_test_extraer_incluye_admin1_si_existe",
+      "tests_test_acled_test_extraer_todos_los_archivos",
+      "tests_test_acled_test_falta_archivo_lanza_file_not_found",
+      "tests_test_acled_test_normalizar_empareja_tildes_y_puntos",
+      "tests_test_acled_test_transformar_admin1_mapea_y_agrega",
+      "tests_test_acled_test_transformar_admin1_sin_archivo_devuelve_vacio",
+      "tests_test_acled_test_transformar_descarta_fuera_de_colombia_y_nulos",
+      "tests_test_acled_test_transformar_solo_colombia"
     ],
     "5": [
+      "etl_policia_pipeline_descargar",
+      "etl_policia_pipeline_policia_delitos",
+      "etl_policia_pipeline_policia_delitos_cargar_curated",
+      "etl_policia_pipeline_policia_delitos_extraer",
+      "etl_policia_pipeline_policia_delitos_init",
+      "etl_policia_pipeline_policia_delitos_transformar",
+      "etl_policia_pipeline_policia_homicidios",
+      "etl_policia_pipeline_policia_homicidios_cargar_curated",
+      "etl_policia_pipeline_policia_homicidios_descargar_excel",
+      "etl_policia_pipeline_policia_homicidios_extraer",
+      "etl_policia_pipeline_policia_homicidios_init",
+      "etl_policia_pipeline_policia_homicidios_transformar",
+      "etl_policia_pipeline_policia_homicidios_urls_a_descargar",
+      "etl_policia_pipeline_py_dataframe",
+      "etl_policia_pipeline_py_lineage",
+      "etl_policia_pipeline_py_pipelineetl",
+      "etl_policia_pipeline_rationale_183",
+      "etl_policia_pipeline_rationale_202",
+      "etl_policia_pipeline_rationale_77",
+      "tests_test_policia",
+      "tests_test_policia_df_homicidios",
+      "tests_test_policia_df_hurto",
+      "tests_test_policia_excel_homicidios_bytes",
+      "tests_test_policia_rationale_1",
+      "tests_test_policia_rationale_119",
+      "tests_test_policia_test_delito_desconocido_rechazado",
+      "tests_test_policia_test_delitos_cubren_los_tres_datasets_reales",
+      "tests_test_policia_test_homicidios_descarga_404_devuelve_none",
+      "tests_test_policia_test_homicidios_extraer_une_anios_y_guarda_metadatos",
+      "tests_test_policia_test_homicidios_transformar_suma_y_recorta_codigo",
+      "tests_test_policia_test_homicidios_urls_patron_por_anio",
+      "tests_test_policia_test_homicidios_urls_variable_configurada",
+      "tests_test_policia_test_pipeline_id_por_delito",
+      "tests_test_policia_test_transformar_fechas_invalidas_se_descartan",
+      "tests_test_policia_test_transformar_hurto_suma_cantidad_y_recorta_codigo",
+      "tests_test_policia_test_transformar_vacio",
+      "tests_test_policia_test_transformar_violencia_sin_dimension"
+    ],
+    "6": [
+      "abc",
+      "etl_common_cargar",
+      "etl_common_cargar_rationale_1",
+      "etl_common_lineage",
+      "etl_common_lineage_archivo_raw",
+      "etl_common_lineage_rationale_1",
+      "etl_common_lineage_rationale_41",
+      "etl_common_pipeline",
+      "etl_common_pipeline_pipelineetl",
+      "etl_common_pipeline_pipelineetl_init",
+      "etl_common_pipeline_rationale_1",
+      "etl_common_pipeline_rationale_22",
+      "etl_common_validation",
+      "etl_common_validation_rationale_1",
+      "etl_fiscalia_pipeline",
+      "etl_fiscalia_pipeline_rationale_1",
+      "etl_ideam_pipeline",
+      "etl_ideam_pipeline_rationale_1",
+      "etl_internacional_hdx",
+      "etl_internacional_hdx_rationale_1",
+      "etl_internacional_world_bank",
+      "etl_internacional_world_bank_rationale_1",
+      "etl_memoria_pipeline",
+      "etl_memoria_pipeline_rationale_1",
+      "etl_policia_pipeline",
+      "etl_policia_pipeline_rationale_1",
+      "etl_run_all",
+      "etl_run_all_rationale_1",
+      "etl_run_all_run_all",
+      "etl_victimas_pipeline",
+      "etl_victimas_pipeline_rationale_1"
+    ],
+    "7": [
       "dashboard_package",
       "dashboard_package_dependencies",
       "dashboard_package_dependencies_maplibre_gl",
@@ -702,7 +820,36 @@
       "vite",
       "vitejs_plugin_react"
     ],
-    "6": [
+    "8": [
+      "etl_ideam_pipeline_ideam_ambiental",
+      "etl_ideam_pipeline_ideam_ambiental_cargar_curated",
+      "etl_ideam_pipeline_ideam_ambiental_cargar_municipios",
+      "etl_ideam_pipeline_ideam_ambiental_descargar",
+      "etl_ideam_pipeline_ideam_ambiental_extraer",
+      "etl_ideam_pipeline_ideam_ambiental_geometria",
+      "etl_ideam_pipeline_ideam_ambiental_init",
+      "etl_ideam_pipeline_ideam_ambiental_transformar",
+      "etl_ideam_pipeline_ideam_ambiental_url_zip",
+      "etl_ideam_pipeline_py_dataframe",
+      "etl_ideam_pipeline_py_lineage",
+      "etl_ideam_pipeline_py_path",
+      "etl_ideam_pipeline_py_pipelineetl",
+      "tests_test_ideam",
+      "tests_test_ideam_pipeline_sintetico",
+      "tests_test_ideam_py_fixture",
+      "tests_test_ideam_raster_sintetico",
+      "tests_test_ideam_rationale_1",
+      "tests_test_ideam_rationale_25",
+      "tests_test_ideam_test_clases_definidas_para_el_raster_real",
+      "tests_test_ideam_test_extraer_guarda_zip_e_img_y_parsea_periodo",
+      "tests_test_ideam_test_periodo_desde_nombre_del_raster",
+      "tests_test_ideam_test_transformar_estadistica_zonal",
+      "tests_test_ideam_test_transformar_sin_capa_municipal_devuelve_vacio",
+      "tests_test_ideam_test_url_zip_configurada_tiene_prioridad",
+      "tests_test_ideam_test_url_zip_resuelve_redireccion",
+      "tests_test_ideam_test_zip_sin_raster_lanza"
+    ],
+    "9": [
       "etl_fiscalia_pipeline_agregar_soql",
       "etl_fiscalia_pipeline_fiscalia_estadisticas",
       "etl_fiscalia_pipeline_fiscalia_estadisticas_cargar_curated",
@@ -729,7 +876,7 @@
       "tests_test_fiscalia_test_transformar_sin_dimension_usa_sin_informacion",
       "tests_test_fiscalia_test_transformar_vacio"
     ],
-    "7": [
+    "10": [
       "etl_memoria_pipeline_cnmh_memoria",
       "etl_memoria_pipeline_cnmh_memoria_cargar_curated",
       "etl_memoria_pipeline_cnmh_memoria_extraer",
@@ -756,7 +903,7 @@
       "tests_test_cnmh_test_transformar_vacio",
       "tests_test_cnmh_test_transformar_victimas_deduplica_personas"
     ],
-    "8": [
+    "11": [
       "etl_internacional_hdx_internacional_hdx",
       "etl_internacional_hdx_internacional_hdx_cargar_curated",
       "etl_internacional_hdx_internacional_hdx_extraer",
@@ -781,33 +928,7 @@
       "tests_test_hdx_test_transformar_vacio",
       "tests_test_hdx_test_url_firmada_via_resource_show"
     ],
-    "9": [
-      "abc",
-      "etl_common_lineage",
-      "etl_common_lineage_archivo_raw",
-      "etl_common_lineage_rationale_1",
-      "etl_common_lineage_rationale_41",
-      "etl_common_pipeline",
-      "etl_common_pipeline_rationale_1",
-      "etl_fiscalia_pipeline",
-      "etl_fiscalia_pipeline_rationale_1",
-      "etl_ideam_pipeline",
-      "etl_ideam_pipeline_rationale_1",
-      "etl_internacional_acled",
-      "etl_internacional_acled_rationale_1",
-      "etl_internacional_hdx",
-      "etl_internacional_hdx_rationale_1",
-      "etl_internacional_world_bank",
-      "etl_internacional_world_bank_rationale_1",
-      "etl_memoria_pipeline",
-      "etl_memoria_pipeline_rationale_1",
-      "etl_policia_pipeline",
-      "etl_policia_pipeline_rationale_1",
-      "etl_run_all",
-      "etl_run_all_rationale_1",
-      "etl_run_all_run_all"
-    ],
-    "10": [
+    "12": [
       "dashboard_tsconfig",
       "dashboard_tsconfig_compileroptions",
       "dashboard_tsconfig_compileroptions_allowimportingtsextensions",
@@ -831,94 +952,13 @@
       "ref_es2020",
       "ref_src"
     ],
-    "11": [
-      "etl_internacional_acled_internacional_acled",
-      "etl_internacional_acled_internacional_acled_cargar_curated",
-      "etl_internacional_acled_internacional_acled_directorio",
-      "etl_internacional_acled_internacional_acled_extraer",
-      "etl_internacional_acled_internacional_acled_fuente_id",
-      "etl_internacional_acled_internacional_acled_rutas",
-      "etl_internacional_acled_internacional_acled_transformar",
-      "etl_internacional_acled_py_dataframe",
-      "etl_internacional_acled_py_lineage",
-      "path",
-      "tests_test_acled",
-      "tests_test_acled_archivos_acled",
-      "tests_test_acled_py_fixture",
-      "tests_test_acled_rationale_1",
-      "tests_test_acled_rationale_14",
-      "tests_test_acled_test_directorio_relativo_a_repo",
-      "tests_test_acled_test_extraer_todos_los_archivos",
-      "tests_test_acled_test_falta_archivo_lanza_file_not_found",
-      "tests_test_acled_test_transformar_descarta_fuera_de_colombia_y_nulos",
-      "tests_test_acled_test_transformar_solo_colombia"
-    ],
-    "12": [
-      "etl_internacional_unhcr_internacional_unhcr",
-      "etl_internacional_unhcr_internacional_unhcr_cargar_curated",
-      "etl_internacional_unhcr_internacional_unhcr_extraer",
-      "etl_internacional_unhcr_internacional_unhcr_fuente_id",
-      "etl_internacional_unhcr_internacional_unhcr_transformar",
-      "etl_internacional_unhcr_internacional_unhcr_url_base",
-      "etl_internacional_unhcr_py_dataframe",
-      "etl_internacional_unhcr_py_lineage",
-      "tests_test_internacional",
-      "tests_test_internacional_rationale_1",
-      "tests_test_internacional_rationale_46",
-      "tests_test_internacional_rationale_83",
-      "tests_test_internacional_test_esqueleto_ideam_pendiente",
-      "tests_test_internacional_test_transformar_limpia_valores",
-      "tests_test_internacional_test_unhcr_extraer_shape_real",
-      "tests_test_internacional_test_unhcr_tipos_poblacion_completos",
-      "tests_test_internacional_test_unhcr_transformar_limpia_no_datos"
-    ],
     "13": [
-      "etl_policia_pipeline_descargar",
-      "etl_policia_pipeline_policia_delitos",
-      "etl_policia_pipeline_policia_delitos_cargar_curated",
-      "etl_policia_pipeline_policia_delitos_extraer",
-      "etl_policia_pipeline_policia_delitos_init",
-      "etl_policia_pipeline_policia_delitos_transformar",
-      "etl_policia_pipeline_py_dataframe",
-      "etl_policia_pipeline_py_lineage",
-      "etl_policia_pipeline_rationale_59",
-      "tests_test_policia",
-      "tests_test_policia_df_hurto",
-      "tests_test_policia_rationale_1",
-      "tests_test_policia_test_delito_desconocido_rechazado",
-      "tests_test_policia_test_delitos_cubren_los_tres_datasets_reales",
-      "tests_test_policia_test_pipeline_id_por_delito",
-      "tests_test_policia_test_transformar_fechas_invalidas_se_descartan",
-      "tests_test_policia_test_transformar_hurto_suma_cantidad_y_recorta_codigo",
-      "tests_test_policia_test_transformar_vacio",
-      "tests_test_policia_test_transformar_violencia_sin_dimension"
-    ],
-    "14": [
-      "basesettings",
-      "etl_common_config_get_source_url",
-      "etl_common_config_rationale_129",
-      "etl_common_config_settings",
-      "tests_test_config",
-      "tests_test_config_rationale_1",
-      "tests_test_config_rationale_27",
-      "tests_test_config_rationale_69",
-      "tests_test_config_test_check_cli_reporta_variables_ausentes",
-      "tests_test_config_test_dane_poblacion_hoja_por_defecto_es_none",
-      "tests_test_config_test_divipola_tiene_defaults_socrata",
-      "tests_test_config_test_fuentes_activas_referencian_campos_reales",
-      "tests_test_config_test_fuentes_yaml_referencian_campos_reales",
-      "tests_test_config_test_get_source_url_devuelve_valor",
-      "tests_test_config_test_get_source_url_lanza_si_falta",
-      "tests_test_config_test_investigacion_yaml_carga",
-      "tests_test_config_test_settings_carga_desde_env_temporal",
-      "tests_test_config_test_settings_sin_env_tiene_valores_por_defecto"
-    ],
-    "15": [
       "etl_dane_pipeline_dane_poblacion",
       "etl_victimas_pipeline_victimas_hechos",
       "tests_test_pipelines",
       "tests_test_pipelines_rationale_1",
       "tests_test_pipelines_rationale_125",
+      "tests_test_pipelines_rationale_182",
       "tests_test_pipelines_rationale_230",
       "tests_test_pipelines_rationale_54",
       "tests_test_pipelines_rationale_76",
@@ -928,10 +968,10 @@
       "tests_test_pipelines_test_dane_transformar_normaliza",
       "tests_test_pipelines_test_dane_transformar_sin_columna_area_mantiene_filas",
       "tests_test_pipelines_test_divipola_anms_faltantes_bien_formadas",
-      "tests_test_pipelines_test_slugificar",
+      "tests_test_pipelines_test_pdet_transformar_con_shape_real_de_iniciativas",
       "tests_test_pipelines_test_victimas_transformar_agrega_por_tipo"
     ],
-    "16": [
+    "14": [
       "dashboard_src_api_client",
       "dashboard_src_api_client_fuente",
       "dashboard_src_api_client_obtener",
@@ -949,7 +989,7 @@
       "dashboard_src_pages_inicio_inicio",
       "dashboard_src_pages_inicio_kpis_planificados"
     ],
-    "17": [
+    "15": [
       "database_migrations_0009_fase_b_raw",
       "database_migrations_0009_fase_b_raw_raw_cnmh_acciones",
       "database_migrations_0009_fase_b_raw_raw_cnmh_atentados",
@@ -967,22 +1007,58 @@
       "database_migrations_0009_fase_b_raw_raw_policia_sexuales",
       "database_migrations_0009_fase_b_raw_raw_policia_violencia"
     ],
+    "16": [
+      "etl_common_lineage_lineage",
+      "etl_common_lineage_lineage_ahora",
+      "etl_common_lineage_py_date",
+      "etl_dane_pipeline_dane_poblacion_extraer",
+      "etl_internacional_init",
+      "etl_internacional_init_rationale_1",
+      "etl_internacional_world_bank_internacional_worldbank",
+      "etl_internacional_world_bank_internacional_worldbank_cargar_curated",
+      "etl_internacional_world_bank_internacional_worldbank_extraer",
+      "etl_internacional_world_bank_internacional_worldbank_fuente_id",
+      "etl_internacional_world_bank_internacional_worldbank_indicadores",
+      "etl_internacional_world_bank_internacional_worldbank_transformar",
+      "etl_internacional_world_bank_py_dataframe",
+      "etl_internacional_world_bank_rationale_29",
+      "etl_pdet_pipeline_art_pdet_extraer",
+      "etl_victimas_pipeline_victimas_hechos_extraer"
+    ],
+    "17": [
+      "etl_dane_pipeline",
+      "etl_dane_pipeline_columna",
+      "etl_dane_pipeline_dane_poblacion_transformar",
+      "etl_dane_pipeline_detectar_fila_encabezado",
+      "etl_dane_pipeline_leer_excel_dane",
+      "etl_dane_pipeline_normalizar",
+      "etl_dane_pipeline_normalizar_columnas",
+      "etl_dane_pipeline_py_dataframe",
+      "etl_dane_pipeline_rationale_1",
+      "etl_dane_pipeline_rationale_39",
+      "etl_dane_pipeline_rationale_56",
+      "etl_dane_pipeline_rationale_71",
+      "tests_test_pipelines_rationale_89",
+      "tests_test_pipelines_rationale_98",
+      "tests_test_pipelines_test_dane_detecta_fila_encabezado_en_excel",
+      "tests_test_pipelines_test_dane_lector_excel_recorta_footer"
+    ],
     "18": [
-      "connection",
-      "etl_common_pipeline_pipelineetl",
-      "etl_common_pipeline_pipelineetl_cargar_curated",
-      "etl_common_pipeline_pipelineetl_conn",
-      "etl_common_pipeline_pipelineetl_ejecutar",
-      "etl_common_pipeline_pipelineetl_extraer",
-      "etl_common_pipeline_pipelineetl_init",
-      "etl_common_pipeline_pipelineetl_transformar",
-      "etl_common_pipeline_py_dataframe",
-      "etl_common_pipeline_py_lineage",
-      "etl_common_pipeline_rationale_22",
-      "etl_common_pipeline_rationale_33",
-      "etl_common_pipeline_rationale_40",
-      "etl_common_pipeline_rationale_44",
-      "etl_common_pipeline_rationale_48"
+      "etl_common_cargar_insertar_serie",
+      "etl_common_cargar_py_connection",
+      "etl_common_cargar_py_dataframe",
+      "etl_common_cargar_rationale_100",
+      "etl_common_cargar_rationale_21",
+      "etl_common_cargar_rationale_28",
+      "etl_common_cargar_rationale_50",
+      "etl_common_cargar_rationale_81",
+      "etl_common_cargar_resolver_territorio",
+      "etl_common_cargar_slugificar",
+      "etl_common_cargar_upsert_fuente",
+      "etl_common_cargar_upsert_indicador",
+      "etl_dane_pipeline_dane_poblacion_cargar_curated",
+      "etl_victimas_pipeline_victimas_hechos_cargar_curated",
+      "tests_test_pipelines_test_slugificar"
     ],
     "19": [
       "dataframemodel",
@@ -1001,24 +1077,6 @@
       "tests_test_validation_test_validar_rechaza_valor_negativo"
     ],
     "20": [
-      "etl_dane_pipeline",
-      "etl_dane_pipeline_columna",
-      "etl_dane_pipeline_dane_poblacion_transformar",
-      "etl_dane_pipeline_detectar_fila_encabezado",
-      "etl_dane_pipeline_leer_excel_dane",
-      "etl_dane_pipeline_normalizar",
-      "etl_dane_pipeline_normalizar_columnas",
-      "etl_dane_pipeline_py_dataframe",
-      "etl_dane_pipeline_rationale_1",
-      "etl_dane_pipeline_rationale_39",
-      "etl_dane_pipeline_rationale_56",
-      "etl_dane_pipeline_rationale_71",
-      "tests_test_pipelines_rationale_89",
-      "tests_test_pipelines_rationale_98",
-      "tests_test_pipelines_test_dane_detecta_fila_encabezado_en_excel",
-      "tests_test_pipelines_test_dane_lector_excel_recorta_footer"
-    ],
-    "21": [
       "etl_pdet_pipeline",
       "etl_pdet_pipeline_art_pdet",
       "etl_pdet_pipeline_art_pdet_cargar_curated",
@@ -1029,13 +1087,11 @@
       "etl_pdet_pipeline_columna_opcional",
       "etl_pdet_pipeline_py_dataframe",
       "etl_pdet_pipeline_rationale_1",
-      "tests_test_pipelines_rationale_182",
       "tests_test_pipelines_rationale_203",
       "tests_test_pipelines_test_pdet_pipeline_completo_con_respuesta_real",
-      "tests_test_pipelines_test_pdet_transformar_con_shape_real_de_iniciativas",
       "tests_test_pipelines_test_pdet_transformar_normaliza"
     ],
-    "22": [
+    "21": [
       "postgresql_localhost_observatorio_curated_capa_contexto_territorial",
       "postgresql_localhost_observatorio_curated_departamento",
       "postgresql_localhost_observatorio_curated_fuentes",
@@ -1047,17 +1103,18 @@
       "postgresql_localhost_observatorio_curated_vereda",
       "postgresql_localhost_observatorio_curated_vw_homicidios_reconciliado"
     ],
-    "23": [
-      "etl_common_config",
-      "etl_common_config_check",
-      "etl_common_config_inyectar_al_entorno",
-      "etl_common_config_rationale_1",
-      "etl_common_config_rationale_111",
-      "etl_common_config_rationale_137",
-      "etl_internacional_unhcr",
-      "etl_internacional_unhcr_rationale_1"
+    "22": [
+      "etl_common_pipeline_pipelineetl_cargar_curated",
+      "etl_common_pipeline_pipelineetl_ejecutar",
+      "etl_common_pipeline_pipelineetl_extraer",
+      "etl_common_pipeline_pipelineetl_transformar",
+      "etl_common_pipeline_py_dataframe",
+      "etl_common_pipeline_py_lineage",
+      "etl_common_pipeline_rationale_40",
+      "etl_common_pipeline_rationale_44",
+      "etl_common_pipeline_rationale_48"
     ],
-    "24": [
+    "23": [
       "pg_attribute",
       "pg_class",
       "pg_namespace",
@@ -1067,52 +1124,7 @@
       "postgresql_localhost_observatorio_public_spatial_ref_sys",
       "postgresql_localhost_observatorio_public_updategeometrysrid"
     ],
-    "25": [
-      "etl_common_validation",
-      "etl_common_validation_config",
-      "etl_common_validation_esquemabase",
-      "etl_common_validation_esquemaserienormalizada",
-      "etl_common_validation_rationale_1",
-      "etl_common_validation_rationale_14",
-      "etl_common_validation_rationale_31"
-    ],
-    "26": [
-      "api_init",
-      "api_init_rationale_1"
-    ],
-    "27": [
-      "etl_common_init",
-      "etl_common_init_rationale_1"
-    ],
-    "28": [
-      "etl_init",
-      "etl_init_rationale_1"
-    ],
-    "29": [
-      "api_models_init"
-    ],
-    "30": [
-      "api_routes_init"
-    ],
-    "31": [
-      "api_routes_v1_py_get"
-    ],
-    "32": [
-      "api_services_init"
-    ],
-    "33": [
-      "dashboard_vite_config"
-    ],
-    "34": [
-      "etl_common_pipeline_py_connection"
-    ],
-    "35": [
-      "fixture"
-    ],
-    "36": [
-      "tests_init"
-    ],
-    "37": [
+    "24": [
       "etl_common_cargar_periodo_anual",
       "etl_common_cargar_py_date",
       "etl_common_cargar_rationale_159",
@@ -1120,36 +1132,102 @@
       "etl_victimas_pipeline_py_dataframe",
       "etl_victimas_pipeline_victimas_hechos_transformar",
       "tests_test_pipelines_test_periodo_anual"
+    ],
+    "25": [
+      "etl_common_lineage_hash_registro",
+      "etl_common_lineage_rationale_35",
+      "tests_test_lineage",
+      "tests_test_lineage_rationale_1",
+      "tests_test_lineage_test_hash_determinista",
+      "tests_test_lineage_test_hash_sensible_al_orden_y_contenido",
+      "tests_test_lineage_test_lineage_completo"
+    ],
+    "26": [
+      "etl_common_validation_config",
+      "etl_common_validation_esquemabase",
+      "etl_common_validation_esquemaserienormalizada",
+      "etl_common_validation_rationale_14",
+      "etl_common_validation_rationale_31"
+    ],
+    "27": [
+      "api_init",
+      "api_init_rationale_1"
+    ],
+    "28": [
+      "database_migrations_0010_geo_ideam",
+      "database_migrations_0010_geo_ideam_raw_ideam_ambiental"
+    ],
+    "29": [
+      "database_migrations_0011_policia_homicidios",
+      "database_migrations_0011_policia_homicidios_raw_policia_homicidios"
+    ],
+    "30": [
+      "etl_common_init",
+      "etl_common_init_rationale_1"
+    ],
+    "31": [
+      "etl_init",
+      "etl_init_rationale_1"
+    ],
+    "32": [
+      "api_models_init"
+    ],
+    "33": [
+      "api_routes_init"
+    ],
+    "34": [
+      "api_routes_v1_py_get"
+    ],
+    "35": [
+      "api_services_init"
+    ],
+    "36": [
+      "curated_capa_contexto_territorial"
+    ],
+    "37": [
+      "dashboard_vite_config"
+    ],
+    "38": [
+      "etl_common_pipeline_py_connection"
+    ],
+    "39": [
+      "fixture"
+    ],
+    "40": [
+      "path"
+    ],
+    "41": [
+      "tests_init"
     ]
   },
   "cohesion": {
-    "0": 0.003656307129798903,
-    "1": 0.08502024291497975,
-    "2": 0.1053763440860215,
-    "3": 0.20261437908496732,
-    "4": 0.11375661375661375,
-    "5": 0.07407407407407407,
-    "6": 0.11333333333333333,
-    "7": 0.11333333333333333,
-    "8": 0.12648221343873517,
-    "9": 0.12318840579710146,
-    "10": 0.09090909090909091,
-    "11": 0.15789473684210525,
-    "12": 0.16176470588235295,
-    "13": 0.15789473684210525,
-    "14": 0.1437908496732026,
-    "15": 0.175,
-    "16": 0.19166666666666668,
-    "17": 0.125,
-    "18": 0.18095238095238095,
+    "0": 0.0036429872495446266,
+    "1": 0.06423034330011074,
+    "2": 0.07560975609756097,
+    "3": 0.08502024291497975,
+    "4": 0.09759759759759759,
+    "5": 0.0915915915915916,
+    "6": 0.12473118279569892,
+    "7": 0.07407407407407407,
+    "8": 0.1111111111111111,
+    "9": 0.11333333333333333,
+    "10": 0.11333333333333333,
+    "11": 0.12648221343873517,
+    "12": 0.09090909090909091,
+    "13": 0.16176470588235295,
+    "14": 0.19166666666666668,
+    "15": 0.125,
+    "16": 0.2,
+    "17": 0.20833333333333334,
+    "18": 0.19047619047619047,
     "19": 0.27472527472527475,
-    "20": 0.20833333333333334,
-    "21": 0.21904761904761905,
-    "22": 0.3111111111111111,
-    "23": 0.25,
-    "24": 0.32142857142857145,
-    "25": 0.3333333333333333,
-    "26": 1.0,
+    "20": 0.2692307692307692,
+    "21": 0.3111111111111111,
+    "22": 0.2777777777777778,
+    "23": 0.32142857142857145,
+    "24": 0.3333333333333333,
+    "25": 0.38095238095238093,
+    "26": 0.4,
     "27": 1.0,
     "28": 1.0,
     "29": 1.0,
@@ -1160,22 +1238,31 @@
     "34": 1.0,
     "35": 1.0,
     "36": 1.0,
-    "37": 0.3333333333333333
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0
   },
   "gods": [
     {
       "id": "etl_common_pipeline_pipelineetl",
       "label": "PipelineETL",
-      "degree": 31
+      "degree": 25
     },
     {
-      "id": "etl_common_lineage_lineage",
-      "label": "Lineage",
-      "degree": 18
+      "id": "etl_internacional_acled_internacional_acled",
+      "label": "Internacional_ACLED",
+      "degree": 22
     },
     {
       "id": "etl_common_validation_validar",
       "label": "validar()",
+      "degree": 17
+    },
+    {
+      "id": "etl_ideam_pipeline_ideam_ambiental",
+      "label": "IDEAM_Ambiental",
       "degree": 17
     },
     {
@@ -1184,13 +1271,18 @@
       "degree": 16
     },
     {
-      "id": "etl_common_config_get_source_url",
-      "label": "get_source_url()",
+      "id": "etl_policia_pipeline_policia_homicidios",
+      "label": "Policia_Homicidios",
+      "degree": 16
+    },
+    {
+      "id": "etl_common_lineage_lineage",
+      "label": "Lineage",
       "degree": 15
     },
     {
-      "id": "etl_internacional_acled_internacional_acled",
-      "label": "Internacional_ACLED",
+      "id": "etl_common_config_get_source_url",
+      "label": "get_source_url()",
       "degree": 15
     },
     {
@@ -1199,33 +1291,12 @@
       "degree": 14
     },
     {
-      "id": "etl_memoria_pipeline_cnmh_memoria",
-      "label": "CNMH_Memoria",
-      "degree": 14
-    },
-    {
       "id": "etl_policia_pipeline_policia_delitos",
       "label": "Policia_Delitos",
       "degree": 14
-    },
-    {
-      "id": "etl_dane_pipeline_dane_poblacion",
-      "label": "DANE_Poblacion",
-      "degree": 13
     }
   ],
   "surprises": [
-    {
-      "source": "test_slugificar()",
-      "target": "slugificar()",
-      "source_files": [
-        "tests/test_pipelines.py",
-        "etl/common/cargar.py"
-      ],
-      "confidence": "EXTRACTED",
-      "relation": "calls",
-      "why": "connects across different repos/directories; bridges separate communities; peripheral node `test_slugificar()` unexpectedly reaches hub `slugificar()`"
-    },
     {
       "source": "listar_fuentes()",
       "target": "conectar()",
@@ -1247,6 +1318,17 @@
       "confidence": "EXTRACTED",
       "relation": "calls",
       "why": "connects across different repos/directories; peripheral node `consultar_territorio()` unexpectedly reaches hub `conectar()`"
+    },
+    {
+      "source": "test_slugificar()",
+      "target": "slugificar()",
+      "source_files": [
+        "tests/test_pipelines.py",
+        "etl/common/cargar.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_slugificar()` unexpectedly reaches hub `slugificar()`"
     },
     {
       "source": "test_periodo_anual()",
@@ -1274,38 +1356,38 @@
   "questions": [
     {
       "type": "bridge_node",
-      "question": "Why does `PipelineETL` connect `Community 18` to `Community 3`, `Community 4`, `Community 6`, `Community 7`, `Community 8`, `Community 9`, `Community 11`, `Community 12`, `Community 13`, `Community 15`, `Community 20`, `Community 21`, `Community 23`?",
-      "why": "High betweenness centrality (0.044) - this node is a cross-community bridge."
+      "question": "Why does `PipelineETL` connect `Community 6` to `Community 1`, `Community 2`, `Community 9`, `Community 10`, `Community 11`, `Community 13`, `Community 16`, `Community 17`, `Community 20`, `Community 22`?",
+      "why": "High betweenness centrality (0.039) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `Internacional_HDX` connect `Community 8` to `Community 9`, `Community 18`?",
-      "why": "High betweenness centrality (0.015) - this node is a cross-community bridge."
+      "question": "Why does `Internacional_ACLED` connect `Community 4` to `Community 6`?",
+      "why": "High betweenness centrality (0.017) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `Internacional_ACLED` connect `Community 11` to `Community 9`, `Community 18`?",
-      "why": "High betweenness centrality (0.013) - this node is a cross-community bridge."
+      "question": "Why does `validar()` connect `Community 19` to `Community 17`, `Community 18`, `Community 20`, `Community 6`?",
+      "why": "High betweenness centrality (0.016) - this node is a cross-community bridge."
     },
     {
       "type": "verify_inferred",
-      "question": "Are the 11 inferred relationships involving `PipelineETL` (e.g. with `DANE_Poblacion` and `Fiscalia_Estadisticas`) actually correct?",
-      "why": "`PipelineETL` has 11 INFERRED edges - model-reasoned connections that need verification."
-    },
-    {
-      "type": "verify_inferred",
-      "question": "Are the 5 inferred relationships involving `Lineage` (e.g. with `DANE_Poblacion` and `IDEAM_Ambiental`) actually correct?",
-      "why": "`Lineage` has 5 INFERRED edges - model-reasoned connections that need verification."
+      "question": "Are the 8 inferred relationships involving `PipelineETL` (e.g. with `DANE_Poblacion` and `Fiscalia_Estadisticas`) actually correct?",
+      "why": "`PipelineETL` has 8 INFERRED edges - model-reasoned connections that need verification."
     },
     {
       "type": "isolated_nodes",
       "question": "What connects `name`, `private`, `version` to the rest of the system?",
-      "why": "50 weakly-connected nodes found - possible documentation gaps or missing edges."
+      "why": "52 weakly-connected nodes found - possible documentation gaps or missing edges."
     },
     {
       "type": "low_cohesion",
       "question": "Should `Community 0` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.003656307129798903 - nodes in this community are weakly interconnected."
+      "why": "Cohesion score 0.0036429872495446266 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.06423034330011074 - nodes in this community are weakly interconnected."
     }
   ]
 }

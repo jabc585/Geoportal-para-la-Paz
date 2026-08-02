@@ -60,24 +60,24 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>grafiphy — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 1045 nodes, 1407 edges, 38 communities. Commit: aea95b0</p>
+<p class="subtitle">Generated from graphify knowledge graph: 1115 nodes, 1519 edges, 42 communities. Commit: c246245</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
     <a href="#build-graph">Graph Build</a>
+    <a href="#analysis-clustering">Analysis &amp; Clustering</a>
     <a href="#serve-api">Serving API</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
     <a href="#observatorio-postgresql-localhost">Observatorio Postgresql Localhost</a>
-    <a href="#etl-pipelinepy-internacional">Etl Pipelinepy Internacional</a>
-    <a href="#etl-cargarpy-common">Etl Cargarpy Common</a>
+    <a href="#etl-pipelinepy-common">Etl Pipelinepy Common</a>
     <a href="#0009-fase-rawsql">0009 Fase Rawsql</a>
-    <a href="#etl-common-pipelinepy">Etl Common Pipelinepy</a>
+    <a href="#etl-internacional-world">Etl Internacional World</a>
     <a href="#postgresql-localhost-observatorio">Postgresql Localhost Observatorio</a>
-    <a href="#etl-configpy-common">Etl Configpy Common</a>
+    <a href="#etl-common-pipelinepy">Etl Common Pipelinepy</a>
     <a href="#postgresql-localhost-observatorio-5663c2">Postgresql Localhost Observatorio</a>
-    <a href="#validationpy-etl-common">Validationpy Etl Common</a>
-    <a href="#common-etl-utilidades">Common Etl Utilidades</a>
-    <a href="#etl-observatorio-para">Etl Observatorio Para</a>
+    <a href="#etl-common-validationpy">Etl Common Validationpy</a>
+    <a href="#0010-geo-ideamsql">0010 Geo Ideamsql</a>
+    <a href="#0011-policia-homicidiossql">0011 Policia Homicidiossql</a>
     <a href="#other">Other</a>
 </div>
 
@@ -90,46 +90,46 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 flowchart LR
     BUILD_GRAPH_321CBB04("Graph Build<br/><small>49 nodes</small>")
     class BUILD_GRAPH_321CBB04 module;
+    ANALYSIS_CLUSTERING_C79796DA("Analysis &amp; Clustering<br/><small>1 nodes</small>")
+    class ANALYSIS_CLUSTERING_C79796DA module;
     SERVE_API_35EC8E86("Serving API<br/><small>60 nodes</small>")
     class SERVE_API_35EC8E86 module;
-    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>276 nodes</small>")
+    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>349 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    OBSERVATORIO_POSTGRESQL_LOCALHOST_C409A381("Observatorio Postgresql Localhost<br/><small>547 nodes</small>")
+    OBSERVATORIO_POSTGRESQL_LOCALHOST_C409A381("Observatorio Postgresql Localhost<br/><small>549 nodes</small>")
     class OBSERVATORIO_POSTGRESQL_LOCALHOST_C409A381 module;
-    ETL_PIPELINEPY_INTERNACIONAL_7557E5F8("Etl Pipelinepy Internacional<br/><small>24 nodes</small>")
-    class ETL_PIPELINEPY_INTERNACIONAL_7557E5F8 module;
-    ETL_CARGARPY_COMMON_C580CA26("Etl Cargarpy Common<br/><small>18 nodes</small>")
-    class ETL_CARGARPY_COMMON_C580CA26 module;
+    ETL_PIPELINEPY_COMMON_2339319E("Etl Pipelinepy Common<br/><small>31 nodes</small>")
+    class ETL_PIPELINEPY_COMMON_2339319E module;
     SECTION_0009_FASE_RAWSQL_C5943772("0009 Fase Rawsql<br/><small>16 nodes</small>")
     class SECTION_0009_FASE_RAWSQL_C5943772 module;
-    ETL_COMMON_PIPELINEPY_54759D06("Etl Common Pipelinepy<br/><small>15 nodes</small>")
-    class ETL_COMMON_PIPELINEPY_54759D06 module;
+    ETL_INTERNACIONAL_WORLD_5B51F9DC("Etl Internacional World<br/><small>16 nodes</small>")
+    class ETL_INTERNACIONAL_WORLD_5B51F9DC module;
     POSTGRESQL_LOCALHOST_OBSERVATORIO_F7AC859B("Postgresql Localhost Observatorio<br/><small>10 nodes</small>")
     class POSTGRESQL_LOCALHOST_OBSERVATORIO_F7AC859B module;
-    ETL_CONFIGPY_COMMON_89E9DC2E("Etl Configpy Common<br/><small>8 nodes</small>")
-    class ETL_CONFIGPY_COMMON_89E9DC2E module;
+    ETL_COMMON_PIPELINEPY_54759D06("Etl Common Pipelinepy<br/><small>9 nodes</small>")
+    class ETL_COMMON_PIPELINEPY_54759D06 module;
     POSTGRESQL_LOCALHOST_OBSERVATORIO_5663C2_C80B0612("Postgresql Localhost Observatorio<br/><small>8 nodes</small>")
     class POSTGRESQL_LOCALHOST_OBSERVATORIO_5663C2_C80B0612 module;
-    VALIDATIONPY_ETL_COMMON_0777337F("Validationpy Etl Common<br/><small>7 nodes</small>")
-    class VALIDATIONPY_ETL_COMMON_0777337F module;
-    COMMON_ETL_UTILIDADES_56FFFAD4("Common Etl Utilidades<br/><small>2 nodes</small>")
-    class COMMON_ETL_UTILIDADES_56FFFAD4 module;
-    ETL_OBSERVATORIO_PARA_55FF9DBA("Etl Observatorio Para<br/><small>2 nodes</small>")
-    class ETL_OBSERVATORIO_PARA_55FF9DBA module;
-    OTHER_D0941E68("Other<br/><small>3 nodes</small>")
+    ETL_COMMON_VALIDATIONPY_2C0E8DA4("Etl Common Validationpy<br/><small>5 nodes</small>")
+    class ETL_COMMON_VALIDATIONPY_2C0E8DA4 module;
+    SECTION_0010_GEO_IDEAMSQL_D3A5CC4C("0010 Geo Ideamsql<br/><small>2 nodes</small>")
+    class SECTION_0010_GEO_IDEAMSQL_D3A5CC4C module;
+    SECTION_0011_POLICIA_HOMICIDIOSSQL_99CF4EAF("0011 Policia Homicidiossql<br/><small>2 nodes</small>")
+    class SECTION_0011_POLICIA_HOMICIDIOSSQL_99CF4EAF module;
+    OTHER_D0941E68("Other<br/><small>8 nodes</small>")
     class OTHER_D0941E68 module;
-    ETL_CARGARPY_COMMON_C580CA26 -->|imports x23| TESTS_FIXTURES_B84B1DCC
-    ETL_PIPELINEPY_INTERNACIONAL_7557E5F8 -->|contains x22| TESTS_FIXTURES_B84B1DCC
-    TESTS_FIXTURES_B84B1DCC -->|imports x18| ETL_PIPELINEPY_INTERNACIONAL_7557E5F8
+    ETL_PIPELINEPY_COMMON_2339319E -->|imports x51| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|imports x24| ETL_PIPELINEPY_COMMON_2339319E
     OBSERVATORIO_POSTGRESQL_LOCALHOST_C409A381 -->|contains x10| POSTGRESQL_LOCALHOST_OBSERVATORIO_F7AC859B
-    TESTS_FIXTURES_B84B1DCC -->|imports x9| ETL_CARGARPY_COMMON_C580CA26
-    ETL_CARGARPY_COMMON_C580CA26 -->|imports x8| ETL_PIPELINEPY_INTERNACIONAL_7557E5F8
-    VALIDATIONPY_ETL_COMMON_0777337F -->|imports x7| TESTS_FIXTURES_B84B1DCC
-    ETL_CONFIGPY_COMMON_89E9DC2E -->|imports x7| ETL_PIPELINEPY_INTERNACIONAL_7557E5F8
-    ETL_CONFIGPY_COMMON_89E9DC2E -->|contains x6| TESTS_FIXTURES_B84B1DCC
-    ETL_COMMON_PIPELINEPY_54759D06 -->|imports x5| ETL_PIPELINEPY_INTERNACIONAL_7557E5F8
-    ETL_PIPELINEPY_INTERNACIONAL_7557E5F8 -->|imports x4| ETL_COMMON_PIPELINEPY_54759D06
-    VALIDATIONPY_ETL_COMMON_0777337F -->|imports x4| ETL_PIPELINEPY_INTERNACIONAL_7557E5F8
+    TESTS_FIXTURES_B84B1DCC -->|calls x9| ETL_INTERNACIONAL_WORLD_5B51F9DC
+    ETL_INTERNACIONAL_WORLD_5B51F9DC -->|imports x4| TESTS_FIXTURES_B84B1DCC
+    ETL_PIPELINEPY_COMMON_2339319E -->|method x4| ETL_COMMON_PIPELINEPY_54759D06
+    OBSERVATORIO_POSTGRESQL_LOCALHOST_C409A381 -->|contains x4| POSTGRESQL_LOCALHOST_OBSERVATORIO_5663C2_C80B0612
+    ETL_INTERNACIONAL_WORLD_5B51F9DC -->|imports x3| ETL_PIPELINEPY_COMMON_2339319E
+    ETL_COMMON_VALIDATIONPY_2C0E8DA4 -->|imports x3| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|imports x2| SERVE_API_35EC8E86
+    ETL_PIPELINEPY_COMMON_2339319E -->|contains x2| ETL_INTERNACIONAL_WORLD_5B51F9DC
+    ETL_PIPELINEPY_COMMON_2339319E -->|contains x2| ETL_COMMON_VALIDATIONPY_2C0E8DA4
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,23 +146,23 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Graph Build</td><td>49</td><td><code>5, 10</code></td></tr><tr><td>Serving API</td><td>60</td><td><code>1, 16, 26, 29, 30, 32</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>276</td><td><code>2, 4, 6, 7, 8, 11, 13, 14, 12, 15, 20, 21, 19, 37, 35, 36</code></td></tr><tr><td>Observatorio Postgresql Localhost</td><td>547</td><td><code>0</code></td></tr><tr><td>Etl Pipelinepy Internacional</td><td>24</td><td><code>9</code></td></tr><tr><td>Etl Cargarpy Common</td><td>18</td><td><code>3</code></td></tr><tr><td>0009 Fase Rawsql</td><td>16</td><td><code>17</code></td></tr><tr><td>Etl Common Pipelinepy</td><td>15</td><td><code>18</code></td></tr><tr><td>Postgresql Localhost Observatorio</td><td>10</td><td><code>22</code></td></tr><tr><td>Etl Configpy Common</td><td>8</td><td><code>23</code></td></tr><tr><td>Postgresql Localhost Observatorio</td><td>8</td><td><code>24</code></td></tr><tr><td>Validationpy Etl Common</td><td>7</td><td><code>25</code></td></tr><tr><td>Common Etl Utilidades</td><td>2</td><td><code>27</code></td></tr><tr><td>Etl Observatorio Para</td><td>2</td><td><code>28</code></td></tr><tr><td>Other</td><td>3</td><td><code>31, 33, 34</code></td></tr>
+      <tr><td>Graph Build</td><td>49</td><td><code>7, 12</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>1</td><td><code>40</code></td></tr><tr><td>Serving API</td><td>60</td><td><code>3, 14, 27, 32, 33, 35</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>349</td><td><code>1, 2, 4, 5, 8, 10, 9, 11, 13, 17, 18, 19, 20, 24, 25, 39, 41</code></td></tr><tr><td>Observatorio Postgresql Localhost</td><td>549</td><td><code>0</code></td></tr><tr><td>Etl Pipelinepy Common</td><td>31</td><td><code>6</code></td></tr><tr><td>0009 Fase Rawsql</td><td>16</td><td><code>15</code></td></tr><tr><td>Etl Internacional World</td><td>16</td><td><code>16</code></td></tr><tr><td>Postgresql Localhost Observatorio</td><td>10</td><td><code>21</code></td></tr><tr><td>Etl Common Pipelinepy</td><td>9</td><td><code>22</code></td></tr><tr><td>Postgresql Localhost Observatorio</td><td>8</td><td><code>23</code></td></tr><tr><td>Etl Common Validationpy</td><td>5</td><td><code>26</code></td></tr><tr><td>0010 Geo Ideamsql</td><td>2</td><td><code>28</code></td></tr><tr><td>0011 Policia Homicidiossql</td><td>2</td><td><code>29</code></td></tr><tr><td>Other</td><td>8</td><td><code>30, 31, 34, 36, 37, 38</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; Serving API -&gt; Etl Configpy Common -&gt; Etl Pipelinepy Internacional -&gt; Tests &amp; Fixtures -&gt; Etl Cargarpy Common -&gt; Etl Common Pipelinepy</div>
+    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; Etl Pipelinepy Common -&gt; Etl Common Pipelinepy -&gt; Observatorio Postgresql Localhost</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>1045 nodes · 1407 edges · 38 communities (32 shown, 6 thin omitted)</li>
-      <li>Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.54)</li>
+      <li>1115 nodes · 1519 edges · 42 communities (32 shown, 10 thin omitted)</li>
+      <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 22 edges (avg confidence: 0.54)</li>
       <li>Token cost: 0 input · 0 output</li>
-      <li>1. `PipelineETL` - 31 edges</li>
-      <li>2. `Lineage` - 18 edges</li>
+      <li>1. `PipelineETL` - 25 edges</li>
+      <li>2. `Internacional_ACLED` - 22 edges</li>
       <li>3. `validar()` - 17 edges</li>
     </ul>
   </div>
@@ -500,8 +500,64 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 3. Serving API ====== -->
-<h2 id="serve-api">3. Serving API</h2>
+<!-- ====== 3. Analysis & Clustering ====== -->
+<h2 id="analysis-clustering">3. Analysis &amp; Clustering</h2>
+<p>Analysis &amp; Clustering groups implementation around path, mostly in unmapped files. This section covers 1 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Analysis &amp; Clustering (1 nodes, 0 edges)
+    path_3150ecd5("Path")
+    class path_3150ecd5 klass;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>Path</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Path node in project.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td colspan="2">No source file mapping</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 4. Serving API ====== -->
+<h2 id="serve-api">4. Serving API</h2>
 <p>Serving API groups implementation around api, test, dashboard, apipy, mostly in tests/test_api.py, api/models/schemas.py, api/routes/v1.py. This section covers 60 nodes and 87 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -769,38 +825,6 @@ flowchart LR
 </tr>
 <tr>
   <td>23</td>
-  <td><code>health.py</code><br><small style="color:var(--muted)">api/services/health.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in api/services/health.py.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>estado_fuentes()</code><br><small style="color:var(--muted)">api/services/health.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>get_health()</code><br><small style="color:var(--muted)">api/routes/v1.py</small><br><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>estado_fuentes() node in api/services/health.py.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>Estado de configuración de fuentes para el healthcheck (plan2.md, Fase A punto…</code><br><small style="color:var(--muted)">api/services/health.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Estado de configuración de fuentes para el healthcheck (plan2.md, Fase A punto….</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>Por fuente: variable configurada + último pipeline exitoso en la BD.</code><br><small style="color:var(--muted)">api/services/health.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Por fuente: variable configurada + último pipeline exitoso en la BD..</td>
-</tr>
-<tr>
-  <td>27</td>
   <td><code>test_api.py</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td><code>main.py</code><br><small style="color:var(--muted)">api/main.py</small></td>
@@ -808,7 +832,7 @@ flowchart LR
   <td>Module file in tests/test_api.py.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>24</td>
   <td><code>fixture</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -816,7 +840,7 @@ flowchart LR
   <td>fixture node in project.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>25</td>
   <td><code>simular_servicios()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -824,8 +848,40 @@ flowchart LR
   <td>simular_servicios() node in tests/test_api.py.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>26</td>
   <td><code>test_raiz()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>test_listar_fuentes()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>test_consultar_indicador()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>test_consultar_indicador_con_filtros()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>test_consultar_indicador_rechaza_limit_mayor_1000()</code><br><small style="color:var(--muted)">tests/test_api.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
@@ -855,66 +911,69 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 4. Tests & Fixtures ====== -->
-<h2 id="tests-fixtures">4. Tests &amp; Fixtures</h2>
-<p>Tests &amp; Fixtures groups implementation around test, tests, etl, pipelinepy, mostly in tests/test_pipelines.py, tests/test_fiscalia.py, tests/test_cnmh.py. This section covers 276 nodes and 435 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 5. Tests & Fixtures ====== -->
+<h2 id="tests-fixtures">5. Tests &amp; Fixtures</h2>
+<p>Tests &amp; Fixtures groups implementation around test, tests, etl, pipelinepy, mostly in tests/test_pipelines.py, etl/internacional/acled.py, tests/test_policia.py. This section covers 349 nodes and 565 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Tests &amp; Fixtures (276 nodes, 435 edges)
+    %% Section: Tests &amp; Fixtures (349 nodes, 565 edges)
     subgraph tests_fixtures_api_services_consultas_py_cf0484c2["api/services/consultas.py"]
         api_services_consultas_cursor_payload_a051c8f9("_cursor_payload()<br/><small>api/services/consultas.py</small>")
         api_services_consultas_consultar_serie_d64ec00e("consultar_serie()<br/><small>api/services/consultas.py</small>")
         api_services_consultas_listar_fuentes_48668862("listar_fuentes()<br/><small>api/services/consultas.py</small>")
         api_services_consultas_consultar_territorio_717334c8("consultar_territorio()<br/><small>api/services/consultas.py</small>")
     end
-    subgraph tests_fixtures_etl_common_db_py_45e7e6e1["etl/common/db.py"]
-        etl_common_db_conectar_c7411f69("conectar()<br/><small>etl/common/db.py</small>")
-        etl_common_db_sanear_json_52d2b5bc("sanear_json()<br/><small>etl/common/db.py</small>")
-        etl_common_db_insertar_raw_df73fa79("insertar_raw()<br/><small>etl/common/db.py</small>")
+    subgraph tests_fixtures_etl_common_cargar_py_8ee64f56["etl/common/cargar.py"]
+        etl_common_cargar_slugificar_e07cf7c3("slugificar()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_upsert_fuente_17828c0a("upsert_fuente()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_upsert_indicador_3a6b4647("upsert_indicador()<br/><small>etl/common/cargar.py</small>")
     end
-    subgraph tests_fixtures_tests_test_db_py_42596fe6["tests/test_db.py"]
-        tests_test_db_test_dict_anidado_sanea_recursivam_342947cb("anidado sanea recursivamente()<br/><small>tests/test_db.py</small>")
-        tests_test_db_test_fecha_se_conserva_d20a9fa0("test_fecha_se_conserva()<br/><small>tests/test_db.py</small>")
-        tests_test_db_test_nan_float_escala_a_none_d6872d48("escala a none()<br/><small>tests/test_db.py</small>")
-    end
-    etl_common_cargar_periodo_anual_76f391be("periodo_anual()<br/><small>etl/common/cargar.py</small>")
+    etl_common_db_conectar_c7411f69("conectar()<br/><small>etl/common/db.py</small>")
     etl_common_validation_validar_a99ef102("validar()<br/><small>etl/common/validation.py</small>")
+    etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d("cargar_curated()<br/><small>etl/dane/pipeline.py</small>")
     etl_fiscalia_pipeline_fiscalia_estadisticas_eab939d5("Fiscalia_Estadisticas<br/><small>etl/fiscalia/pipeline.py</small>")
+    etl_ideam_pipeline_ideam_ambiental_69dc37d2("IDEAM_Ambiental<br/><small>etl/ideam/pipeline.py</small>")
     etl_internacional_acled_internacional_acled_9d049526("Internacional_ACLED<br/><small>etl/internacional/acled.py</small>")
-    etl_internacional_hdx_internacional_hdx_4a1cd02f("Internacional_HDX<br/><small>etl/internacional/hdx.py</small>")
     etl_memoria_pipeline_cnmh_memoria_7562b910("CNMH_Memoria<br/><small>etl/memoria/pipeline.py</small>")
-    etl_policia_pipeline_policia_delitos_95721d26("Policia_Delitos<br/><small>etl/policia/pipeline.py</small>")
-    tests_test_pipelines_test_periodo_anual_67c73519("test_periodo_anual()<br/><small>tests/test_pipelines.py</small>")
+    etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba("cargar_curated()<br/><small>etl/pdet/pipeline.py</small>")
+    etl_policia_pipeline_policia_homicidios_77f5e84f("Policia_Homicidios<br/><small>etl/policia/pipeline.py</small>")
+    etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8("cargar_curated()<br/><small>etl/victimas/pipeline.py</small>")
+    tests_test_pipelines_test_slugificar_f47d1da7("test_slugificar()<br/><small>tests/test_pipelines.py</small>")
     api_services_consultas_cursor_payload_a051c8f9 -->|calls| api_services_consultas_consultar_serie_d64ec00e
     api_services_consultas_consultar_serie_d64ec00e -->|calls| etl_common_db_conectar_c7411f69
     api_services_consultas_listar_fuentes_48668862 -->|calls| etl_common_db_conectar_c7411f69
     api_services_consultas_consultar_territorio_717334c8 -->|calls| etl_common_db_conectar_c7411f69
-    etl_common_cargar_periodo_anual_76f391be -->|calls| tests_test_pipelines_test_periodo_anual_67c73519
-    etl_common_db_sanear_json_52d2b5bc -->|calls| etl_common_db_insertar_raw_df73fa79
-    etl_common_db_sanear_json_52d2b5bc -->|calls| tests_test_db_test_dict_anidado_sanea_recursivam_342947cb
-    etl_common_db_sanear_json_52d2b5bc -->|calls| tests_test_db_test_fecha_se_conserva_d20a9fa0
-    etl_common_db_sanear_json_52d2b5bc -->|calls| tests_test_db_test_nan_float_escala_a_none_d6872d48
-    %% Omitted for readability: 258 nodes, 0 edges
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_common_cargar_upsert_fuente_17828c0a
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| tests_test_pipelines_test_slugificar_f47d1da7
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_validation_validar_a99ef102 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_validation_validar_a99ef102 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    %% Omitted for readability: 331 nodes, 0 edges
     class api_services_consultas_cursor_payload_a051c8f9 function;
     class api_services_consultas_consultar_serie_d64ec00e function;
     class api_services_consultas_listar_fuentes_48668862 function;
     class api_services_consultas_consultar_territorio_717334c8 function;
+    class etl_common_cargar_slugificar_e07cf7c3 function;
+    class etl_common_cargar_upsert_fuente_17828c0a function;
+    class etl_common_cargar_upsert_indicador_3a6b4647 function;
     class etl_common_db_conectar_c7411f69 function;
-    class etl_common_db_sanear_json_52d2b5bc function;
-    class etl_common_db_insertar_raw_df73fa79 function;
-    class tests_test_db_test_dict_anidado_sanea_recursivam_342947cb test;
-    class tests_test_db_test_fecha_se_conserva_d20a9fa0 test;
-    class tests_test_db_test_nan_float_escala_a_none_d6872d48 test;
-    class etl_common_cargar_periodo_anual_76f391be function;
     class etl_common_validation_validar_a99ef102 function;
+    class etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d function;
     class etl_fiscalia_pipeline_fiscalia_estadisticas_eab939d5 klass;
+    class etl_ideam_pipeline_ideam_ambiental_69dc37d2 klass;
     class etl_internacional_acled_internacional_acled_9d049526 klass;
-    class etl_internacional_hdx_internacional_hdx_4a1cd02f klass;
     class etl_memoria_pipeline_cnmh_memoria_7562b910 klass;
-    class etl_policia_pipeline_policia_delitos_95721d26 klass;
-    class tests_test_pipelines_test_periodo_anual_67c73519 test;
+    class etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba function;
+    class etl_policia_pipeline_policia_homicidios_77f5e84f klass;
+    class etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8 function;
+    class tests_test_pipelines_test_slugificar_f47d1da7 test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -938,241 +997,241 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
+  <td><code>BaseSettings</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small><br><code>db.py</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td>Module file in api/services/consultas.py.</td>
+  <td>No direct outbound edge</td>
+  <td>BaseSettings node in project.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>_cursor_payload()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>unhcr.py</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td>_cursor_payload() node in api/services/consultas.py.</td>
+  <td><code>config.py</code><br><small style="color:var(--muted)">etl/common/config.py</small><br><code>get_source_url()</code><br><small style="color:var(--muted)">etl/common/config.py</small><br><code>test_internacional.py</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
+  <td>Module file in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>_cursor_payload()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td>consultar_serie() node in api/services/consultas.py.</td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>_fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>_url_base()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br>+5 more</td>
+  <td>Internacional_UNHCR node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>listar_fuentes()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><code>._url_base()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td>listar_fuentes() node in api/services/consultas.py.</td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><code>extraer()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>get_source_url()</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>._url_base() node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td>consultar_territorio() node in api/services/consultas.py.</td>
+  <td><code>_url_base()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.extraer() node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>Servicios de acceso a datos desde curated (solo lectura, sección 7.3).</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Servicios de acceso a datos desde curated (solo lectura, sección 7.3)..</td>
+  <td>DataFrame node in project.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>Serie histórica con paginación basada en cursor (sección 8). El cursor codifica…</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>Lineage</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Serie histórica con paginación basada en cursor (sección 8). El cursor codifica….</td>
+  <td>Lineage node in project.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>db.py</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
-  <td><code>divipola.py</code><br><small style="color:var(--muted)">etl/common/divipola.py</small><br><code>test_db.py</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
-  <td>Module file in etl/common/db.py.</td>
+  <td><code>.transformar()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.transformar() node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br>+1 more</td>
-  <td><code>divipola.py</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td>conectar() node in etl/common/db.py.</td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><code>_fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td>.cargar_curated() node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>._fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Connection node in project.</td>
+  <td>._fuente_id() node in etl/internacional/unhcr.py.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Conector internacional: UNHCR/ACNUR (plan2.md Fase B, fuente 1). API pública de…</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>anidado sanea recursivamente()</code><br><small style="color:var(--muted)">tests/test_db.py</small><br><code>escala a none()</code><br><small style="color:var(--muted)">tests/test_db.py</small><br><code>insertar_raw()</code><br><small style="color:var(--muted)">etl/common/db.py</small><br>+5 more</td>
-  <td>sanear_json() node in etl/common/db.py.</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector internacional: UNHCR/ACNUR (plan2.md Fase B, fuente 1). API pública de….</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>insertar_raw()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>insertar_raw() node in etl/common/db.py.</td>
+  <td><code>test_config.py</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>config.py</code><br><small style="color:var(--muted)">etl/common/config.py</small><br><code>get_source_url()</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>Module file in tests/test_config.py.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>registrar_metricas()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>test_settings_sin_env_tiene_valores_por_defecto()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>registrar_metricas() node in etl/common/db.py.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Conexión a base de datos y registro de métricas de calidad (secciones 7.3 y…</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>test_dane_poblacion_hoja_por_defecto_es_none()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conexión a base de datos y registro de métricas de calidad (secciones 7.3 y….</td>
+  <td><code>Settings</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Convierte NaN/NaT/NA a None recursivamente (hallazgo de auditoría 2026-08-02).…</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>test_divipola_tiene_defaults_socrata()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Convierte NaN/NaT/NA a None recursivamente (hallazgo de auditoría 2026-08-02).….</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>Inserta filas en raw.&lt;tabla&gt; conservando linaje (sección 7.3).</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>test_get_source_url_devuelve_valor()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Inserta filas en raw.&lt;tabla&gt; conservando linaje (sección 7.3)..</td>
+  <td><code>get_source_url()</code><br><small style="color:var(--muted)">etl/common/config.py</small><br><code>Settings</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>Registra métricas de calidad de la corrida (sección 7.4).</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>test_get_source_url_lanza_si_falta()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Registra métricas de calidad de la corrida (sección 7.4)..</td>
+  <td><code>get_source_url()</code><br><small style="color:var(--muted)">etl/common/config.py</small><br><code>Settings</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>divipola.py</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small><br><code>db.py</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>test_fuentes_activas_referencian_campos_reales()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in etl/common/divipola.py.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>_descargar()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>test_settings_carga_desde_env_temporal()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>sembrar_departamentos()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small><br><code>sembrar_municipios()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td>_descargar() node in etl/common/divipola.py.</td>
+  <td><code>Settings</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>sembrar_departamentos()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>_descargar()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
+  <td><code>test_fuentes_yaml_referencian_campos_reales()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>sembrar_departamentos() node in etl/common/divipola.py.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
+  <td><code>test_investigacion_yaml_carga()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Connection node in project.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>sembrar_municipios()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>_descargar()</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
+  <td><code>test_check_cli_reporta_variables_ausentes()</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>sembrar_municipios() node in etl/common/divipola.py.</td>
+  <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>Seed del catálogo territorial DIVIPOLA (secciones 5.1 y 7.2). Descarga los…</code><br><small style="color:var(--muted)">etl/common/divipola.py</small></td>
+  <td><code>Pruebas de la configuración centralizada de fuentes (plan2.md, Fase A). Sin red…</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Seed del catálogo territorial DIVIPOLA (secciones 5.1 y 7.2). Descarga los….</td>
+  <td>Design note for Pruebas de la configuración centralizada de fuentes (plan2.md, Fase A). Sin red….</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>test_db.py</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td><code>db.py</code><br><small style="color:var(--muted)">etl/common/db.py</small><br><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>Crítico: un default no-None rompería el Excel real de DANE (NaN fix).</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in tests/test_db.py.</td>
+  <td>Design note for Crítico: un default no-None rompería el Excel real de DANE (NaN fix)..</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>test_nan_float_escala_a_none()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>Los valores de `variable` deben ser campos reales de Settings, salvo plantillas…</code><br><small style="color:var(--muted)">tests/test_config.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Verifies imports, entry points, or version behavior.</td>
+  <td>Design note for Los valores de `variable` deben ser campos reales de Settings, salvo plantillas….</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>test_numpy_nan_a_none()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
+  <td><code>test_internacional.py</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small><br><code>unhcr.py</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Verifies imports, entry points, or version behavior.</td>
+  <td>Module file in tests/test_internacional.py.</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>test_pandas_na_y_nat_a_none()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
+  <td><code>test_transformar_limpia_valores()</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>test_dict_anidado_sanea_recursivamente()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
+  <td><code>test_esqueleto_ideam_pendiente()</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>test_valores_validos_intactos()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
+  <td><code>test_unhcr_extraer_shape_real()</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td>No direct outbound edge</td>
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>test_fecha_se_conserva()</code><br><small style="color:var(--muted)">tests/test_db.py</small></td>
+  <td><code>test_unhcr_transformar_limpia_no_datos()</code><br><small style="color:var(--muted)">tests/test_internacional.py</small></td>
   <td><span class="tag tag-func">Test</span></td>
-  <td><code>sanear_json()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><code>Internacional_UNHCR</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
   <td>No direct outbound edge</td>
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
@@ -1184,30 +1243,30 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>tests/test_pipelines.py</code></td><td>24 nodes</td></tr>
+<tr><td><code>etl/internacional/acled.py</code></td><td>18 nodes</td></tr>
+<tr><td><code>tests/test_policia.py</code></td><td>18 nodes</td></tr>
+<tr><td><code>etl/policia/pipeline.py</code></td><td>16 nodes</td></tr>
 <tr><td><code>tests/test_cnmh.py</code></td><td>16 nodes</td></tr>
 <tr><td><code>tests/test_fiscalia.py</code></td><td>16 nodes</td></tr>
+<tr><td><code>tests/test_acled.py</code></td><td>14 nodes</td></tr>
 <tr><td><code>tests/test_config.py</code></td><td>14 nodes</td></tr>
-<tr><td><code>tests/test_hdx.py</code></td><td>14 nodes</td></tr>
-<tr><td><code>etl/dane/pipeline.py</code></td><td>13 nodes</td></tr>
-<tr><td><code>etl/pdet/pipeline.py</code></td><td>10 nodes</td></tr>
-<tr><td><code>tests/test_policia.py</code></td><td>10 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: calls x117, contains x106, references x64, method x55. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: calls x162, contains x139, references x72, explains x68. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 5. Observatorio Postgresql Localhost ====== -->
-<h2 id="observatorio-postgresql-localhost">5. Observatorio Postgresql Localhost</h2>
-<p>Observatorio Postgresql Localhost groups implementation around observatorio, postgresql, localhost, publicst, mostly in postgresql:/localhost/observatorio. This section covers 547 nodes and 546 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 6. Observatorio Postgresql Localhost ====== -->
+<h2 id="observatorio-postgresql-localhost">6. Observatorio Postgresql Localhost</h2>
+<p>Observatorio Postgresql Localhost groups implementation around observatorio, postgresql, localhost, publicst, mostly in postgresql:/localhost/observatorio. This section covers 549 nodes and 548 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Observatorio Postgresql Localhost (547 nodes, 546 edges)
+    %% Section: Observatorio Postgresql Localhost (549 nodes, 548 edges)
     postgresql_localhost_observatorio_300685f4("observatorio")
     postgresql_localhost_observatorio_curated_audit_c394a16f("'curated'.'audit_log'<br/><small>postgresql:/localhost/observatorio</small>")
     postgresql_localhost_observatorio_curated_cerrar_56159446("'curated'.'cerrar version scd'()<br/><small>postgresql:/localhost/observatorio</small>")
@@ -1243,7 +1302,7 @@ flowchart LR
     postgresql_localhost_observatorio_300685f4 -->|contains| postgresql_localhost_observatorio_public_bytea_afb215d0
     postgresql_localhost_observatorio_300685f4 -->|contains| postgresql_localhost_observatorio_public_contain_cd4d6915
     postgresql_localhost_observatorio_300685f4 -->|contains| postgresql_localhost_observatorio_public_dropgeo_da5ee1ec
-    %% Omitted for readability: 529 nodes, 0 edges
+    %% Omitted for readability: 531 nodes, 0 edges
     class postgresql_localhost_observatorio_300685f4 function;
     class postgresql_localhost_observatorio_curated_audit_c394a16f function;
     class postgresql_localhost_observatorio_curated_cerrar_56159446 function;
@@ -1389,6 +1448,14 @@ flowchart LR
 </tr>
 <tr>
   <td>14</td>
+  <td><code>&quot;raw&quot;.&quot;ideam_ambiental&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>&quot;raw&quot;.&quot;ideam_ambiental&quot; node in postgresql:/localhost/observatorio.</td>
+</tr>
+<tr>
+  <td>15</td>
   <td><code>&quot;raw&quot;.&quot;internacional_acled&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1396,7 +1463,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;internacional_acled&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>16</td>
   <td><code>&quot;raw&quot;.&quot;internacional_hdx&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1404,7 +1471,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;internacional_hdx&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>17</td>
   <td><code>&quot;raw&quot;.&quot;internacional_unhcr&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1412,7 +1479,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;internacional_unhcr&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>18</td>
   <td><code>&quot;raw&quot;.&quot;internacional_worldbank&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1420,7 +1487,15 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;internacional_worldbank&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>19</td>
+  <td><code>&quot;raw&quot;.&quot;policia_homicidios&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>&quot;raw&quot;.&quot;policia_homicidios&quot; node in postgresql:/localhost/observatorio.</td>
+</tr>
+<tr>
+  <td>20</td>
   <td><code>&quot;raw&quot;.&quot;policia_hurto&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1428,7 +1503,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;policia_hurto&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>21</td>
   <td><code>&quot;raw&quot;.&quot;policia_sexuales&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1436,7 +1511,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;policia_sexuales&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>22</td>
   <td><code>&quot;raw&quot;.&quot;policia_violencia&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1444,7 +1519,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;policia_violencia&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>23</td>
   <td><code>&quot;raw&quot;.&quot;victimas_hechos&quot;</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1452,7 +1527,7 @@ flowchart LR
   <td>&quot;raw&quot;.&quot;victimas_hechos&quot; node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>24</td>
   <td><code>&quot;public&quot;.&quot;_postgis_index_extent&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1460,7 +1535,7 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_index_extent&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>25</td>
   <td><code>&quot;public&quot;.&quot;_postgis_join_selectivity&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1468,7 +1543,7 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_join_selectivity&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>26</td>
   <td><code>&quot;public&quot;.&quot;_postgis_pgsql_version&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1476,7 +1551,7 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_pgsql_version&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>27</td>
   <td><code>&quot;public&quot;.&quot;_postgis_scripts_pgsql_version&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1484,7 +1559,7 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_scripts_pgsql_version&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>28</td>
   <td><code>&quot;public&quot;.&quot;_postgis_selectivity&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1492,7 +1567,7 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_selectivity&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>29</td>
   <td><code>&quot;public&quot;.&quot;_postgis_stats&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1500,29 +1575,13 @@ flowchart LR
   <td>&quot;public&quot;.&quot;_postgis_stats&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>30</td>
   <td><code>&quot;public&quot;.&quot;_st_3ddfullywithin&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>&quot;public&quot;.&quot;_st_3ddfullywithin&quot;() node in postgresql:/localhost/observatorio.</td>
 </tr>
-<tr>
-  <td>29</td>
-  <td><code>&quot;public&quot;.&quot;_st_3ddwithin&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>&quot;public&quot;.&quot;_st_3ddwithin&quot;() node in postgresql:/localhost/observatorio.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>&quot;public&quot;.&quot;_st_3dintersects&quot;()</code><br><small style="color:var(--muted)">postgresql:/localhost/observatorio</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>&quot;public&quot;.&quot;_st_3dintersects&quot;() node in postgresql:/localhost/observatorio.</td>
-</tr>
 </table>
 
 <div class="grid">
@@ -1530,393 +1589,93 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>postgresql:/localhost/observatorio</code></td><td>547 nodes</td></tr>
+      <tr><td><code>postgresql:/localhost/observatorio</code></td><td>549 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x546. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x548. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 6. Etl Pipelinepy Internacional ====== -->
-<h2 id="etl-pipelinepy-internacional">6. Etl Pipelinepy Internacional</h2>
-<p>Etl Pipelinepy Internacional groups implementation around etl, pipelinepy, internacional, common, mostly in etl/common/lineage.py, etl/run_all.py, etl/ideam/pipeline.py. This section covers 24 nodes and 34 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 7. Etl Pipelinepy Common ====== -->
+<h2 id="etl-pipelinepy-common">7. Etl Pipelinepy Common</h2>
+<p>Etl Pipelinepy Common groups implementation around etl, pipelinepy, common, conector, mostly in etl/common/pipeline.py, etl/common/lineage.py, etl/run_all.py. This section covers 31 nodes and 58 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Etl Pipelinepy Internacional (24 nodes, 34 edges)
-    subgraph etl_pipelinepy_internacional_etl_common_lineage_c041b138["etl/common/lineage.py"]
+    %% Section: Etl Pipelinepy Common (31 nodes, 58 edges)
+    subgraph etl_pipelinepy_common_etl_common_pipeline_py_f05294f3["etl/common/pipeline.py"]
+        etl_common_pipeline_pipelineetl_63e6d9b9("PipelineETL<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_588ba7ad("pipeline.py")
+        etl_common_pipeline_pipelineetl_init_c89891cc("__init__()<br/><small>etl/common/pipeline.py</small>")
+    end
+    subgraph etl_pipelinepy_common_etl_common_cargar_py_bf0edc11["etl/common/cargar.py"]
+        etl_common_cargar_f89f128c("cargar.py")
+        etl_common_cargar_rationale_1_fedb364a("Carga a curated con resolución de catál...<br/><small>etl/common/cargar.py</small>")
+    end
+    subgraph etl_pipelinepy_common_etl_common_lineage_py_f3f1ad2c["etl/common/lineage.py"]
         etl_common_lineage_117b09df("lineage.py")
         etl_common_lineage_archivo_raw_d3bfd414("archivo_raw()<br/><small>etl/common/lineage.py</small>")
-        etl_common_lineage_rationale_1_b8aead26("Linaje de datos obligatorio (sección 3,...<br/><small>etl/common/lineage.py</small>")
-        etl_common_lineage_rationale_41_613efdf5("Marca de inmutabilidad: los datos crudo...<br/><small>etl/common/lineage.py</small>")
     end
-    subgraph etl_pipelinepy_internacional_etl_common_pipeline_23238add["etl/common/pipeline.py"]
-        etl_common_pipeline_588ba7ad("pipeline.py")
-        etl_common_pipeline_rationale_1_6a482e4b("Plantilla base de pipeline ETL con traz...<br/><small>etl/common/pipeline.py</small>")
-    end
-    subgraph etl_pipelinepy_internacional_etl_fiscalia_pipeli_8c88b810["etl/fiscalia/pipeline.py"]
-        etl_fiscalia_pipeline_ac97be42("pipeline.py")
-        etl_fiscalia_pipeline_rationale_1_3d736797("Conector de estadísticas judiciales: Fi...<br/><small>etl/fiscalia/pipeline.py</small>")
-    end
-    subgraph etl_pipelinepy_internacional_etl_ideam_pipeline_f881b824["etl/ideam/pipeline.py"]
-        etl_ideam_pipeline_91622219("pipeline.py")
-        etl_ideam_pipeline_rationale_1_3b13b9ed("Conector IDEAM (esqueleto - sección 21,...<br/><small>etl/ideam/pipeline.py</small>")
-    end
-    subgraph etl_pipelinepy_internacional_etl_run_all_py_f3a17d12["etl/run_all.py"]
+    subgraph etl_pipelinepy_common_etl_run_all_py_a15cc965["etl/run_all.py"]
         etl_run_all_a299ea69("run_all.py")
         etl_run_all_run_all_21b4e5b3("run_all()<br/><small>etl/run_all.py</small>")
     end
     abc_a9993e36("ABC")
-    etl_internacional_acled_5b6952c9("acled.py")
+    etl_common_validation_acade460("validation.py")
+    etl_fiscalia_pipeline_ac97be42("pipeline.py")
+    etl_ideam_pipeline_91622219("pipeline.py")
     etl_internacional_hdx_640afd22("hdx.py")
     etl_internacional_world_bank_993c3e07("world_bank.py")
     etl_memoria_pipeline_2e4a897d("pipeline.py")
     etl_policia_pipeline_735d3d05("pipeline.py")
+    etl_victimas_pipeline_62817550("pipeline.py")
+    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_init_c89891cc
+    etl_common_cargar_f89f128c -->|imports| etl_common_lineage_117b09df
+    etl_common_cargar_f89f128c -->|imports| etl_fiscalia_pipeline_ac97be42
+    etl_common_cargar_f89f128c -->|imports| etl_ideam_pipeline_91622219
+    etl_common_cargar_f89f128c -->|imports| etl_internacional_hdx_640afd22
+    etl_common_cargar_f89f128c -->|imports| etl_memoria_pipeline_2e4a897d
+    etl_common_cargar_f89f128c -->|imports| etl_policia_pipeline_735d3d05
+    etl_common_cargar_f89f128c -->|imports| etl_victimas_pipeline_62817550
     etl_common_lineage_117b09df -->|imports| etl_common_pipeline_588ba7ad
     etl_common_lineage_117b09df -->|imports| etl_fiscalia_pipeline_ac97be42
     etl_common_lineage_117b09df -->|imports| etl_ideam_pipeline_91622219
-    etl_common_lineage_117b09df -->|imports| etl_internacional_acled_5b6952c9
     etl_common_lineage_117b09df -->|imports| etl_internacional_hdx_640afd22
     etl_common_lineage_117b09df -->|imports| etl_internacional_world_bank_993c3e07
     etl_common_lineage_117b09df -->|imports| etl_memoria_pipeline_2e4a897d
     etl_common_lineage_117b09df -->|imports| etl_policia_pipeline_735d3d05
+    etl_common_lineage_117b09df -->|imports| etl_victimas_pipeline_62817550
     abc_a9993e36 -->|imports| etl_common_pipeline_588ba7ad
-    etl_ideam_pipeline_91622219 -->|imports| etl_common_pipeline_588ba7ad
+    etl_common_validation_acade460 -->|imports| etl_fiscalia_pipeline_ac97be42
+    etl_common_validation_acade460 -->|imports| etl_internacional_hdx_640afd22
+    etl_common_validation_acade460 -->|imports| etl_memoria_pipeline_2e4a897d
+    etl_common_validation_acade460 -->|imports| etl_policia_pipeline_735d3d05
+    etl_common_validation_acade460 -->|imports| etl_victimas_pipeline_62817550
     etl_internacional_world_bank_993c3e07 -->|imports| etl_common_pipeline_588ba7ad
-    etl_internacional_world_bank_993c3e07 -->|imports| etl_run_all_a299ea69
-    etl_common_pipeline_588ba7ad -->|imports| etl_fiscalia_pipeline_ac97be42
-    etl_common_pipeline_588ba7ad -->|imports| etl_internacional_acled_5b6952c9
-    etl_common_pipeline_588ba7ad -->|imports| etl_internacional_hdx_640afd22
-    etl_common_pipeline_588ba7ad -->|imports| etl_memoria_pipeline_2e4a897d
-    etl_common_pipeline_588ba7ad -->|imports| etl_policia_pipeline_735d3d05
-    etl_internacional_acled_5b6952c9 -->|imports| etl_run_all_a299ea69
-    etl_internacional_hdx_640afd22 -->|imports| etl_run_all_a299ea69
-    etl_memoria_pipeline_2e4a897d -->|imports| etl_run_all_a299ea69
-    etl_policia_pipeline_735d3d05 -->|imports| etl_run_all_a299ea69
-    %% Omitted for readability: 6 nodes, 0 edges
+    etl_internacional_world_bank_993c3e07 -->|imports| etl_common_pipeline_pipelineetl_63e6d9b9
+    %% Omitted for readability: 13 nodes, 16 edges
+    class etl_common_pipeline_pipelineetl_63e6d9b9 klass;
+    class etl_common_pipeline_588ba7ad module;
+    class etl_common_pipeline_pipelineetl_init_c89891cc function;
+    class etl_common_cargar_f89f128c module;
+    class etl_common_cargar_rationale_1_fedb364a concept;
     class etl_common_lineage_117b09df module;
     class etl_common_lineage_archivo_raw_d3bfd414 function;
-    class etl_common_lineage_rationale_1_b8aead26 concept;
-    class etl_common_lineage_rationale_41_613efdf5 concept;
-    class etl_common_pipeline_588ba7ad module;
-    class etl_common_pipeline_rationale_1_6a482e4b concept;
-    class etl_fiscalia_pipeline_ac97be42 module;
-    class etl_fiscalia_pipeline_rationale_1_3d736797 concept;
-    class etl_ideam_pipeline_91622219 module;
-    class etl_ideam_pipeline_rationale_1_3b13b9ed concept;
     class etl_run_all_a299ea69 module;
     class etl_run_all_run_all_21b4e5b3 function;
     class abc_a9993e36 klass;
-    class etl_internacional_acled_5b6952c9 module;
+    class etl_common_validation_acade460 module;
+    class etl_fiscalia_pipeline_ac97be42 module;
+    class etl_ideam_pipeline_91622219 module;
     class etl_internacional_hdx_640afd22 module;
     class etl_internacional_world_bank_993c3e07 module;
     class etl_memoria_pipeline_2e4a897d module;
     class etl_policia_pipeline_735d3d05 module;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>acled.py</code><br><small style="color:var(--muted)">etl/internacional/acled.py</small><br><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+5 more</td>
-  <td>Module file in etl/common/lineage.py.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>archivo_raw()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>archivo_raw() node in etl/common/lineage.py.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>Linaje de datos obligatorio (sección 3, punto 4 y sección 7). Todo registro…</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Linaje de datos obligatorio (sección 3, punto 4 y sección 7). Todo registro….</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>Marca de inmutabilidad: los datos crudos se almacenan tal como se descargan.</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Marca de inmutabilidad: los datos crudos se almacenan tal como se descargan..</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>ABC</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>ABC node in project.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>ideam/pipeline.py</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>Module file in etl/ideam/pipeline.py.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>Conector IDEAM (esqueleto - sección 21, paso 11). Fuente: variables ambientales…</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector IDEAM (esqueleto - sección 21, paso 11). Fuente: variables ambientales….</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>world_bank.py</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
-  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td>Module file in etl/internacional/world_bank.py.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>Conector de comparabilidad internacional: Banco Mundial (sección 5.2 y 7.6).…</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector de comparabilidad internacional: Banco Mundial (sección 5.2 y 7.6).….</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>common/pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>ABC</code><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small><br>+1 more</td>
-  <td><code>acled.py</code><br><small style="color:var(--muted)">etl/internacional/acled.py</small><br><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br>+2 more</td>
-  <td>Module file in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>Plantilla base de pipeline ETL con trazabilidad y métricas (secciones 7.4 y…</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Plantilla base de pipeline ETL con trazabilidad y métricas (secciones 7.4 y….</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>fiscalia/pipeline.py</code><br><small style="color:var(--muted)">etl/fiscalia/pipeline.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in etl/fiscalia/pipeline.py.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>Conector de estadísticas judiciales: Fiscalía V3 (plan2.md Fase B, fuente 3).…</code><br><small style="color:var(--muted)">etl/fiscalia/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector de estadísticas judiciales: Fiscalía V3 (plan2.md Fase B, fuente 3).….</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>acled.py</code><br><small style="color:var(--muted)">etl/internacional/acled.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td>Module file in etl/internacional/acled.py.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>Conector internacional: ACLED (agregados país-año, archivos locales). ACLED…</code><br><small style="color:var(--muted)">etl/internacional/acled.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector internacional: ACLED (agregados país-año, archivos locales). ACLED….</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td>Module file in etl/internacional/hdx.py.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>Conector internacional: HDX HAPI (plan2.md Fase B, fuente 4). Dataset dedicado…</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector internacional: HDX HAPI (plan2.md Fase B, fuente 4). Dataset dedicado….</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>memoria/pipeline.py</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td>Module file in etl/memoria/pipeline.py.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>Conector de memoria histórica: CNMH SIEVCAC (plan2.md Fase B, fuente 2).…</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector de memoria histórica: CNMH SIEVCAC (plan2.md Fase B, fuente 2).….</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>policia/pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td>Module file in etl/policia/pipeline.py.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>Conector de delitos: Policía Nacional (plan2.md Fase B, fuente 5). Datasets…</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conector de delitos: Policía Nacional (plan2.md Fase B, fuente 5). Datasets….</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>acled.py</code><br><small style="color:var(--muted)">etl/internacional/acled.py</small><br><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br>+2 more</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in etl/run_all.py.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>run_all()</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>run_all() node in etl/run_all.py.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>Ejecuta los pipelines activos (sección 21, pasos 4 y 11). Pipelines reales:…</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Ejecuta los pipelines activos (sección 21, pasos 4 y 11). Pipelines reales:….</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/lineage.py</code></td><td>4 nodes</td></tr>
-<tr><td><code>etl/run_all.py</code></td><td>3 nodes</td></tr>
-<tr><td><code>etl/common/pipeline.py</code></td><td>2 nodes</td></tr>
-<tr><td><code>etl/fiscalia/pipeline.py</code></td><td>2 nodes</td></tr>
-<tr><td><code>etl/ideam/pipeline.py</code></td><td>2 nodes</td></tr>
-<tr><td><code>etl/internacional/acled.py</code></td><td>2 nodes</td></tr>
-<tr><td><code>etl/internacional/hdx.py</code></td><td>2 nodes</td></tr>
-<tr><td><code>etl/internacional/world_bank.py</code></td><td>2 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: imports x21, explains x11, contains x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 7. Etl Cargarpy Common ====== -->
-<h2 id="etl-cargarpy-common">7. Etl Cargarpy Common</h2>
-<p>Etl Cargarpy Common groups implementation around etl, cargarpy, common, pipelinepy, mostly in etl/common/cargar.py, etl/victimas/pipeline.py, etl/dane/pipeline.py. This section covers 18 nodes and 31 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Etl Cargarpy Common (18 nodes, 31 edges)
-    subgraph etl_cargarpy_common_etl_common_cargar_py_c3d3b721["etl/common/cargar.py"]
-        etl_common_cargar_slugificar_e07cf7c3("slugificar()<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_upsert_indicador_3a6b4647("upsert_indicador()<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_insertar_serie_7cf706a6("insertar_serie()<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_upsert_fuente_17828c0a("upsert_fuente()<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_f89f128c("cargar.py")
-        etl_common_cargar_resolver_territorio_9f0a78dd("resolver_territorio()<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_1_fedb364a("Carga a curated con resolución de catál...<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_100_73752816("Inserta filas normalizadas en curated.s...<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_28_ab614f9d("Inserta o recupera el fuente_id del cat...<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_50_6c23cf0a("Inserta o recupera el indicador_id del...<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_21_d26e6e10("Normaliza un texto a código seguro: min...<br/><small>etl/common/cargar.py</small>")
-        etl_common_cargar_rationale_81_9eec5be8("Resuelve código DIVIPOLA a (municipio_i...<br/><small>etl/common/cargar.py</small>")
-    end
-    subgraph etl_cargarpy_common_etl_victimas_pipeline_py_357b6965["etl/victimas/pipeline.py"]
-        etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8("cargar_curated()<br/><small>etl/victimas/pipeline.py</small>")
-        etl_victimas_pipeline_62817550("pipeline.py")
-        etl_victimas_pipeline_rationale_1_3c606ccc("Conector piloto Unidad de Víctimas (Dat...<br/><small>etl/victimas/pipeline.py</small>")
-    end
-    subgraph etl_cargarpy_common_External_generated_2b28fa7b["External / generated"]
-        etl_common_cargar_py_connection_7239acf9("Connection")
-        etl_common_cargar_py_dataframe_5e2f8cbf("DataFrame")
-    end
-    etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d("cargar_curated()<br/><small>etl/dane/pipeline.py</small>")
-    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_common_cargar_upsert_fuente_17828c0a
-    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
-    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
-    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
-    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
-    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
-    etl_common_cargar_resolver_territorio_9f0a78dd -->|calls| etl_common_cargar_insertar_serie_7cf706a6
-    etl_common_cargar_insertar_serie_7cf706a6 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
-    etl_common_cargar_insertar_serie_7cf706a6 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
-    etl_common_cargar_f89f128c -->|imports| etl_victimas_pipeline_62817550
-    etl_common_cargar_slugificar_e07cf7c3 -->|imports| etl_victimas_pipeline_62817550
-    etl_common_cargar_upsert_fuente_17828c0a -->|imports| etl_victimas_pipeline_62817550
-    etl_common_cargar_upsert_indicador_3a6b4647 -->|imports| etl_victimas_pipeline_62817550
-    etl_common_cargar_insertar_serie_7cf706a6 -->|imports| etl_victimas_pipeline_62817550
-    class etl_common_cargar_slugificar_e07cf7c3 function;
-    class etl_common_cargar_upsert_indicador_3a6b4647 function;
-    class etl_common_cargar_insertar_serie_7cf706a6 function;
-    class etl_common_cargar_upsert_fuente_17828c0a function;
-    class etl_common_cargar_f89f128c module;
-    class etl_common_cargar_resolver_territorio_9f0a78dd function;
-    class etl_common_cargar_rationale_1_fedb364a concept;
-    class etl_common_cargar_rationale_100_73752816 concept;
-    class etl_common_cargar_rationale_28_ab614f9d concept;
-    class etl_common_cargar_rationale_50_6c23cf0a concept;
-    class etl_common_cargar_rationale_21_d26e6e10 concept;
-    class etl_common_cargar_rationale_81_9eec5be8 concept;
-    class etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8 function;
     class etl_victimas_pipeline_62817550 module;
-    class etl_victimas_pipeline_rationale_1_3c606ccc concept;
-    class etl_common_cargar_py_connection_7239acf9 klass;
-    class etl_common_cargar_py_dataframe_5e2f8cbf klass;
-    class etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1943,67 +1702,11 @@ flowchart LR
   <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br>+4 more</td>
   <td>Module file in etl/common/cargar.py.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td>slugificar() node in etl/common/cargar.py.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
-  <td>upsert_fuente() node in etl/common/cargar.py.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Connection node in project.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>upsert_indicador()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
-  <td>upsert_indicador() node in etl/common/cargar.py.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>resolver_territorio()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td>resolver_territorio() node in etl/common/cargar.py.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>resolver_territorio()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
-  <td>insertar_serie() node in etl/common/cargar.py.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DataFrame node in project.</td>
-</tr>
-<tr>
-  <td>9</td>
   <td><code>Carga a curated con resolución de catálogos y linaje (secciones 7 y 12).…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
@@ -2011,76 +1714,228 @@ flowchart LR
   <td>Design note for Carga a curated con resolución de catálogos y linaje (secciones 7 y 12).….</td>
 </tr>
 <tr>
-  <td>10</td>
-  <td><code>Normaliza un texto a código seguro: minúsculas, sin acentos, guiones bajos.</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td>3</td>
+  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br>+5 more</td>
+  <td>Module file in etl/common/lineage.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>archivo_raw()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>archivo_raw() node in etl/common/lineage.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>Linaje de datos obligatorio (sección 3, punto 4 y sección 7). Todo registro…</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Normaliza un texto a código seguro: minúsculas, sin acentos, guiones bajos..</td>
+  <td>Design note for Linaje de datos obligatorio (sección 3, punto 4 y sección 7). Todo registro….</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Marca de inmutabilidad: los datos crudos se almacenan tal como se descargan.</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Marca de inmutabilidad: los datos crudos se almacenan tal como se descargan..</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>ABC</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>ABC node in project.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>validation.py</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small><br>+2 more</td>
+  <td>Module file in etl/common/validation.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Validación de datos con contratos (sección 4.1 y 12). Los pipelines validan…</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Validación de datos con contratos (sección 4.1 y 12). Los pipelines validan….</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>world_bank.py</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td>Module file in etl/internacional/world_bank.py.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>Inserta o recupera el fuente_id del catálogo curated.fuentes. codigo (slug…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><code>Conector de comparabilidad internacional: Banco Mundial (sección 5.2 y 7.6).…</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Inserta o recupera el fuente_id del catálogo curated.fuentes. codigo (slug….</td>
+  <td>Design note for Conector de comparabilidad internacional: Banco Mundial (sección 5.2 y 7.6).….</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>Inserta o recupera el indicador_id del catálogo curated.indicadores.…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Inserta o recupera el indicador_id del catálogo curated.indicadores.….</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>Resuelve código DIVIPOLA a (municipio_id, departamento_id) vigentes (sección…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Resuelve código DIVIPOLA a (municipio_id, departamento_id) vigentes (sección….</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>Inserta filas normalizadas en curated.serie_historica con deduplicación por…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Inserta filas normalizadas en curated.serie_historica con deduplicación por….</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>upsert_indicador()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.cargar_curated() node in etl/dane/pipeline.py.</td>
-</tr>
-<tr>
-  <td>16</td>
   <td><code>victimas/pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
-  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br>+2 more</td>
-  <td>No direct outbound edge</td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>validation.py</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
+  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
   <td>Module file in etl/victimas/pipeline.py.</td>
 </tr>
 <tr>
-  <td>17</td>
-  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br>+1 more</td>
-  <td>No direct outbound edge</td>
-  <td>.cargar_curated() node in etl/victimas/pipeline.py.</td>
-</tr>
-<tr>
-  <td>18</td>
+  <td>13</td>
   <td><code>Conector piloto Unidad de Víctimas (Datos Paz) - fuente de la fase 2 del plan.…</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>Design note for Conector piloto Unidad de Víctimas (Datos Paz) - fuente de la fase 2 del plan.….</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>common/pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>ABC</code><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+1 more</td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small><br>+2 more</td>
+  <td>Module file in etl/common/pipeline.py.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>world_bank.py</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><code>__init__()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small><br>+1 more</td>
+  <td>PipelineETL node in etl/common/pipeline.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>.__init__()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.__init__() node in etl/common/pipeline.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>Plantilla base de pipeline ETL con trazabilidad y métricas (secciones 7.4 y…</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Plantilla base de pipeline ETL con trazabilidad y métricas (secciones 7.4 y….</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>Pipeline base: extrae, carga crudo con linaje y reporta métricas de calidad.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Pipeline base: extrae, carga crudo con linaje y reporta métricas de calidad..</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>fiscalia/pipeline.py</code><br><small style="color:var(--muted)">etl/fiscalia/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in etl/fiscalia/pipeline.py.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Conector de estadísticas judiciales: Fiscalía V3 (plan2.md Fase B, fuente 3).…</code><br><small style="color:var(--muted)">etl/fiscalia/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector de estadísticas judiciales: Fiscalía V3 (plan2.md Fase B, fuente 3).….</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+2 more</td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td>Module file in etl/internacional/hdx.py.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>Conector internacional: HDX HAPI (plan2.md Fase B, fuente 4). Dataset dedicado…</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector internacional: HDX HAPI (plan2.md Fase B, fuente 4). Dataset dedicado….</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>memoria/pipeline.py</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+2 more</td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td>Module file in etl/memoria/pipeline.py.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Conector de memoria histórica: CNMH SIEVCAC (plan2.md Fase B, fuente 2).…</code><br><small style="color:var(--muted)">etl/memoria/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector de memoria histórica: CNMH SIEVCAC (plan2.md Fase B, fuente 2).….</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>ideam/pipeline.py</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td>Module file in etl/ideam/pipeline.py.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>Conector IDEAM: cambio en la superficie cubierta por bosque natural. Fuente:…</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector IDEAM: cambio en la superficie cubierta por bosque natural. Fuente:….</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>policia/pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+1 more</td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td>Module file in etl/policia/pipeline.py.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>Conector de delitos: Policía Nacional (plan2.md Fase B, fuente 5). Datasets…</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector de delitos: Policía Nacional (plan2.md Fase B, fuente 5). Datasets….</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>hdx.py</code><br><small style="color:var(--muted)">etl/internacional/hdx.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/policia/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/ideam/pipeline.py</small><br>+3 more</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in etl/run_all.py.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>run_all()</code><br><small style="color:var(--muted)">etl/run_all.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>run_all() node in etl/run_all.py.</td>
 </tr>
 </table>
 
@@ -2089,14 +1944,19 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/cargar.py</code></td><td>12 nodes</td></tr>
-<tr><td><code>etl/victimas/pipeline.py</code></td><td>3 nodes</td></tr>
-<tr><td><code>etl/dane/pipeline.py</code></td><td>1 nodes</td></tr>
+      <tr><td><code>etl/common/pipeline.py</code></td><td>5 nodes</td></tr>
+<tr><td><code>etl/common/lineage.py</code></td><td>4 nodes</td></tr>
+<tr><td><code>etl/run_all.py</code></td><td>3 nodes</td></tr>
+<tr><td><code>etl/common/cargar.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/common/validation.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/fiscalia/pipeline.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/ideam/pipeline.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/internacional/hdx.py</code></td><td>2 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: calls x9, explains x7, contains x5, references x5. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: imports x34, explains x14, imports x5, contains x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2322,57 +2182,67 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 9. Etl Common Pipelinepy ====== -->
-<h2 id="etl-common-pipelinepy">9. Etl Common Pipelinepy</h2>
-<p>Etl Common Pipelinepy groups implementation around etl, common, pipelinepy, dataframe, mostly in etl/common/pipeline.py. This section covers 15 nodes and 19 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 9. Etl Internacional World ====== -->
+<h2 id="etl-internacional-world">9. Etl Internacional World</h2>
+<p>Etl Internacional World groups implementation around etl, internacional, world, bankpy, mostly in etl/internacional/world_bank.py, etl/common/lineage.py, etl/internacional/__init__.py. This section covers 16 nodes and 24 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Etl Common Pipelinepy (15 nodes, 19 edges)
-    subgraph etl_common_pipelinepy_etl_common_pipeline_py_293cbb09["etl/common/pipeline.py"]
-        etl_common_pipeline_pipelineetl_63e6d9b9("PipelineETL<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_cargar_curated_c2480e82("cargar_curated()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_extraer_4a41c153("extraer()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_transformar_5e03ac00("transformar()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_conn_e1e90f94("conn()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e("ejecutar()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_pipelineetl_init_c89891cc("__init__()<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_rationale_33_13a00438("Conexión perezosa: solo se abre al ejec...<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_rationale_40_e3938f45("Descarga los datos crudos y devuelve (d...<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_rationale_44_58a8eaf6("Normaliza a staging (códigos DIVIPOLA,...<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_rationale_22_c3325a32("Pipeline base: extrae, carga crudo con...<br/><small>etl/common/pipeline.py</small>")
-        etl_common_pipeline_rationale_48_f7704652("Promueve datos validados a curated.seri...<br/><small>etl/common/pipeline.py</small>")
+    %% Section: Etl Internacional World (16 nodes, 24 edges)
+    subgraph etl_internacional_world_etl_internacional_world_0da33476["etl/internacional/world_bank.py"]
+        etl_internacional_world_bank_internacional_world_6093e7a9("Internacional_WorldBank<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_internacional_world_e14da8a8("cargar_curated()<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_internacional_world_181345a5("_indicadores()<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_internacional_world_12221cba("extraer()<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_internacional_world_6d76972d("_fuente_id()<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_internacional_world_c0a21497("transformar()<br/><small>etl/internacional/world_bank.py</small>")
+        etl_internacional_world_bank_rationale_29_7af00678("Devuelve codigo_indicator: nombre des...<br/><small>etl/internacional/world_bank.py</small>")
     end
-    subgraph etl_common_pipelinepy_External_generated_f83a9d20["External / generated"]
-        connection_814605c6("Connection")
-        etl_common_pipeline_py_dataframe_fe3b4756("DataFrame")
-        etl_common_pipeline_py_lineage_f4b23fa4("Lineage")
+    subgraph etl_internacional_world_External_generated_d76bd51f["External / generated"]
+        etl_internacional_world_bank_py_dataframe_532ae387("DataFrame")
+        etl_common_lineage_py_date_3e1aff13("date")
     end
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_cargar_curated_c2480e82
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_conn_e1e90f94
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_extraer_4a41c153
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_init_c89891cc
-    etl_common_pipeline_pipelineetl_63e6d9b9 -->|method| etl_common_pipeline_pipelineetl_transformar_5e03ac00
-    etl_common_pipeline_pipelineetl_extraer_4a41c153 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
-    etl_common_pipeline_pipelineetl_transformar_5e03ac00 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
-    etl_common_pipeline_pipelineetl_cargar_curated_c2480e82 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
-    class etl_common_pipeline_pipelineetl_63e6d9b9 klass;
-    class etl_common_pipeline_pipelineetl_cargar_curated_c2480e82 function;
-    class etl_common_pipeline_pipelineetl_extraer_4a41c153 function;
-    class etl_common_pipeline_pipelineetl_transformar_5e03ac00 function;
-    class etl_common_pipeline_pipelineetl_conn_e1e90f94 function;
-    class etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e function;
-    class etl_common_pipeline_pipelineetl_init_c89891cc function;
-    class etl_common_pipeline_rationale_33_13a00438 concept;
-    class etl_common_pipeline_rationale_40_e3938f45 concept;
-    class etl_common_pipeline_rationale_44_58a8eaf6 concept;
-    class etl_common_pipeline_rationale_22_c3325a32 concept;
-    class etl_common_pipeline_rationale_48_f7704652 concept;
-    class connection_814605c6 klass;
-    class etl_common_pipeline_py_dataframe_fe3b4756 klass;
-    class etl_common_pipeline_py_lineage_f4b23fa4 klass;
+    subgraph etl_internacional_world_etl_common_lineage_py_58215a48["etl/common/lineage.py"]
+        etl_common_lineage_lineage_ahora_5e83e221("ahora()<br/><small>etl/common/lineage.py</small>")
+        etl_common_lineage_lineage_130d1228("Lineage<br/><small>etl/common/lineage.py</small>")
+    end
+    subgraph etl_internacional_world_etl_internacional_init_p_e4092457["etl/internacional/__init__.py"]
+        etl_internacional_init_99cd7cee("__init__.py")
+        etl_internacional_init_rationale_1_fab8df4f("Conector de comparabilidad internaciona...<br/><small>etl/internacional/__init__.py</small>")
+    end
+    etl_dane_pipeline_dane_poblacion_extraer_f09ea49f("extraer()<br/><small>etl/dane/pipeline.py</small>")
+    etl_pdet_pipeline_art_pdet_extraer_acfaa908("extraer()<br/><small>etl/pdet/pipeline.py</small>")
+    etl_victimas_pipeline_victimas_hechos_extraer_2c8885e6("extraer()<br/><small>etl/victimas/pipeline.py</small>")
+    etl_common_lineage_lineage_130d1228 -->|method| etl_common_lineage_lineage_ahora_5e83e221
+    etl_common_lineage_lineage_ahora_5e83e221 -->|calls| etl_dane_pipeline_dane_poblacion_extraer_f09ea49f
+    etl_common_lineage_lineage_ahora_5e83e221 -->|calls| etl_internacional_world_bank_internacional_world_12221cba
+    etl_common_lineage_lineage_ahora_5e83e221 -->|calls| etl_pdet_pipeline_art_pdet_extraer_acfaa908
+    etl_common_lineage_lineage_ahora_5e83e221 -->|calls| etl_victimas_pipeline_victimas_hechos_extraer_2c8885e6
+    etl_internacional_world_bank_internacional_world_6093e7a9 -->|method| etl_internacional_world_bank_internacional_world_e14da8a8
+    etl_internacional_world_bank_internacional_world_6093e7a9 -->|method| etl_internacional_world_bank_internacional_world_12221cba
+    etl_internacional_world_bank_internacional_world_6093e7a9 -->|method| etl_internacional_world_bank_internacional_world_6d76972d
+    etl_internacional_world_bank_internacional_world_6093e7a9 -->|method| etl_internacional_world_bank_internacional_world_181345a5
+    etl_internacional_world_bank_internacional_world_6093e7a9 -->|method| etl_internacional_world_bank_internacional_world_c0a21497
+    etl_internacional_world_bank_internacional_world_181345a5 -->|calls| etl_internacional_world_bank_internacional_world_12221cba
+    etl_internacional_world_bank_internacional_world_e14da8a8 -->|calls| etl_internacional_world_bank_internacional_world_6d76972d
+    etl_internacional_init_99cd7cee -->|imports| etl_internacional_world_bank_internacional_world_6093e7a9
+    class etl_internacional_world_bank_internacional_world_6093e7a9 klass;
+    class etl_internacional_world_bank_internacional_world_e14da8a8 function;
+    class etl_internacional_world_bank_internacional_world_181345a5 function;
+    class etl_internacional_world_bank_internacional_world_12221cba function;
+    class etl_internacional_world_bank_internacional_world_6d76972d function;
+    class etl_internacional_world_bank_internacional_world_c0a21497 function;
+    class etl_internacional_world_bank_rationale_29_7af00678 concept;
+    class etl_internacional_world_bank_py_dataframe_532ae387 klass;
+    class etl_common_lineage_py_date_3e1aff13 function;
+    class etl_common_lineage_lineage_ahora_5e83e221 function;
+    class etl_common_lineage_lineage_130d1228 klass;
+    class etl_internacional_init_99cd7cee module;
+    class etl_internacional_init_rationale_1_fab8df4f concept;
+    class etl_dane_pipeline_dane_poblacion_extraer_f09ea49f function;
+    class etl_pdet_pipeline_art_pdet_extraer_acfaa908 function;
+    class etl_victimas_pipeline_victimas_hechos_extraer_2c8885e6 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2396,6 +2266,78 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
+  <td><code>Lineage</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td>Lineage node in etl/common/lineage.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>.ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Lineage</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><code>extraer()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>extraer()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>extraer()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+1 more</td>
+  <td>.ahora() node in etl/common/lineage.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>date</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>date node in project.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.extraer() node in etl/dane/pipeline.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>internacional/__init__.py</code><br><small style="color:var(--muted)">etl/internacional/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td>Module file in etl/internacional/__init__.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Conector de comparabilidad internacional (sección 5.2). La capa de…</code><br><small style="color:var(--muted)">etl/internacional/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conector de comparabilidad internacional (sección 5.2). La capa de….</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>__init__.py</code><br><small style="color:var(--muted)">etl/internacional/__init__.py</small><br><code>Lineage</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td><code>_fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>_indicadores()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br>+2 more</td>
+  <td>Internacional_WorldBank node in etl/internacional/world_bank.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>._indicadores()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><code>extraer()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td>._indicadores() node in etl/internacional/world_bank.py.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_indicadores()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.extraer() node in etl/internacional/world_bank.py.</td>
+</tr>
+<tr>
+  <td>10</td>
   <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2403,116 +2345,52 @@ flowchart LR
   <td>DataFrame node in project.</td>
 </tr>
 <tr>
-  <td>2</td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>__init__()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>conn()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+3 more</td>
-  <td>PipelineETL node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>.__init__()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.__init__() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>.conn()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>.conn() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Connection node in project.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>.extraer() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>Lineage</code><br><small style="color:var(--muted)"></small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Lineage node in project.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>.transformar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>.transformar() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td>.cargar_curated() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>.ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>extraer()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br>+1 more</td>
-  <td>No direct outbound edge</td>
-  <td>.ejecutar() node in etl/common/pipeline.py.</td>
-</tr>
-<tr>
   <td>11</td>
-  <td><code>Pipeline base: extrae, carga crudo con linaje y reporta métricas de calidad.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>.transformar()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Design note for Pipeline base: extrae, carga crudo con linaje y reporta métricas de calidad..</td>
+  <td>.transformar() node in etl/internacional/world_bank.py.</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>Conexión perezosa: solo se abre al ejecutar el pipeline.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Conexión perezosa: solo se abre al ejecutar el pipeline..</td>
+  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><code>_fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td>.cargar_curated() node in etl/internacional/world_bank.py.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>Descarga los datos crudos y devuelve (dataframe, linaje).</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>._fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>Internacional_WorldBank</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Design note for Descarga los datos crudos y devuelve (dataframe, linaje)..</td>
+  <td>._fuente_id() node in etl/internacional/world_bank.py.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>Normaliza a staging (códigos DIVIPOLA, periodos, valores numéricos).</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><code>Devuelve {codigo_indicator: nombre} desde WB_INDICADORES.</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Normaliza a staging (códigos DIVIPOLA, periodos, valores numéricos)..</td>
+  <td>Design note for Devuelve {codigo_indicator: nombre} desde WB_INDICADORES..</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>Promueve datos validados a curated.serie_historica.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Design note for Promueve datos validados a curated.serie_historica..</td>
+  <td>.extraer() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.extraer() node in etl/victimas/pipeline.py.</td>
 </tr>
 </table>
 
@@ -2521,12 +2399,17 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/pipeline.py</code></td><td>12 nodes</td></tr>
+      <tr><td><code>etl/internacional/world_bank.py</code></td><td>7 nodes</td></tr>
+<tr><td><code>etl/common/lineage.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/internacional/__init__.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/dane/pipeline.py</code></td><td>1 nodes</td></tr>
+<tr><td><code>etl/pdet/pipeline.py</code></td><td>1 nodes</td></tr>
+<tr><td><code>etl/victimas/pipeline.py</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: method x6, references x5, explains x5, calls x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x8, method x6, calls x6, explains x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2691,35 +2574,39 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 11. Etl Configpy Common ====== -->
-<h2 id="etl-configpy-common">11. Etl Configpy Common</h2>
-<p>Etl Configpy Common groups implementation around etl, configpy, common, plan2md, mostly in etl/common/config.py, etl/internacional/unhcr.py. This section covers 8 nodes and 7 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 11. Etl Common Pipelinepy ====== -->
+<h2 id="etl-common-pipelinepy">11. Etl Common Pipelinepy</h2>
+<p>Etl Common Pipelinepy groups implementation around etl, common, pipelinepy, dataframe, mostly in etl/common/pipeline.py. This section covers 9 nodes and 10 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Etl Configpy Common (8 nodes, 7 edges)
-    subgraph etl_configpy_common_etl_common_config_py_a451f74d["etl/common/config.py"]
-        etl_common_config_683fde4e("config.py")
-        etl_common_config_check_4090d7df("_check()<br/><small>etl/common/config.py</small>")
-        etl_common_config_inyectar_al_entorno_e84641a7("_inyectar_al_entorno()<br/><small>etl/common/config.py</small>")
-        etl_common_config_rationale_137_62ed6a0a("Comando opt-in (plan2.md, Fase A punto...<br/><small>etl/common/config.py</small>")
-        etl_common_config_rationale_1_5126874c("Configuración centralizada de fuentes (...<br/><small>etl/common/config.py</small>")
-        etl_common_config_rationale_111_a9e7e0bb("Puente para los 4 pipelines legacy (DAN...<br/><small>etl/common/config.py</small>")
+    %% Section: Etl Common Pipelinepy (9 nodes, 10 edges)
+    subgraph etl_common_pipelinepy_etl_common_pipeline_py_293cbb09["etl/common/pipeline.py"]
+        etl_common_pipeline_pipelineetl_cargar_curated_c2480e82("cargar_curated()<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_pipelineetl_extraer_4a41c153("extraer()<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_pipelineetl_transformar_5e03ac00("transformar()<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e("ejecutar()<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_rationale_40_e3938f45("Descarga los datos crudos y devuelve (d...<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_rationale_44_58a8eaf6("Normaliza a staging (códigos DIVIPOLA,...<br/><small>etl/common/pipeline.py</small>")
+        etl_common_pipeline_rationale_48_f7704652("Promueve datos validados a curated.seri...<br/><small>etl/common/pipeline.py</small>")
     end
-    subgraph etl_configpy_common_etl_internacional_unhcr_py_978781a5["etl/internacional/unhcr.py"]
-        etl_internacional_unhcr_43f4665e("unhcr.py")
-        etl_internacional_unhcr_rationale_1_0b2f662b("Conector internacional: UNHCR/ACNUR (pl...<br/><small>etl/internacional/unhcr.py</small>")
+    subgraph etl_common_pipelinepy_External_generated_f83a9d20["External / generated"]
+        etl_common_pipeline_py_dataframe_fe3b4756("DataFrame")
+        etl_common_pipeline_py_lineage_f4b23fa4("Lineage")
     end
-    etl_common_config_683fde4e -->|imports| etl_internacional_unhcr_43f4665e
-    class etl_common_config_683fde4e module;
-    class etl_common_config_check_4090d7df function;
-    class etl_common_config_inyectar_al_entorno_e84641a7 function;
-    class etl_common_config_rationale_137_62ed6a0a concept;
-    class etl_common_config_rationale_1_5126874c concept;
-    class etl_common_config_rationale_111_a9e7e0bb concept;
-    class etl_internacional_unhcr_43f4665e module;
-    class etl_internacional_unhcr_rationale_1_0b2f662b concept;
+    etl_common_pipeline_pipelineetl_extraer_4a41c153 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
+    etl_common_pipeline_pipelineetl_transformar_5e03ac00 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
+    etl_common_pipeline_pipelineetl_cargar_curated_c2480e82 -->|calls| etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e
+    class etl_common_pipeline_pipelineetl_cargar_curated_c2480e82 function;
+    class etl_common_pipeline_pipelineetl_extraer_4a41c153 function;
+    class etl_common_pipeline_pipelineetl_transformar_5e03ac00 function;
+    class etl_common_pipeline_pipelineetl_ejecutar_ff6e0b5e function;
+    class etl_common_pipeline_rationale_40_e3938f45 concept;
+    class etl_common_pipeline_rationale_44_58a8eaf6 concept;
+    class etl_common_pipeline_rationale_48_f7704652 concept;
+    class etl_common_pipeline_py_dataframe_fe3b4756 klass;
+    class etl_common_pipeline_py_lineage_f4b23fa4 klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2743,67 +2630,75 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>config.py</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
+  <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>unhcr.py</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
-  <td>Module file in etl/common/config.py.</td>
+  <td>No direct outbound edge</td>
+  <td>DataFrame node in project.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>_inyectar_al_entorno()</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>_inyectar_al_entorno() node in etl/common/config.py.</td>
+  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>.extraer() node in etl/common/pipeline.py.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>_check()</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Lineage</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>_check() node in etl/common/config.py.</td>
+  <td>Lineage node in project.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>Configuración centralizada de fuentes (plan2.md, Fase A). Carga automática de…</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>.transformar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Configuración centralizada de fuentes (plan2.md, Fase A). Carga automática de….</td>
+  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>.transformar() node in etl/common/pipeline.py.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>Puente para los 4 pipelines legacy (DANE, Víctimas, PDET, World Bank): siguen…</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Puente para los 4 pipelines legacy (DANE, Víctimas, PDET, World Bank): siguen….</td>
+  <td><code>ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>.cargar_curated() node in etl/common/pipeline.py.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>Comando opt-in (plan2.md, Fase A punto 8): reporta qué variables de fuentes…</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>.ejecutar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>extraer()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small><br><code>transformar()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
   <td>No direct outbound edge</td>
-  <td>Design note for Comando opt-in (plan2.md, Fase A punto 8): reporta qué variables de fuentes….</td>
+  <td>.ejecutar() node in etl/common/pipeline.py.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>unhcr.py</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>config.py</code><br><small style="color:var(--muted)">etl/common/config.py</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in etl/internacional/unhcr.py.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>Conector internacional: UNHCR/ACNUR (plan2.md Fase B, fuente 1). API pública de…</code><br><small style="color:var(--muted)">etl/internacional/unhcr.py</small></td>
+  <td><code>Descarga los datos crudos y devuelve (dataframe, linaje).</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Design note for Conector internacional: UNHCR/ACNUR (plan2.md Fase B, fuente 1). API pública de….</td>
+  <td>Design note for Descarga los datos crudos y devuelve (dataframe, linaje)..</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Normaliza a staging (códigos DIVIPOLA, periodos, valores numéricos).</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Normaliza a staging (códigos DIVIPOLA, periodos, valores numéricos)..</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>Promueve datos validados a curated.serie_historica.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Promueve datos validados a curated.serie_historica..</td>
 </tr>
 </table>
 
@@ -2812,13 +2707,12 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/config.py</code></td><td>6 nodes</td></tr>
-<tr><td><code>etl/internacional/unhcr.py</code></td><td>2 nodes</td></tr>
+      <tr><td><code>etl/common/pipeline.py</code></td><td>7 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: explains x4, contains x2, imports x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: references x4, calls x3, explains x3. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2962,33 +2856,26 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 13. Validationpy Etl Common ====== -->
-<h2 id="validationpy-etl-common">13. Validationpy Etl Common</h2>
-<p>Validationpy Etl Common groups implementation around validationpy, etl, common, serie, mostly in etl/common/validation.py. This section covers 7 nodes and 7 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 13. Etl Common Validationpy ====== -->
+<h2 id="etl-common-validationpy">13. Etl Common Validationpy</h2>
+<p>Etl Common Validationpy groups implementation around etl, common, validationpy, serie, mostly in etl/common/validation.py. This section covers 5 nodes and 4 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Validationpy Etl Common (7 nodes, 7 edges)
-    etl_common_validation_acade460("validation.py")
+    %% Section: Etl Common Validationpy (5 nodes, 4 edges)
     etl_common_validation_esquemabase_a6e51576("EsquemaBase<br/><small>etl/common/validation.py</small>")
     etl_common_validation_esquemaserienormalizada_a0b560b3("EsquemaSerieNormalizada<br/><small>etl/common/validation.py</small>")
     etl_common_validation_config_5cc35ff6("Config<br/><small>etl/common/validation.py</small>")
-    etl_common_validation_rationale_1_47ee9968("Validación de datos con contratos (secc...<br/><small>etl/common/validation.py</small>")
     etl_common_validation_rationale_14_b7cc64f1("Contrato mínimo para toda serie: territ...<br/><small>etl/common/validation.py</small>")
     etl_common_validation_rationale_31_e6150f4e("Formato normalizado que consume inserta...<br/><small>etl/common/validation.py</small>")
     etl_common_validation_esquemabase_a6e51576 -->|inherits| etl_common_validation_esquemaserienormalizada_a0b560b3
-    etl_common_validation_acade460 -->|contains| etl_common_validation_esquemabase_a6e51576
-    etl_common_validation_acade460 -->|contains| etl_common_validation_esquemaserienormalizada_a0b560b3
     etl_common_validation_esquemabase_a6e51576 -->|contains| etl_common_validation_config_5cc35ff6
-    etl_common_validation_acade460 -->|explains| etl_common_validation_rationale_1_47ee9968
     etl_common_validation_esquemabase_a6e51576 -->|explains| etl_common_validation_rationale_14_b7cc64f1
     etl_common_validation_esquemaserienormalizada_a0b560b3 -->|explains| etl_common_validation_rationale_31_e6150f4e
-    class etl_common_validation_acade460 module;
     class etl_common_validation_esquemabase_a6e51576 klass;
     class etl_common_validation_esquemaserienormalizada_a0b560b3 klass;
     class etl_common_validation_config_5cc35ff6 klass;
-    class etl_common_validation_rationale_1_47ee9968 concept;
     class etl_common_validation_rationale_14_b7cc64f1 concept;
     class etl_common_validation_rationale_31_e6150f4e concept;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -3014,14 +2901,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>validation.py</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in etl/common/validation.py.</td>
-</tr>
-<tr>
-  <td>2</td>
   <td><code>EsquemaBase</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3029,7 +2908,7 @@ flowchart LR
   <td>EsquemaBase node in etl/common/validation.py.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>2</td>
   <td><code>Config</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3037,7 +2916,7 @@ flowchart LR
   <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>3</td>
   <td><code>EsquemaSerieNormalizada</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3045,15 +2924,7 @@ flowchart LR
   <td>EsquemaSerieNormalizada node in etl/common/validation.py.</td>
 </tr>
 <tr>
-  <td>5</td>
-  <td><code>Validación de datos con contratos (sección 4.1 y 12). Los pipelines validan…</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Design note for Validación de datos con contratos (sección 4.1 y 12). Los pipelines validan….</td>
-</tr>
-<tr>
-  <td>6</td>
+  <td>4</td>
   <td><code>Contrato mínimo para toda serie: territorio, periodo y valor numérico. Nota: la…</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
@@ -3061,7 +2932,7 @@ flowchart LR
   <td>Design note for Contrato mínimo para toda serie: territorio, periodo y valor numérico. Nota: la….</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>5</td>
   <td><code>Formato normalizado que consume insertar_serie (etl/common/cargar.py). Es el…</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
@@ -3075,29 +2946,182 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/validation.py</code></td><td>7 nodes</td></tr>
+      <tr><td><code>etl/common/validation.py</code></td><td>5 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x3, explains x3, inherits x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x2, contains x1, inherits x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 14. Common Etl Utilidades ====== -->
-<h2 id="common-etl-utilidades">14. Common Etl Utilidades</h2>
-<p>Common Etl Utilidades groups implementation around common, etl, utilidades, compartidas, mostly in etl/common/__init__.py. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 14. 0010 Geo Ideamsql ====== -->
+<h2 id="0010-geo-ideamsql">14. 0010 Geo Ideamsql</h2>
+<p>0010 Geo Ideamsql groups implementation around 0010, geo, ideamsql, database, mostly in database/migrations/0010_geo_ideam.sql. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Common Etl Utilidades (2 nodes, 1 edges)
-    etl_common_init_78fd7434("__init__.py")
-    etl_common_init_rationale_1_698ca575("Utilidades compartidas del ETL: linaje,...<br/><small>etl/common/__init__.py</small>")
+    %% Section: 0010 Geo Ideamsql (2 nodes, 1 edges)
+    database_migrations_0010_geo_ideam_eb675b03("0010_geo_ideam.sql")
+    database_migrations_0010_geo_ideam_raw_ideam_amb_b85f32d4("raw.ideam_ambiental<br/><small>database/migrations/0010_geo_ideam.sql</small>")
+    database_migrations_0010_geo_ideam_eb675b03 -->|contains| database_migrations_0010_geo_ideam_raw_ideam_amb_b85f32d4
+    class database_migrations_0010_geo_ideam_eb675b03 function;
+    class database_migrations_0010_geo_ideam_raw_ideam_amb_b85f32d4 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>0010_geo_ideam.sql</code><br><small style="color:var(--muted)">database/migrations/0010_geo_ideam.sql</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>0010_geo_ideam.sql node in database/migrations/0010_geo_ideam.sql.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>raw.ideam_ambiental</code><br><small style="color:var(--muted)">database/migrations/0010_geo_ideam.sql</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>raw.ideam_ambiental node in database/migrations/0010_geo_ideam.sql.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>database/migrations/0010_geo_ideam.sql</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 15. 0011 Policia Homicidiossql ====== -->
+<h2 id="0011-policia-homicidiossql">15. 0011 Policia Homicidiossql</h2>
+<p>0011 Policia Homicidiossql groups implementation around 0011, policia, homicidiossql, database, mostly in database/migrations/0011_policia_homicidios.sql. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: 0011 Policia Homicidiossql (2 nodes, 1 edges)
+    database_migrations_0011_policia_homicidios_c921944f("0011_policia_homicidios.sql")
+    database_migrations_0011_policia_homicidios_raw_085aa5c6("raw.policia_homicidios<br/><small>database/migrations/0011_policia_homicidios.sql</small>")
+    database_migrations_0011_policia_homicidios_c921944f -->|contains| database_migrations_0011_policia_homicidios_raw_085aa5c6
+    class database_migrations_0011_policia_homicidios_c921944f function;
+    class database_migrations_0011_policia_homicidios_raw_085aa5c6 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>0011_policia_homicidios.sql</code><br><small style="color:var(--muted)">database/migrations/0011_policia_homicidios.sql</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>0011_policia_homicidios.sql node in database/migrations/0011_policia_homicidios.sql.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>raw.policia_homicidios</code><br><small style="color:var(--muted)">database/migrations/0011_policia_homicidios.sql</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>raw.policia_homicidios node in database/migrations/0011_policia_homicidios.sql.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>database/migrations/0011_policia_homicidios.sql</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 16. Other ====== -->
+<h2 id="other">16. Other</h2>
+<p>Other groups implementation around etl, common, del, viteconfigts, mostly in etl/common/__init__.py, etl/__init__.py, dashboard/vite.config.ts. This section covers 8 nodes and 2 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Other (8 nodes, 2 edges)
+    subgraph other_External_generated_9e8859fa["External / generated"]
+        etl_common_pipeline_py_connection_12f3c99e("Connection")
+        curated_capa_contexto_territorial_13ef7a82("curated.capa contexto territorial")
+        api_routes_v1_py_get_3ec8665c("get")
+    end
+    subgraph other_etl_init_py_568b398e["etl/__init__.py"]
+        etl_init_80737246("__init__.py")
+        etl_init_rationale_1_bc3589d9("Observatorio para la Paz en Colombia -...<br/><small>etl/__init__.py</small>")
+    end
+    subgraph other_etl_common_init_py_5bc5d00e["etl/common/__init__.py"]
+        etl_common_init_78fd7434("__init__.py")
+        etl_common_init_rationale_1_698ca575("Utilidades compartidas del ETL: linaje,...<br/><small>etl/common/__init__.py</small>")
+    end
+    dashboard_vite_config_26a00549("vite.config.ts")
+    etl_init_80737246 -->|explains| etl_init_rationale_1_bc3589d9
     etl_common_init_78fd7434 -->|explains| etl_common_init_rationale_1_698ca575
+    class etl_common_pipeline_py_connection_12f3c99e klass;
+    class curated_capa_contexto_territorial_13ef7a82 function;
+    class api_routes_v1_py_get_3ec8665c function;
+    class etl_init_80737246 module;
+    class etl_init_rationale_1_bc3589d9 concept;
     class etl_common_init_78fd7434 module;
     class etl_common_init_rationale_1_698ca575 concept;
+    class dashboard_vite_config_26a00549 module;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3135,59 +3159,8 @@ flowchart LR
   <td>No direct outbound edge</td>
   <td>Design note for Utilidades compartidas del ETL: linaje, validación, base de datos y pipelines..</td>
 </tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/common/__init__.py</code></td><td>2 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 15. Etl Observatorio Para ====== -->
-<h2 id="etl-observatorio-para">15. Etl Observatorio Para</h2>
-<p>Etl Observatorio Para groups implementation around etl, observatorio, para, paz, mostly in etl/__init__.py. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Etl Observatorio Para (2 nodes, 1 edges)
-    etl_init_80737246("__init__.py")
-    etl_init_rationale_1_bc3589d9("Observatorio para la Paz en Colombia -...<br/><small>etl/__init__.py</small>")
-    etl_init_80737246 -->|explains| etl_init_rationale_1_bc3589d9
-    class etl_init_80737246 module;
-    class etl_init_rationale_1_bc3589d9 concept;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
 <tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
+  <td>3</td>
   <td><code>etl/__init__.py</code><br><small style="color:var(--muted)">etl/__init__.py</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
@@ -3195,69 +3168,15 @@ flowchart LR
   <td>Module file in etl/__init__.py.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>4</td>
   <td><code>Observatorio para la Paz en Colombia - ETL (sección 6 del plan).</code><br><small style="color:var(--muted)">etl/__init__.py</small></td>
   <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>Design note for Observatorio para la Paz en Colombia - ETL (sección 6 del plan)..</td>
 </tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>etl/__init__.py</code></td><td>2 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 16. Other ====== -->
-<h2 id="other">16. Other</h2>
-<p>Other groups implementation around viteconfigts, get, dashboard, connection, mostly in dashboard/vite.config.ts. This section covers 3 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Other (3 nodes, 0 edges)
-    subgraph other_External_generated_9e8859fa["External / generated"]
-        etl_common_pipeline_py_connection_12f3c99e("Connection")
-        api_routes_v1_py_get_3ec8665c("get")
-    end
-    dashboard_vite_config_26a00549("vite.config.ts")
-    class etl_common_pipeline_py_connection_12f3c99e klass;
-    class api_routes_v1_py_get_3ec8665c function;
-    class dashboard_vite_config_26a00549 module;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
 <tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
+  <td>5</td>
   <td><code>get</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -3265,7 +3184,15 @@ flowchart LR
   <td>get node in project.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>6</td>
+  <td><code>curated.capa_contexto_territorial</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>curated.capa_contexto_territorial node in project.</td>
+</tr>
+<tr>
+  <td>7</td>
   <td><code>vite.config.ts</code><br><small style="color:var(--muted)">dashboard/vite.config.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
@@ -3273,7 +3200,7 @@ flowchart LR
   <td>Module file in dashboard/vite.config.ts.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>8</td>
   <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3287,12 +3214,14 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>dashboard/vite.config.ts</code></td><td>1 nodes</td></tr>
+      <tr><td><code>etl/__init__.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>etl/common/__init__.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>dashboard/vite.config.ts</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -3303,18 +3232,18 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>1045</td></tr>
-      <tr><td>Edges</td><td>1407</td></tr>
+      <tr><td>Nodes</td><td>1115</td></tr>
+      <tr><td>Edges</td><td>1519</td></tr>
       <tr><td>Hyperedges</td><td>0</td></tr>
-      <tr><td>Communities</td><td>38</td></tr>
+      <tr><td>Communities</td><td>42</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>1382</td></tr>
-      <tr><td>INFERRED</td><td>25</td></tr>
+      <tr><td>EXTRACTED</td><td>1497</td></tr>
+      <tr><td>INFERRED</td><td>22</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
   </div>
@@ -3322,7 +3251,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>grafiphy — Architecture Documentation</p>
-  <p>Generated: 2026-08-02 16:37 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-08-02 17:50 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
