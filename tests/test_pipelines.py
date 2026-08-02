@@ -50,6 +50,50 @@ def test_dane_transformar_descarta_invalidos():
     assert len(resultado) == 1
 
 
+def test_dane_transformar_con_formato_real_del_excel():
+    """Formato verificado en auditoría: encabezado fila 9, columna MPIO,
+    y 3 filas por municipio/año (Cabecera / Centros Poblados / Total).
+
+    Ejemplo real: Medellín 2020 → Cabecera 2.476.569 + Centros Poblados
+    43.023 = Total 2.519.592. Sin filtrar por Total se triplicaría.
+    """
+    df = pd.DataFrame(
+        {
+            "mpio": ["05001", "05001", "05001", "05002"],
+            "dpmp": ["MEDELLÍN", "MEDELLÍN", "MEDELLÍN", "ABEJORRAL"],
+            "ano": ["2020", "2020", "2020", "2020"],
+            "area_geografica": ["Cabecera Municipal", "Centros Poblados y Rural Disperso", "Total", "Total"],
+            "poblacion": ["2476569", "43023", "2519592", "23564"],
+        }
+    )
+    resultado = DANE_Poblacion().transformar(df)
+    assert len(resultado) == 2
+    medellin = resultado[resultado["codigo_divipola"] == "05001"]
+    assert float(medellin["valor"].iloc[0]) == 2519592.0
+
+
+def test_dane_transformar_sin_columna_area_mantiene_filas():
+    """Legacy Socrata sin columna de área: no se descarta nada."""
+    df = pd.DataFrame(
+        {
+            "mpio": ["05001", "05002"],
+            "ano": ["2020", "2020"],
+            "poblacion": ["100", "200"],
+        }
+    )
+    resultado = DANE_Poblacion().transformar(df)
+    assert len(resultado) == 2
+
+
+def test_dane_detecta_fila_encabezado_en_excel():
+    """Replica el layout real: 9 filas de metadata antes del encabezado."""
+    from etl.dane.pipeline import _detectar_fila_encabezado
+
+    filas = [["TÍTULO DEL ARCHIVO"]] * 8 + [["DP", "DPNOM", "MPIO", "DPMP", "AÑO", "ÁREA GEOGRÁFICA", "Población"]]
+    raw = pd.DataFrame(filas)
+    assert _detectar_fila_encabezado(raw) == 8
+
+
 def test_victimas_transformar_agrega_por_tipo():
     df = pd.DataFrame(
         {

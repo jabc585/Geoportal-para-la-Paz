@@ -24,19 +24,26 @@ from etl.common.validation import EsquemaSerieNormalizada, validar
 URL_SOCRATA = "https://www.datos.gov.co/resource"
 
 ALIASES = {
-    "codigo": ["codigo_municipio", "cod_municipio", "cod_divipola", "codigomunicipio", "codigo_mun", "codigo_dane", "codigo_municipio2"],
+    "codigo": [
+        "mpio", "codigo_municipio", "cod_municipio", "cod_divipola",
+        "codigomunicipio", "codigo_mun", "codigo_dane", "codigo_municipio2",
+    ],
     "anio": ["anio", "ano", "año", "year", "año_1", "vigencia"],
     "valor": ["poblacion", "poblacion_total", "total_poblacion", "proyeccion_poblacion", "habitantes"],
+    "area": ["area_geografica", "area", "zona", "ambito_geografico", "geografica"],
 }
+
+VALOR_AREA_TOTAL = "total"
+
+
+def _normalizar(texto: str) -> str:
+    """Minúsculas, sin acentos y espacios a guion bajo (p. ej. 'ÁREA GEOGRÁFICA')."""
+    texto = unicodedata.normalize("NFKD", str(texto)).encode("ascii", "ignore").decode().lower()
+    return texto.strip().replace(" ", "_")
 
 
 def _normalizar_columnas(df: pd.DataFrame) -> pd.DataFrame:
-    """Minúsculas y sin acentos para que los aliases matcheen (p. ej. 'Código municipio')."""
-    def limpiar(texto: str) -> str:
-        texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
-        return texto.replace(" ", "_")
-
-    return df.rename(columns={c: limpiar(str(c)) for c in df.columns})
+    return df.rename(columns=_normalizar)
 
 
 def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
@@ -44,6 +51,40 @@ def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
         if alias in df.columns:
             return alias
     raise ValueError(f"No se encontró columna para {etiqueta} (buscadas: {aliases}). Revisar ficha docs/fuentes/dane.md")
+
+
+def _detectar_fila_encabezado(raw: pd.DataFrame) -> int | None:
+    """Busca la fila de encabezados real dentro de las primeras 20 filas.
+
+    El Excel oficial de DANE trae filas de título/metadata antes de la fila de
+    columnas (verificado en auditoría: encabezado en la fila 9, con MPIO y
+    Población). La detección protege contra cambios de layout de DANE.
+    """
+    aliases_esperados = set(ALIASES["codigo"] + ALIASES["anio"] + ALIASES["valor"])
+    for i in range(min(20, len(raw))):
+        celdas = {_normalizar(c) for c in raw.iloc[i].tolist()}
+        if celdas & aliases_esperados and "poblacion" in celdas:
+            return i
+    return None
+
+
+def _leer_excel_dane(url: str, hoja: str | None) -> pd.DataFrame:
+    """Lee el Excel con una sola descarga y encabezado detectado.
+
+    sheet_name=None en pandas significa "todas las hojas" (devuelve un dict,
+    no un DataFrame), por eso se usa `hoja or 0` para la primera hoja.
+    """
+    raw = pd.read_excel(url, sheet_name=hoja or 0, header=None, engine="openpyxl", dtype=str)
+    indice = _detectar_fila_encabezado(raw)
+    if indice is None:
+        raise ValueError(
+            "No se encontró la fila de encabezados del Excel de DANE "
+            "(se esperan columnas MPIO/AÑO/Población en las primeras 20 filas). "
+            "Revisar docs/fuentes/dane.md"
+        )
+    df = raw.iloc[indice + 1 :].copy()
+    df.columns = [str(c) for c in raw.iloc[indice]]
+    return df.reset_index(drop=True)
 
 
 class DANE_Poblacion(PipelineETL):
@@ -56,7 +97,7 @@ class DANE_Poblacion(PipelineETL):
         if url_xlsx:
             hoja = os.getenv("DANE_POBLACION_HOJA", None)
             url = url_xlsx
-            df = pd.read_excel(url, sheet_name=hoja, engine="openpyxl", dtype=str)
+            df = _leer_excel_dane(url, hoja)
         elif dataset:
             url = f"{URL_SOCRATA}/{dataset}.json"
             import requests
@@ -85,6 +126,14 @@ class DANE_Poblacion(PipelineETL):
         col_anio = _columna(df, ALIASES["anio"], "año")
         col_valor = _columna(df, ALIASES["valor"], "población")
 
+        # El Excel de DANE repite cada municipio/año 3 veces (Cabecera /
+        # Centros Poblados y Rural Disperso / Total): solo se conserva el Total
+        # (verificado en auditoría: Medellín 2020 = 2.519.592). Si la fuente no
+        # trae la columna de área (legacy Socrata), se conservan todas las filas.
+        col_area = next((a for a in ALIASES["area"] if a in df.columns), None)
+        if col_area:
+            df = df[df[col_area].map(_normalizar) == VALOR_AREA_TOTAL]
+
         normalizado = pd.DataFrame(
             {
                 "codigo_divipola": df[col_codigo].astype(str).str.zfill(5),
@@ -111,9 +160,9 @@ class DANE_Poblacion(PipelineETL):
                 tipo="nacional",
                 descripcion="Población, pobreza, empleo, educación (sección 5 del plan)",
                 url_base="https://www.dane.gov.co/",
-                metodo_acceso="api",
+                metodo_acceso="descarga",
                 periodicidad="anual",
-                formato="JSON/CSV",
+                formato="XLSX",
                 licencia=self.lineage.licencia,
                 ficha_doc="docs/fuentes/dane.md",
             )

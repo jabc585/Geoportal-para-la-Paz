@@ -33,11 +33,14 @@ Variables de entorno requeridas:
 
 El pipeline `etl/dane/pipeline.py`:
 
-1. Lee el Excel (openpyxl) y normaliza nombres de columnas (minúsculas, sin acentos).
-2. Detecta aliases comunes (código DIVIPOLA, año, población).
-3. Convierte valores a numéricos y descarta filas sin año o valor.
-4. Construye el periodo anual (sección 7.1) y valida con Pandera (`EsquemaSerieNormalizada`).
-5. Carga en `curated.serie_historica` con indicador `poblacion` y linaje completo.
+1. Lee el Excel (openpyxl) con **encabezado detectado automáticamente**: el archivo oficial trae ~8 filas de título/metadata antes de la fila de columnas reales (fila 9, verificada en auditoría 2026-08-02). Las columnas reales son `DP`, `DPNOM`, `MPIO` (código de 5 dígitos), `DPMP` (contiene el **nombre** del municipio, no un código — nombre confuso pero así lo publica DANE), `AÑO`, `ÁREA GEOGRÁFICA`, `Población`.
+2. **Filtra por `ÁREA GEOGRÁFICA == "Total"`**: cada municipio/año aparece 3 veces (Cabecera Municipal / Centros Poblados y Rural Disperso / Total); sin este filtro la población se triplicaría. Ejemplo real verificado: Medellín 2020 → 2.476.569 + 43.023 = 2.519.592.
+3. Normaliza nombres de columnas (minúsculas, sin acentos) y detecta aliases (incluye `mpio` para el código).
+4. Convierte valores a numéricos y descarta filas sin año o valor.
+5. Construye el periodo anual (sección 7.1) y valida con Pandera (`EsquemaSerieNormalizada`).
+6. Carga en `curated.serie_historica` con indicador `poblacion` y linaje completo.
+
+> `DANE_POBLACION_HOJA` sin configurar usa la primera hoja del libro (en pandas, `sheet_name=None` significaría "todas las hojas" y rompería el pipeline; el conector usa `hoja or 0`).
 
 ## Limitaciones conocidas
 
