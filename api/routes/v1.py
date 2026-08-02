@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
+import csv
+import io
+
 from fastapi import APIRouter, HTTPException, Query
+from fastapi.responses import StreamingResponse
 
 from api.models.schemas import (
     ErrorOut,
@@ -20,6 +24,7 @@ from api.services.consultas import (
     consultar_serie,
     consultar_territorio,
     consultar_total,
+    exportar_serie_csv,
     listar_fuentes,
 )
 from api.services.health import estado_fuentes
@@ -114,3 +119,48 @@ def get_mapa(
     if not resultado:
         raise HTTPException(status_code=404, detail="Indicador no encontrado")
     return MapaOut(**resultado)
+
+
+@router.get(
+    "/indicadores/{indicador}/exportar.csv",
+    summary="Serie completa de un indicador en CSV (sección 10: exportación de datos)",
+    description=(
+        "Mismos filtros que /indicadores/{indicador} pero sin paginación, para "
+        "descarga directa. BOM UTF-8 para compatibilidad con Excel. "
+        "Tope: 200.000 filas."
+    ),
+)
+def get_indicador_csv(
+    indicador: str,
+    territorio: str | None = Query(default=None, description="Código DIVIPOLA (5 dígitos municipio o 2 departamento)"),
+    desde: str | None = Query(default=None, description="Fecha inicio del periodo (YYYY-MM-DD)"),
+    hasta: str | None = Query(default=None, description="Fecha fin del periodo (YYYY-MM-DD)"),
+) -> StreamingResponse:
+    filas = exportar_serie_csv(indicador, territorio, desde, hasta)
+    if not filas:
+        raise HTTPException(status_code=404, detail="Indicador sin datos")
+    columnas = [
+        "indicador",
+        "indicador_nombre",
+        "unidad",
+        "codigo_divipola",
+        "municipio",
+        "departamento_divipola",
+        "departamento",
+        "periodo_inicio",
+        "periodo_fin",
+        "valor",
+        "fuente",
+    ]
+    buffer = io.StringIO()
+    buffer.write("\ufeff")
+    writer = csv.DictWriter(buffer, fieldnames=columnas)
+    writer.writeheader()
+    writer.writerows(filas)
+    return StreamingResponse(
+        iter([buffer.getvalue()]),
+        media_type="text/csv; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="{indicador}.csv"'
+        },
+    )

@@ -68,6 +68,48 @@ def consultar_serie(
     return filas, next_cursor
 
 
+def exportar_serie_csv(
+    indicador: str,
+    territorio: str | None = None,
+    desde: str | None = None,
+    hasta: str | None = None,
+) -> list[dict]:
+    """Serie completa de un indicador para exportación CSV (sección 8 y 10).
+
+    Mismos filtros que `consultar_serie` pero sin paginación: se devuelven
+    todas las filas del indicador (tope 200.000) ordenadas por periodo.
+    """
+    where = ["i.codigo = %s"]
+    params: list = [indicador]
+    if territorio:
+        where.append("(m.codigo_divipola = %s OR d.codigo_divipola = %s)")
+        params.extend([territorio, territorio])
+    if desde:
+        where.append("s.periodo_inicio >= %s")
+        params.append(desde)
+    if hasta:
+        where.append("s.periodo_fin <= %s")
+        params.append(hasta)
+
+    sql = f"""
+        SELECT i.codigo AS indicador, i.nombre AS indicador_nombre, i.unidad,
+               m.codigo_divipola, m.nombre AS municipio,
+               d.codigo_divipola AS departamento_divipola, d.nombre AS departamento,
+               s.periodo_inicio, s.periodo_fin, s.valor, f.nombre AS fuente
+        FROM curated.serie_historica s
+        JOIN curated.indicadores i ON i.indicador_id = s.indicador_id
+        JOIN curated.fuentes f     ON f.fuente_id = s.fuente_id
+        LEFT JOIN curated.municipio m    ON m.municipio_id = s.municipio_id
+        LEFT JOIN curated.departamento d ON d.departamento_id = s.departamento_id
+        WHERE {' AND '.join(where)}
+        ORDER BY s.periodo_inicio, m.nombre
+        LIMIT 200000
+    """
+    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(sql, params)
+        return cur.fetchall()
+
+
 def listar_fuentes() -> list[dict]:
     with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(

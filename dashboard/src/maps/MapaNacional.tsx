@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { MapaIndicador, obtenerMapa } from "../api/client";
+import { MapaIndicador, descargarCSV, obtenerMapa } from "../api/client";
 
 // Paleta secuencial viridis (verificada para daltonismo, sección 10 del plan):
 // menor valor = amarillo, mayor valor = púrpura oscuro. Sin dato = gris.
@@ -26,6 +26,20 @@ function quintiles(valores: number[]): number[] {
 
 function formatearValor(valor: number): string {
   return new Intl.NumberFormat("es-CO").format(Math.round(valor * 10) / 10);
+}
+
+function descargarGeoJSON(datos: MapaIndicador): void {
+  const blob = new Blob([JSON.stringify(datos, null, 2)], {
+    type: "application/geo+json",
+  });
+  const url = URL.createObjectURL(blob);
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = `${datos.indicador}_${datos.anio ?? "sindatos"}.geojson`;
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+  URL.revokeObjectURL(url);
 }
 
 export function MapaNacional() {
@@ -168,6 +182,26 @@ export function MapaNacional() {
         <span className="mapa-anio">
           {datos ? (datos.anio === null ? "Sin datos aún" : `Año ${datos.anio}`) : "Cargando…"}
         </span>
+        {datos && (
+          <span className="mapa-exportar">
+            <button
+              type="button"
+              className="boton-secundario"
+              onClick={() => descargarCSV(datos.indicador)}
+              title="Serie completa (municipio-año) del indicador"
+            >
+              CSV
+            </button>
+            <button
+              type="button"
+              className="boton-secundario"
+              onClick={() => descargarGeoJSON(datos)}
+              title="Capa coroplética que se está viendo (GeoJSON)"
+            >
+              GeoJSON
+            </button>
+          </span>
+        )}
       </div>
       {error && <p className="mapa-error">No se pudo cargar el mapa: {error}</p>}
       <div ref={contenedor} className="mapa-contenedor" role="img" aria-label="Mapa coroplético municipal del observatorio" />

@@ -103,6 +103,27 @@ def simular_servicios(monkeypatch):
     )
     monkeypatch.setattr(
         rutas,
+        "exportar_serie_csv",
+        lambda indicador, territorio=None, desde=None, hasta=None: [
+            {
+                "indicador": "homicidios",
+                "indicador_nombre": "Homicidios (Policía Nacional)",
+                "unidad": "delitos",
+                "codigo_divipola": "05002",
+                "municipio": "Abejorral",
+                "departamento_divipola": "05",
+                "departamento": "Antioquia",
+                "periodo_inicio": "2025-01-01",
+                "periodo_fin": "2025-12-31",
+                "valor": 6,
+                "fuente": "Policía Nacional",
+            }
+        ]
+        if indicador == "homicidios"
+        else [],
+    )
+    monkeypatch.setattr(
+        rutas,
         "estado_fuentes",
         lambda: [
             {
@@ -190,6 +211,22 @@ def test_mapa_indicador_con_capa():
 
 def test_mapa_indicador_inexistente_404():
     resp = client.get("/api/v1/mapas/nada")
+    assert resp.status_code == 404
+
+
+def test_exportar_csv_indicador():
+    resp = client.get("/api/v1/indicadores/homicidios/exportar.csv")
+    assert resp.status_code == 200
+    assert resp.headers["content-type"].startswith("text/csv")
+    assert "attachment" in resp.headers["content-disposition"]
+    texto = resp.text
+    assert texto.startswith("\ufeff")  # BOM UTF-8 para Excel
+    assert "indicador_nombre" in texto
+    assert "Abejorral" in texto
+
+
+def test_exportar_csv_indicador_sin_datos_404():
+    resp = client.get("/api/v1/indicadores/nada/exportar.csv")
     assert resp.status_code == 404
 
 

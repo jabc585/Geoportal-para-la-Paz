@@ -310,6 +310,28 @@ section + section {
   color: var(--texto-mute);
 }
 
+.mapa-exportar {
+  display: inline-flex;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+
+.boton-secundario {
+  font: inherit;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-elevada);
+  color: var(--texto-secundario);
+  cursor: pointer;
+}
+
+.boton-secundario:hover {
+  border-color: var(--color-primario);
+  color: var(--color-primario);
+}
+
 .mapa-error {
   font-size: 0.85rem;
   color: var(--color-critico);

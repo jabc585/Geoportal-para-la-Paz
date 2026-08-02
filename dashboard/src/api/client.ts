@@ -63,3 +63,13 @@ export function obtenerTotalIndicador(indicador: string): Promise<IndicadorTotal
 export function obtenerMapa(indicador: string): Promise<MapaIndicador> {
   return obtener<MapaIndicador>(`/mapas/${indicador}`);
 }
+
+export function descargarCSV(indicador: string): void {
+  const url = `${BASE}/indicadores/${indicador}/exportar.csv`;
+  const enlace = document.createElement("a");
+  enlace.href = url;
+  enlace.download = `${indicador}.csv`;
+  document.body.appendChild(enlace);
+  enlace.click();
+  enlace.remove();
+}
