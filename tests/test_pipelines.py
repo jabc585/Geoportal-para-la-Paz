@@ -158,8 +158,11 @@ def test_victimas_transformar_agrega_por_tipo():
     )
     resultado = Victimas_Hechos().transformar(df)
     assert len(resultado) == 2
-    fila_desplazamiento = resultado[resultado["hecho"] == "Desplazamiento forzado"]
-    assert float(fila_desplazamiento["valor"].iloc[0]) == 7.0
+    assert "hecho" not in resultado.columns
+    fila_5002 = resultado[resultado["codigo_divipola"] == "05002"]
+    assert float(fila_5002["valor"].iloc[0]) == 7.0
+    fila_5001 = resultado[resultado["codigo_divipola"] == "05001"]
+    assert float(fila_5001["valor"].iloc[0]) == 1.0
 
 
 def test_pdet_transformar_normaliza():

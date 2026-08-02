@@ -34,7 +34,7 @@ INSERT INTO curated.indicadores
     (codigo, nombre, descripcion, unidad, granularidad_min, periodicidad, metodologia_doc, activo)
 VALUES
     ('poblacion', 'Población', 'Proyecciones de población por municipio', 'personas', 'municipio', 'anual', 'docs/metodologia/indicadores.md', TRUE),
-    ('victimas_hechos', 'Hechos victimizantes', 'Hechos victimizantes agregados por municipio/año/tipo (sin PII)', 'casos', 'municipio', 'trimestral', 'docs/metodologia/indicadores.md', TRUE),
+    ('victimas_ruv', 'Personas incluidas en el Registro Único de Víctimas (RUV)', 'Sujetos de atención (per_sa): personas incluidas en el RUV, acumulado a corte, agregadas por municipio/año (sin PII). Fuente: UARIV vía datos.gov.co (dataset municipal de hechos victimizantes)', 'personas', 'municipio', 'anual', 'docs/metodologia/indicadores.md', TRUE),
     ('pdet_inversion', 'Inversión PDET', 'Inversión en proyectos PDET por municipio/año', 'COP', 'municipio', 'mensual', 'docs/metodologia/indicadores.md', TRUE);
 
 -- --- Indicadores internacionales de la capa de comparabilidad (sección 5.2) ---
