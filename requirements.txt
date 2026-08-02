@@ -18,7 +18,7 @@ requests==2.34.2
 # API
 fastapi==0.141.1
 uvicorn[standard]==0.52.1
-slowapi==0.1.9
+slowapi==0.1.10
 
 # Geoespacial: capa municipal DIVIPOLA + estadística zonal del raster IDEAM
 geopandas==1.1.4
