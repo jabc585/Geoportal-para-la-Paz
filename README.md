@@ -128,6 +128,64 @@ pytest tests/ -v          # 124 tests (ETL + API), sin tocar BD real
 Los tests no requieren PostgreSQL: los pipelines se prueban con fakes de red y
 la API con TestClient y servicios monkeypatched.
 
+## Auditoría de arquitectura (Graphify)
+
+Se ejecuta [Graphify](https://graphify.com/) (`graphifyy`, v0.9.32) contra el
+código fuente + esquema real de PostgreSQL/PostGIS para generar un grafo de
+dependencias completo. Resultado de la última corrida (2026-08-02, post-plan3):
+
+| Métrica | Valor |
+|---|---|
+| Nodos | 1323 (código + BD) |
+| Aristas | 1922 |
+| Comunidades | 74 |
+| Ciclos de importación | 0 |
+| Aristas colgantes | 0 |
+| Extracción de código | 98% |
+
+### God nodes (abstracciones más conectadas)
+
+| Nodo | Aristas | Rol |
+|---|---|---|
+| `PipelineETL` | 32 | Clase base de los 13 pipelines |
+| `upsert_fuente()` | 29 | Catálogo de fuentes en `curated` |
+| `insertar_serie()` | 27 | Carga batch a `curated.serie_historica` |
+| `Internacional_ACLED` | 23 | Conector con capa país-año + admin1 |
+| `transaccion()` | 22 | Commit/rollback explícito |
+
+### Comunidades destacadas
+
+| Comunidad | Nodos | Descripción |
+|---|---|---|
+| C0 | 22 | Tablas `raw.*` y `curated.*` (capa de persistencia) |
+| C1 | 33 | Frontend: cliente API (`client.ts`), hooks (`useApi`), tipos |
+| C6 | 22 | `cargar.py`: `insertar_serie()`, `upsert_fuente()`, `slugificar()` |
+| C8 | 17 | ACLED: país-año + admin1 → departamento |
+| C9 | 15 | UNHCR + World Bank (conectores internacionales) |
+| C13 | 12 | `insertar_serie()` + `upsert_fuente()` + `upsert_indicador()` (hot path de carga) |
+| C15 | 14 | CNMH SIEVCAC (6 hechos + tests) |
+
+**Sin ciclos de importación:** confirmado por `graphify diagnose multigraph`
+(0 same-endpoint collapses, 0 dangling edges). Las comunidades están bien
+separadas: el frontend (C1, C3) se conecta al backend solo a través de
+`fetch`/HTTP, y cada pipeline forma su propia comunidad (ACLED=C8,
+CNMH=C15, Policía=C7, Fiscalía=C10, HDX=C11) conectada al núcleo común
+(`cargar.py`=C6, `db.py`=C4, `pipeline.py`).
+
+### Regenerar
+
+```bash
+python3 -m venv /tmp/graphify-venv
+/tmp/graphify-venv/bin/pip install "graphifyy[sql]"
+/tmp/graphify-venv/bin/graphify extract . --code-only \
+  --postgres "postgresql://observatorio:observatorio_dev@localhost:5432/observatorio" \
+  --out grafiphy
+/tmp/graphify-venv/bin/graphify cluster-only grafiphy --no-label
+```
+
+Los artefactos (HTML, JSON, reportes) quedan en `grafiphy/`. Ver `grafiphy/README.md`
+para el detalle completo de consultas y diagnóstico.
+
 ## Próximos pasos (sección 21)
 
 1. Sembrar municipios con `python -m etl.common.divipola` y verificar carga end-to-end contra una BD real
