@@ -36,6 +36,7 @@ _PIPELINE_POR_VARIABLE = {
     "ACLED_EMAIL": "internacional_acled",
     "ACLED_KEY": "internacional_acled",
     "ACLED_DATA_DIR": "internacional_acled",
+    "IDEAM_BOSQUE_URL": "ideam_ambiental",
 }
 
 

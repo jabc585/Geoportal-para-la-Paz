@@ -50,11 +50,20 @@ fuentes:
     bloqueo: null
 
   ideam:
-    estado: "archivo, no API JSON"
+    estado: "archivo, no API JSON — formato confirmado (2026-08-02): raster"
     categoria: "nacional"
     dataset: "39dh-rc72"
     nombre: "Cambio en la superficie cubierta por bosque natural — Nacional"
-    bloqueo: "Tipo file (no dataset Socrata estándar): requiere un lector de archivo tipo _leer_excel_dane; formato real (Excel/CSV/shapefile) aún sin confirmar."
+    descarga_real:
+      - "https://www.datos.gov.co/api/views/39dh-rc72/files/66e53106-a67b-45ff-a6a5-e1170ec10438?filename=Cambio_2022.zip"
+    contenido_verificado:
+      - "ZIP 38MB con cambio_2021_2022_v8_230705.img (52MB, Erdas Imagine) + .rrd + Contenido_Cambio.txt"
+      - "Raster con 5 clases: 1 Bosque Estable, 2 Deforestación, 3 Regeneración, 4 No Bosque estable, 5 Sin información"
+      - "Periodo 2021-2022; IDEAM publica un dataset 'Cambio' por periodo"
+    bloqueo: "No tabular (403 en SoQL): requiere estadística zonal del raster contra
+      geometría municipal DIVIPOLA (GDAL/rasterio + capa geo de municipios) para
+      producir superficie deforestada por municipio. No entra en run_all hasta
+      implementar ese lector raster; ver ficha docs/fuentes/ideam.md."
 
   defensoria:
     estado: "sin dato abierto público"

@@ -47,6 +47,7 @@ FUENTES_ACTIVAS = [
     ("ACLED_EMAIL", "ACLED", "Email de registro de ACLED"),
     ("ACLED_KEY", "ACLED", "Key de registro de ACLED"),
     ("ACLED_DATA_DIR", "ACLED", "Directorio de los agregados XLSX (default data/external)"),
+    ("IDEAM_BOSQUE_URL", "IDEAM", "ZIP del raster de deforestación (opcional: se resuelve por redirección pública)"),
 ]
 
 
@@ -86,8 +87,8 @@ class Settings(BaseSettings):
     cnmh_bienes_url: str | None = None
     cnmh_acciones_url: str | None = None
 
-    # Fase C (documentada, sin pipeline todavía): IDEAM es un archivo, no un
-    # dataset Socrata (39dh-rc72); requerirá un lector tipo _leer_excel_dane.
+    # IDEAM: raster de deforestación (39dh-rc72, archivo .img en ZIP). Si la
+    # variable está vacía se resuelve la redirección pública de /download/39dh-rc72.
     ideam_bosque_url: str | None = None
 
     # HDX: recurso CSV de Conflict Events (hdx-hapi-col) dentro del dataset

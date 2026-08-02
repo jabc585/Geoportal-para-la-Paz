@@ -11,6 +11,7 @@ from __future__ import annotations
 from functools import partial
 
 from etl.dane.pipeline import DANE_Poblacion
+from etl.ideam.pipeline import IDEAM_Ambiental
 from etl.internacional.acled import Internacional_ACLED
 from etl.internacional.hdx import Internacional_HDX
 from etl.internacional.unhcr import Internacional_UNHCR
@@ -32,6 +33,7 @@ PIPELINES = [
     Internacional_ACLED,
     *[partial(CNMH_Memoria, hecho) for hecho in HECHOS],
     *[partial(Policia_Delitos, delito) for delito in DELITOS],
+    IDEAM_Ambiental,
 ]
 
 

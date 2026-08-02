@@ -263,15 +263,25 @@ el shape real encontrado (mismo patrón que
    (mapeo ADMIN1→DIVIPOLA).
 
 `etl/run_all.py` ejecuta: DANE, Víctimas, PDET, WB, UNHCR, HDX, ACLED, 6 CNMH,
-3 Policía. Nota verificada en la corrida completa: la siembra del catálogo
+3 Policía, IDEAM. Nota verificada en la corrida completa: la siembra del catálogo
 DIVIPOLA (`python -m etl.common.divipola`, 1.123 municipios) es prerrequisito
-de los cargadores municipales; sin ella las filas se descartan con aviso.
+de los cargadores municipales; sin ella las filas se descartan con aviso. La
+estadística zonal del raster IDEAM requiere además la capa geo municipal
+(`python -m etl.common.capas_geo`).
 
-## Fase C — documentado pero no implementado todavía
+## Fase C — implementada (IDEAM); resto documentado
 
-- **IDEAM**: requiere un lector de archivo tipo `_leer_excel_dane` adaptado al
-  formato real del dataset `39dh-rc72` (aún sin confirmar si es Excel, CSV o
-  shapefile — siguiente paso de investigación, no de este plan).
+- **IDEAM** ✅ implementado y verificado en vivo (2026-08-02): el dataset
+  `39dh-rc72` resultó ser un ZIP con raster Erdas Imagine (`.img`,
+  `cambio_2021_2022_v8_230705.img`, EPSG:3116, ~30 m/píxel) y su archivo
+  `Contenido_Cambio.txt`; el conector `etl/ideam/pipeline.py` descarga el ZIP
+  (URL configurable o redirección pública de `/download/39dh-rc72`), extrae el
+  raster, y calcula estadística zonal por municipio (clases 1-4 en ha) contra la
+  capa geo `capa_contexto_territorial` (sembrada desde COD-AB vía
+  `python -m etl.common.capas_geo`). Resultado en `serie_historica`: 4
+  indicadores (bosque estable 59,1M ha, deforestación 123.445 ha 2021-2022,
+  regeneración, no bosque) con 2.036 filas municipales. Prerrequisito: capa geo
+  sembrada (1.122 municipios; el 27493 NUEVO BELÉN DE BAJIRÁ no está en COD-AB).
 - **UCDP**: variable `UCDP_API_TOKEN` documentada vacía; requiere que alguien del
   equipo se registre en ucdp.uu.se primero.
 - **Fiscalía**: pipeline listo pero inactivo por volumen de agregación (ver

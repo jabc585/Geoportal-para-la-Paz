@@ -1,27 +1,20 @@
-# Observatorio para la Paz en Colombia - Python dependencies
-# Entorno ETL y API (secciones 4.1 y 14 del plan)
-#
-# Decisiones (sección 21, paso 7):
-# - Orquestación: script secuencial (etl/run_all.py) para el MVP; se evaluará
-#   Dagster cuando haya más de ~5 pipelines con dependencias complejas.
-# - Acceso a BD: psycopg directo de forma deliberada; no se usa SQLAlchemy.
-
-# --- ETL ---
-requests>=2.31
-pandas>=2.2
+# Etl common
 psycopg[binary]>=3.1
-pydantic>=2.6
-pydantic-settings>=2.2
-python-dotenv>=1.0
-# Lectura de Excel de DANE (serie de proyecciones de población; hallazgo de auditoría)
+pydantic-settings>=2.3
+
+# Datos (pandas + esquema)
+pandas>=2.2
+pandera>=0.20
 openpyxl>=3.1
-# Validación de datos con contratos (sección 4.1)
-pandera>=0.19
 
-# --- API ---
-fastapi>=0.110
-uvicorn[standard]>=0.29
+# Red
+requests>=2.31
 
-# --- Pruebas (sección 21, paso 6) ---
-pytest>=8.0
-httpx>=0.27
+# API
+fastapi>=0.115
+uvicorn[standard]>=0.30
+
+# Geoespacial: capa municipal DIVIPOLA + estadística zonal del raster IDEAM
+geopandas>=1.0
+rasterio>=1.4
+rasterstats>=0.19
