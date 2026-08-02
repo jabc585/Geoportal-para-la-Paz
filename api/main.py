@@ -3,19 +3,31 @@
 CORS configurado explícitamente para consumo desde dashboards de terceros
 (medios, universidades) con política documentada en /docs (sección 8).
 """
-
 from __future__ import annotations
 
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from slowapi import Limiter
+from slowapi.errors import RateLimitExceeded
+from slowapi.util import get_remote_address
 
 from api.routes.v1 import router as v1_router
+
+# Rate limiting (auditoría 2026-08-02, OWASP API4:2023): la API es pública; los
+# límites por IP evitan agotamiento de recursos antes de exponerla fuera de
+# loopback. Umbrales conservadores y configurables con API_RATE_LIMIT.
+limiter = Limiter(
+    key_func=get_remote_address,
+    default_limits=[os.getenv("API_RATE_LIMIT", "120/minute")],
+)
 
 
 def os_env_list(nombre: str, default: str) -> list[str]:
     return [o.strip() for o in os.getenv(nombre, default).split(",") if o.strip()]
+
 
 app = FastAPI(
     title="Observatorio para la Paz en Colombia - API",
@@ -28,6 +40,18 @@ app = FastAPI(
     contact={"name": "Observatorio para la Paz", "url": "https://www.datos.gov.co/"},
     license_info={"name": "CC BY 4.0 (datos curados del observatorio)"},
 )
+
+app.state.limiter = limiter
+
+
+@app.exception_handler(RateLimitExceeded)
+async def _rate_limit_exceeded(request: Request, exc: RateLimitExceeded) -> JSONResponse:
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Límite de solicitudes excedido; reintentar más tarde."},
+        headers={"Retry-After": "60"},
+    )
+
 
 app.add_middleware(
     CORSMiddleware,

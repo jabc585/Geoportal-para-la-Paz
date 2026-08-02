@@ -45,7 +45,7 @@ def estado_fuentes() -> list[dict]:
     """Por fuente: variable configurada + último pipeline exitoso en la BD."""
     ultimos = {}
     try:
-        with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+        with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 """
                 SELECT pipeline_id, MAX(timestamp_ejecucion) AS ultima_corrida

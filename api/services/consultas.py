@@ -40,7 +40,12 @@ def consultar_serie(
         where.append("s.periodo_fin <= %s")
         params.append(hasta)
     if cursor:
-        payload = json.loads(base64.urlsafe_b64decode(cursor.encode()).decode())
+        # Cursor malformado (base64/JSON inválido) → HTTP 400, no 500 genérico
+        # (auditoría 2026-08-02).
+        try:
+            payload = json.loads(base64.urlsafe_b64decode(cursor.encode()).decode())
+        except (ValueError, json.JSONDecodeError) as exc:
+            raise ValueError("Cursor de paginación inválido") from exc
         where.append("s.serie_id > %s")
         params.append(payload["serie_id"])
 
@@ -58,7 +63,7 @@ def consultar_serie(
         LIMIT %s
     """
     params.append(limit + 1)
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(sql, params)
         filas = cur.fetchall()
 
@@ -105,13 +110,13 @@ def exportar_serie_csv(
         ORDER BY s.periodo_inicio, m.nombre
         LIMIT 200000
     """
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(sql, params)
         return cur.fetchall()
 
 
 def listar_fuentes() -> list[dict]:
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
             SELECT fuente_id, nombre, entidad, licencia, ultima_actualizacion, url_base
@@ -126,7 +131,7 @@ def listar_fuentes() -> list[dict]:
 def contar_proyectos_pdet() -> dict:
     """Conteos del módulo PDET (sección 11 del plan): proyectos, municipios PDET
     y valor de inversión agregado (si lo reportara la fuente)."""
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
             SELECT
@@ -139,7 +144,7 @@ def contar_proyectos_pdet() -> dict:
 
 
 def consultar_territorio(codigo_divipola: str) -> dict | None:
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
             SELECT m.municipio_id, m.codigo_divipola, m.nombre,
@@ -159,7 +164,7 @@ def consultar_total(indicador: str) -> dict | None:
     Suma todas las fuentes que cargan el indicador (cada una conserva su
     linaje); el dashboard muestra el año más reciente.
     """
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
             SELECT i.codigo, i.nombre, i.unidad
@@ -200,7 +205,7 @@ def consultar_mapa(indicador: str, anio: int | None = None) -> dict | None:
     Geometría simplificada (~110 m) para payloads razonables; los municipios
     sin dato salen con valor null para pintarse en gris.
     """
-    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+    with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
             SELECT i.codigo, i.nombre, i.unidad,

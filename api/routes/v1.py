@@ -5,8 +5,10 @@ from __future__ import annotations
 import csv
 import io
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Path, Query, Request
 from fastapi.responses import StreamingResponse
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
 from api.models.schemas import (
     ErrorOut,
@@ -32,6 +34,11 @@ from api.services.consultas import (
 from api.services.health import estado_fuentes
 
 router = APIRouter(prefix="/api/v1", tags=["v1"])
+
+# Mismo limiter que api/main.py (auditoría 2026-08-02): el endpoint de exportación
+# CSV devuelve hasta 200.000 filas y es el más costoso, por eso tiene un límite
+# más estricto que el default de la API.
+limiter = Limiter(key_func=get_remote_address, default_limits=["120/minute"])
 
 
 @router.get(
@@ -66,7 +73,7 @@ def get_pdet_proyectos() -> PdetOut:
     response_model=MunicipioOut | ErrorOut,
     summary="Municipio por código DIVIPOLA",
 )
-def get_territorio(codigo_divipola: str) -> MunicipioOut | ErrorOut:
+def get_territorio(codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> MunicipioOut | ErrorOut:
     resultado = consultar_territorio(codigo_divipola)
     if not resultado:
         raise HTTPException(status_code=404, detail="Territorio no encontrado")
@@ -84,7 +91,7 @@ def get_territorio(codigo_divipola: str) -> MunicipioOut | ErrorOut:
     ),
 )
 def get_indicador(
-    indicador: str,
+    indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     territorio: str | None = Query(default=None, description="Código DIVIPOLA (5 dígitos municipio o 2 departamento)"),
     desde: str | None = Query(default=None, description="Fecha inicio del periodo (YYYY-MM-DD)"),
     hasta: str | None = Query(default=None, description="Fecha fin del periodo (YYYY-MM-DD)"),
@@ -100,7 +107,9 @@ def get_indicador(
     response_model=IndicadorTotalOut,
     summary="Total nacional por año de un indicador (KPIs del dashboard)",
 )
-def get_indicador_total(indicador: str) -> IndicadorTotalOut:
+def get_indicador_total(
+    indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
+) -> IndicadorTotalOut:
     resultado = consultar_total(indicador)
     if not resultado:
         raise HTTPException(status_code=404, detail="Indicador no encontrado")
@@ -127,7 +136,7 @@ def get_fuentes() -> list[FuenteOut]:
     ),
 )
 def get_mapa(
-    indicador: str,
+    indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     anio: int | None = Query(default=None, ge=1900, le=2100, description="Año del agregado; por defecto el más reciente"),
 ) -> MapaOut:
     resultado = consultar_mapa(indicador, anio)
@@ -145,8 +154,10 @@ def get_mapa(
         "Tope: 200.000 filas."
     ),
 )
+@limiter.limit("10/minute")
 def get_indicador_csv(
-    indicador: str,
+    request: Request,
+    indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     territorio: str | None = Query(default=None, description="Código DIVIPOLA (5 dígitos municipio o 2 departamento)"),
     desde: str | None = Query(default=None, description="Fecha inicio del periodo (YYYY-MM-DD)"),
     hasta: str | None = Query(default=None, description="Fecha fin del periodo (YYYY-MM-DD)"),
