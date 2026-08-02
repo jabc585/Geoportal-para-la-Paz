@@ -24,7 +24,7 @@ export function Inicio() {
       <section className="panel" id="mapa">
         <div className="panel-cabecera">
           <h2 className="panel-titulo">Mapa Nacional</h2>
-          <span className="panel-nota">Capas de indicadores: fase 5 del plan</span>
+          <span className="panel-nota">Capa coroplética por quintiles, agregado municipal (fase 5)</span>
         </div>
         <MapaNacional />
         <a className="enlace-metodologia" href="#metodologia" title="¿Cómo se calcula?">

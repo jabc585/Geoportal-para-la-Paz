@@ -133,3 +133,82 @@ def consultar_total(indicador: str) -> dict | None:
         "unidad": meta["unidad"],
         "totales": totales,
     }
+
+
+def consultar_mapa(indicador: str, anio: int | None = None) -> dict | None:
+    """Capa coroplética municipal (fase 5): GeoJSON simplificado.
+
+    Une el agregado municipal-año del indicador con la capa geo DIVIPOLA
+    (sección 5.1). Si `anio` es None usa el año más reciente con datos.
+    Geometría simplificada (~110 m) para payloads razonables; los municipios
+    sin dato salen con valor null para pintarse en gris.
+    """
+    with conectar() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT i.codigo, i.nombre, i.unidad,
+                   EXTRACT(YEAR FROM MAX(s.periodo_inicio))::int AS anio_max
+            FROM curated.indicadores i
+            LEFT JOIN curated.serie_historica s ON s.indicador_id = i.indicador_id
+                AND s.municipio_id IS NOT NULL
+            WHERE i.codigo = %s
+            GROUP BY i.codigo, i.nombre, i.unidad
+            """,
+            (indicador,),
+        )
+        meta = cur.fetchone()
+        if not meta:
+            return None
+        if meta["anio_max"] is None:
+            return {
+                "indicador": meta["codigo"],
+                "nombre": meta["nombre"],
+                "unidad": meta["unidad"],
+                "anio": anio,
+                "features": [],
+            }
+        anio_efectivo = anio if anio is not None else meta["anio_max"]
+        cur.execute(
+            """
+            SELECT c.codigo_divipola, m.nombre AS municipio, d.nombre AS departamento,
+                   ST_AsGeoJSON(ST_SimplifyPreserveTopology(c.geometria, 0.002), 6) AS geojson,
+                   a.valor
+            FROM curated.capa_contexto_territorial c
+            JOIN curated.municipio m    ON m.codigo_divipola = c.codigo_divipola AND m.vigente
+            JOIN curated.departamento d ON d.departamento_id = m.departamento_id
+            LEFT JOIN (
+                SELECT s.municipio_id, sum(s.valor) AS valor
+                FROM curated.serie_historica s
+                JOIN curated.indicadores i ON i.indicador_id = s.indicador_id
+                WHERE i.codigo = %s
+                  AND EXTRACT(YEAR FROM s.periodo_inicio) = %s
+                  AND s.municipio_id IS NOT NULL
+                GROUP BY s.municipio_id
+            ) a ON a.municipio_id = m.municipio_id
+            WHERE c.tipo = 'divipola'
+            """,
+            (indicador, anio_efectivo),
+        )
+        features = []
+        for fila in cur.fetchall():
+            geometria = json.loads(fila["geojson"])
+            features.append(
+                {
+                    "type": "Feature",
+                    "geometry": geometria,
+                    "properties": {
+                        "codigo_divipola": fila["codigo_divipola"],
+                        "municipio": fila["municipio"],
+                        "departamento": fila["departamento"],
+                        "valor": float(fila["valor"]) if fila["valor"] is not None else None,
+                    },
+                }
+            )
+    return {
+        "indicador": meta["codigo"],
+        "nombre": meta["nombre"],
+        "unidad": meta["unidad"],
+        "anio": anio_efectivo,
+        "type": "FeatureCollection",
+        "features": features,
+    }

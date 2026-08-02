@@ -70,3 +70,18 @@ class IndicadorTotalOut(BaseModel):
     nombre: str
     unidad: str
     totales: list[TotalAnualOut]
+
+
+class MapaFeatureOut(BaseModel):
+    type: str
+    geometry: dict
+    properties: dict
+
+
+class MapaOut(BaseModel):
+    indicador: str
+    nombre: str
+    unidad: str
+    anio: int | None
+    type: str
+    features: list[MapaFeatureOut]

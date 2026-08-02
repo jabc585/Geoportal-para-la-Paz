@@ -277,11 +277,86 @@ section + section {
 
 /* ============ Mapas (sección 10: paleta verificada para daltonismo) ============ */
 
+.mapa-nacional {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.mapa-controles {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.mapa-control-etiqueta {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--texto-secundario);
+}
+
+.mapa-select {
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--borde);
+  border-radius: var(--radio-chico);
+  background: var(--superficie-elevada);
+  color: var(--texto);
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.mapa-anio {
+  font-size: 0.8rem;
+  color: var(--texto-mute);
+}
+
+.mapa-error {
+  font-size: 0.85rem;
+  color: var(--color-critico);
+}
+
 .mapa-contenedor {
   height: 420px;
   border-radius: var(--radio-chico);
   overflow: hidden;
   border: 1px solid var(--borde-sutil);
+}
+
+.mapa-leyenda {
+  font-size: 0.78rem;
+  color: var(--texto-secundario);
+}
+
+.mapa-leyenda-titulo {
+  font-weight: 600;
+}
+
+.mapa-leyenda-escala {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  gap: 0.4rem 1rem;
+  flex-wrap: wrap;
+}
+
+.mapa-leyenda-escala li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mapa-leyenda-escala i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid var(--borde-sutil);
+}
+
+.mapa-leyenda-nota {
+  margin: 0.4rem 0 0;
+  color: var(--texto-mute);
 }
 
 @media (max-width: 640px) {

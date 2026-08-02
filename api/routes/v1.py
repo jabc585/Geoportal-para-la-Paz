@@ -10,11 +10,18 @@ from api.models.schemas import (
     FuenteOut,
     HealthOut,
     IndicadorTotalOut,
+    MapaOut,
     MunicipioOut,
     Pagina,
     SerieOut,
 )
-from api.services.consultas import consultar_serie, consultar_territorio, consultar_total, listar_fuentes
+from api.services.consultas import (
+    consultar_mapa,
+    consultar_serie,
+    consultar_territorio,
+    consultar_total,
+    listar_fuentes,
+)
 from api.services.health import estado_fuentes
 
 router = APIRouter(prefix="/api/v1", tags=["v1"])
@@ -87,3 +94,23 @@ def get_indicador_total(indicador: str) -> IndicadorTotalOut:
 )
 def get_fuentes() -> list[FuenteOut]:
     return [FuenteOut(**f) for f in listar_fuentes()]
+
+
+@router.get(
+    "/mapas/{indicador}",
+    response_model=MapaOut,
+    summary="Capa coroplética municipal de un indicador (fase 5)",
+    description=(
+        "GeoJSON simplificado: agregado municipal del indicador para un año "
+        "(por defecto el más reciente con datos) unido a la capa geo DIVIPOLA "
+        "(sección 5.1). Los municipios sin dato salen con valor null."
+    ),
+)
+def get_mapa(
+    indicador: str,
+    anio: int | None = Query(default=None, ge=1900, le=2100, description="Año del agregado; por defecto el más reciente"),
+) -> MapaOut:
+    resultado = consultar_mapa(indicador, anio)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Indicador no encontrado")
+    return MapaOut(**resultado)

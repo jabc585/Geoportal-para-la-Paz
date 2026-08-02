@@ -78,6 +78,31 @@ def simular_servicios(monkeypatch):
     )
     monkeypatch.setattr(
         rutas,
+        "consultar_mapa",
+        lambda indicador, anio=None: {
+            "indicador": indicador,
+            "nombre": "Homicidios (Policía Nacional)",
+            "unidad": "delitos",
+            "anio": anio or 2025,
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [1, 1]]]},
+                    "properties": {
+                        "codigo_divipola": "05002",
+                        "municipio": "Abejorral",
+                        "departamento": "Antioquia",
+                        "valor": 6.0,
+                    },
+                }
+            ],
+        }
+        if indicador == "homicidios"
+        else None,
+    )
+    monkeypatch.setattr(
+        rutas,
         "estado_fuentes",
         lambda: [
             {
@@ -148,6 +173,23 @@ def test_total_indicador_con_datos():
 
 def test_total_indicador_inexistente_404():
     resp = client.get("/api/v1/indicadores/nada/total")
+    assert resp.status_code == 404
+
+
+def test_mapa_indicador_con_capa():
+    resp = client.get("/api/v1/mapas/homicidios")
+    assert resp.status_code == 200
+    cuerpo = resp.json()
+    assert cuerpo["type"] == "FeatureCollection"
+    assert len(cuerpo["features"]) == 1
+    feature = cuerpo["features"][0]
+    assert feature["geometry"]["type"] == "Polygon"
+    assert feature["properties"]["valor"] == 6.0
+    assert feature["properties"]["municipio"] == "Abejorral"
+
+
+def test_mapa_indicador_inexistente_404():
+    resp = client.get("/api/v1/mapas/nada")
     assert resp.status_code == 404
 
 

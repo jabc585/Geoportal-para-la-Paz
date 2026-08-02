@@ -19,6 +19,29 @@ export interface IndicadorTotal {
   totales: TotalAnual[];
 }
 
+export interface MapaFeature {
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: unknown[];
+  };
+  properties: {
+    codigo_divipola: string;
+    municipio: string;
+    departamento: string;
+    valor: number | null;
+  };
+}
+
+export interface MapaIndicador {
+  indicador: string;
+  nombre: string;
+  unidad: string;
+  anio: number | null;
+  type: string;
+  features: MapaFeature[];
+}
+
 const BASE = "/api/v1";
 
 async function obtener<T>(ruta: string): Promise<T> {
@@ -35,4 +58,8 @@ export function obtenerFuentes(): Promise<Fuente[]> {
 
 export function obtenerTotalIndicador(indicador: string): Promise<IndicadorTotal> {
   return obtener<IndicadorTotal>(`/indicadores/${indicador}/total`);
+}
+
+export function obtenerMapa(indicador: string): Promise<MapaIndicador> {
+  return obtener<MapaIndicador>(`/mapas/${indicador}`);
 }
