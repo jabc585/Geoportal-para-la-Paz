@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { obtenerTotalIndicador } from "../api/client";
+import { useApi } from "../api/useApi";
 
 const NUMERO = new Intl.NumberFormat("es-CO");
 
@@ -10,33 +10,27 @@ interface Props {
 }
 
 export function KPIIndicador({ codigo, etiqueta, unidad }: Props) {
-  const [texto, setTexto] = useState<string | null>(null);
-  const [anio, setAnio] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { datos, error, cargando } = useApi(
+    () => obtenerTotalIndicador(codigo),
+    [codigo],
+  );
 
-  useEffect(() => {
-    obtenerTotalIndicador(codigo)
-      .then((d) => {
-        const ultimo = d.totales[0];
-        if (ultimo) {
-          setTexto(NUMERO.format(ultimo.valor));
-          setAnio(ultimo.anio);
-        } else {
-          setTexto("Sin datos");
-        }
-      })
-      .catch((e: Error) => setError(e.message));
-  }, [codigo]);
+  const ultimo = datos?.totales[0];
+  const texto = error
+    ? "API no disponible"
+    : ultimo
+      ? NUMERO.format(ultimo.valor)
+      : cargando
+        ? "…"
+        : "Sin datos";
 
   return (
     <div className="kpi">
       <div className="kpi-etiqueta">{etiqueta}</div>
-      <div className={`kpi-valor${texto === null && !error ? " esta-cargando" : ""}`}>
-        {error ? "API no disponible" : texto ?? "…"}
-      </div>
-      {anio !== null && (
+      <div className={`kpi-valor${cargando ? " esta-cargando" : ""}`}>{texto}</div>
+      {ultimo && (
         <div className="kpi-subetiqueta">
-          {anio} · {unidad ?? "dato nacional"}
+          {ultimo.anio} · {unidad ?? "dato nacional"}
         </div>
       )}
     </div>

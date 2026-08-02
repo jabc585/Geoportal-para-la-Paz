@@ -1,32 +1,14 @@
-import { useEffect, useState } from "react";
-import { obtenerProyectosPdet, type PdetProyectos } from "../api/client";
+import { obtenerProyectosPdet } from "../api/client";
+import { useApi } from "../api/useApi";
 
 export function KPIPdet() {
-  const [datos, setDatos] = useState<PdetProyectos | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [cargando, setCargando] = useState(true);
-
-  useEffect(() => {
-    obtenerProyectosPdet()
-      .then(setDatos)
-      .catch((e: Error) => setError(e.message))
-      .finally(() => setCargando(false));
-  }, []);
-
-  if (error) {
-    return (
-      <div className="kpi">
-        <div className="kpi-etiqueta">Proyectos PDET (ART)</div>
-        <div className="kpi-valor es-error">API no disponible</div>
-      </div>
-    );
-  }
+  const { datos, error, cargando } = useApi(obtenerProyectosPdet);
 
   return (
     <div className="kpi">
       <div className="kpi-etiqueta">Proyectos PDET (ART)</div>
-      <div className={`kpi-valor${cargando ? " esta-cargando" : ""}`}>
-        {cargando ? "…" : datos?.proyectos.toLocaleString("es-CO")}
+      <div className={`kpi-valor${error ? " es-error" : cargando ? " esta-cargando" : ""}`}>
+        {error ? "API no disponible" : cargando ? "…" : datos?.proyectos.toLocaleString("es-CO")}
       </div>
     </div>
   );

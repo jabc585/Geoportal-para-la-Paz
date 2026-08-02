@@ -44,6 +44,24 @@ function descargarGeoJSON(datos: MapaIndicador): void {
   URL.revokeObjectURL(url);
 }
 
+function contenidoPopup(p: { municipio?: string; departamento?: string; valor?: number | null }, unidad: string): HTMLElement {
+  const caja = document.createElement("div");
+  const municipio = document.createElement("strong");
+  municipio.textContent = p.municipio ?? "";
+  caja.appendChild(municipio);
+  caja.appendChild(document.createElement("br"));
+  caja.appendChild(document.createTextNode(p.departamento ?? ""));
+  caja.appendChild(document.createElement("br"));
+  caja.appendChild(
+    document.createTextNode(
+      p.valor === null || p.valor === undefined
+        ? "Sin dato"
+        : `${formatearValor(p.valor)} ${unidad}`,
+    ),
+  );
+  return caja;
+}
+
 export function MapaNacional() {
   const contenedor = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<maplibregl.Map | null>(null);
@@ -148,12 +166,7 @@ export function MapaNacional() {
           const p = feature.properties as { municipio?: string; departamento?: string; valor?: number | null };
           popup
             .setLngLat(e.lngLat)
-            .setHTML(
-              `<strong>${p.municipio ?? ""}</strong><br/>${p.departamento ?? ""}<br/>` +
-                (p.valor === null || p.valor === undefined
-                  ? "Sin dato"
-                  : `${formatearValor(p.valor)} ${datos.unidad}`)
-            )
+            .setDOMContent(contenidoPopup(p, datos.unidad))
             .addTo(mapa);
         } else {
           popup.remove();
