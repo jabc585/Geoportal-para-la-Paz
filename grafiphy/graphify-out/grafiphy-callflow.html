@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>grafiphy — Complete Call Flow &amp; Architecture Documentation</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --bg: #0f172a; --surface: #1e293b; --border: #334155;
+  --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8;
+  --warn: #fbbf24; --err: #f87171; --ok: #34d399;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+.container { max-width: 1200px; margin: 0 auto; padding: 40px 24px; }
+h1 { font-size: 2.4rem; margin-bottom: 8px; background: linear-gradient(135deg, var(--accent), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+h2 { font-size: 1.7rem; margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+h3 { font-size: 1.25rem; margin: 32px 0 12px; color: var(--accent); }
+h4 { font-size: 1.05rem; margin: 20px 0 8px; color: var(--warn); }
+p { margin: 8px 0; color: var(--muted); }
+.subtitle { color: var(--muted); font-size: 1.1rem; margin-bottom: 32px; }
+.mermaid { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin: 20px 0; overflow-x: auto; position: relative; }
+.mermaid.is-enhanced { padding: 0; overflow: hidden; min-height: 260px; }
+.mermaid-viewport { padding: 54px 24px 24px; overflow: hidden; cursor: grab; touch-action: none; min-height: 260px; }
+.mermaid-viewport.is-dragging { cursor: grabbing; }
+.mermaid-viewport svg { max-width: none !important; height: auto; transform-origin: 0 0; transition: transform 120ms ease; }
+.mermaid-toolbar { position: absolute; top: 10px; right: 10px; z-index: 3; display: flex; align-items: center; gap: 6px; padding: 6px; background: rgba(15,23,42,0.92); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.28); }
+.mermaid-toolbar button, .mermaid-toolbar .zoom-level { height: 28px; min-width: 32px; border: 1px solid var(--border); border-radius: 6px; background: #1e293b; color: var(--text); font: 600 0.78rem system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: center; }
+.mermaid-toolbar button { cursor: pointer; }
+.mermaid-toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+.mermaid-toolbar .zoom-level { min-width: 52px; color: var(--muted); background: transparent; }
+.call-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.92rem; }
+.call-table th { background: #1a2744; color: var(--accent); text-align: left; padding: 10px 14px; border: 1px solid var(--border); }
+.call-table td { padding: 8px 14px; border: 1px solid var(--border); vertical-align: top; }
+.call-table tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; }
+.tag-async { background: #7c3aed33; color: #a78bfa; }
+.tag-class { background: #05966933; color: var(--ok); }
+.tag-func { background: #2563eb33; color: var(--accent); }
+.tag-cmd { background: #d9770633; color: var(--warn); }
+.tag-endpoint { background: #dc262633; color: var(--err); }
+.tag-hook { background: #db277733; color: #f472b6; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin: 16px 0; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin: 16px 0; }
+.arrow-chain { font-family: 'Fira Code', monospace; font-size: 0.85rem; color: var(--accent); padding: 10px; background: rgba(56,189,248,0.06); border-radius: 6px; }
+code { font-family: 'Fira Code', 'Cascadia Code', monospace; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 3px; font-size: 0.88em; }
+ul, ol { margin: 8px 0 8px 24px; color: var(--muted); }
+li { margin: 4px 0; }
+a { color: var(--accent); }
+hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+.nav { position: sticky; top: 0; background: var(--bg); z-index: 10; padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; }
+.nav a { text-decoration: none; }
+.nav a:hover { text-decoration: underline; }
+@media (max-width: 768px) { .container { padding: 16px; } h1 { font-size: 1.8rem; } }
+
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>grafiphy — Complete Call Flow &amp; Architecture Documentation</h1>
+<p class="subtitle">Generated from graphify knowledge graph: 309 nodes, 568 edges, 19 communities. Commit: 6a0e5a2</p>
+
+<div class="nav">
+    <a href="#overview">Architecture Overview</a>
+    <a href="#build-graph">Graph Build</a>
+    <a href="#serve-api">Serving API</a>
+    <a href="#tests-fixtures">Tests &amp; Fixtures</a>
+    <a href="#common-etl-utilidades">Common Etl Utilidades</a>
+    <a href="#etl-observatorio-para">Etl Observatorio Para</a>
+    <a href="#viteconfigts-dashboard">Viteconfigts Dashboard</a>
+</div>
+
+<!-- ====== Architecture Overview ====== -->
+<h2 id="overview">1. Architecture Overview</h2>
+
+<div class="mermaid">
+
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    BUILD_GRAPH_321CBB04("Graph Build<br/><small>49 nodes</small>")
+    class BUILD_GRAPH_321CBB04 module;
+    SERVE_API_35EC8E86("Serving API<br/><small>43 nodes</small>")
+    class SERVE_API_35EC8E86 module;
+    TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>212 nodes</small>")
+    class TESTS_FIXTURES_B84B1DCC module;
+    COMMON_ETL_UTILIDADES_56FFFAD4("Common Etl Utilidades<br/><small>2 nodes</small>")
+    class COMMON_ETL_UTILIDADES_56FFFAD4 module;
+    ETL_OBSERVATORIO_PARA_55FF9DBA("Etl Observatorio Para<br/><small>2 nodes</small>")
+    class ETL_OBSERVATORIO_PARA_55FF9DBA module;
+    VITECONFIGTS_DASHBOARD_398431BB("Viteconfigts Dashboard<br/><small>1 nodes</small>")
+    class VITECONFIGTS_DASHBOARD_398431BB module;
+    SERVE_API_35EC8E86 -->|imports x4| TESTS_FIXTURES_B84B1DCC
+    TESTS_FIXTURES_B84B1DCC -->|imports x3| SERVE_API_35EC8E86
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<div class="grid">
+  <div class="card">
+    <h4>Architecture Layers</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
+      <tr><td>Graph Build</td><td>49</td><td><code>2, 6</code></td></tr><tr><td>Serving API</td><td>43</td><td><code>3, 10, 11, 14, 15, 16</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>212</td><td><code>0, 1, 4, 5, 7, 8, 9, 18</code></td></tr><tr><td>Common Etl Utilidades</td><td>2</td><td><code>12</code></td></tr><tr><td>Etl Observatorio Para</td><td>2</td><td><code>13</code></td></tr><tr><td>Viteconfigts Dashboard</td><td>1</td><td><code>17</code></td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Core Flow</h4>
+    <div class="arrow-chain">Graph Build -&gt; Serving API -&gt; Tests &amp; Fixtures -&gt; Common Etl Utilidades -&gt; Etl Observatorio Para -&gt; Viteconfigts Dashboard</div>
+  </div>
+</div>
+<div class="grid">
+  <div class="card">
+    <h4>Graph Report Highlights</h4>
+    <ul>
+      <li>309 nodes · 568 edges · 19 communities (16 shown, 3 thin omitted)</li>
+      <li>Extraction: 96% EXTRACTED · 4% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.54)</li>
+      <li>Token cost: 0 input · 0 output</li>
+      <li>1. `Lineage` - 30 edges</li>
+      <li>2. `PipelineETL` - 26 edges</li>
+      <li>3. `validar()` - 17 edges</li>
+    </ul>
+  </div>
+</div>
+<hr>
+<!-- ====== 2. Graph Build ====== -->
+<h2 id="build-graph">2. Graph Build</h2>
+<p>Graph Build groups implementation around dashboard, packagejson, tsconfigjson, react, mostly in dashboard/package.json, dashboard/tsconfig.json. This section covers 49 nodes and 47 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Graph Build (49 nodes, 47 edges)
+    dashboard_package_dependencies_maplibre_gl_b0c20f04("maplibre-gl<br/><small>dashboard/package.json</small>")
+    dashboard_package_dependencies_react_ab0d08d1("react<br/><small>dashboard/package.json</small>")
+    dashboard_package_dependencies_react_dom_90b57ef5("react-dom<br/><small>dashboard/package.json</small>")
+    dashboard_package_devdependencies_types_react_be06eb09("@types/react<br/><small>dashboard/package.json</small>")
+    dashboard_package_devdependencies_types_react_do_1975db45("@types/react-dom<br/><small>dashboard/package.json</small>")
+    dashboard_package_devdependencies_typescript_7636f4f8("typescript<br/><small>dashboard/package.json</small>")
+    maplibre_gl_6486cca7("maplibre-gl<br/><small>dashboard/package.json</small>")
+    react_6b810c90("react<br/><small>dashboard/package.json</small>")
+    react_dom_1c239ab9("react-dom<br/><small>dashboard/package.json</small>")
+    types_react_cf3431a2("@types/react<br/><small>dashboard/package.json</small>")
+    types_react_dom_c31b8d8e("@types/react-dom<br/><small>dashboard/package.json</small>")
+    dashboard_package_devdependencies_vitejs_plugin_9f61c25c("@vitejs/plugin-react<br/><small>dashboard/package.json</small>")
+    vitejs_plugin_react_e92d0332("@vitejs/plugin-react<br/><small>dashboard/package.json</small>")
+    typescript_fb9da861("typescript<br/><small>dashboard/package.json</small>")
+    dashboard_package_devdependencies_vite_d7b68cef("vite<br/><small>dashboard/package.json</small>")
+    vite_9907d3c4("vite<br/><small>dashboard/package.json</small>")
+    dashboard_package_scripts_build_d6934718("build<br/><small>dashboard/package.json</small>")
+    dashboard_package_dependencies_523ec474("dependencies<br/><small>dashboard/package.json</small>")
+    dashboard_package_dependencies_maplibre_gl_b0c20f04 -->|imports| maplibre_gl_6486cca7
+    dashboard_package_dependencies_react_ab0d08d1 -->|imports| react_6b810c90
+    dashboard_package_dependencies_react_dom_90b57ef5 -->|imports| react_dom_1c239ab9
+    dashboard_package_devdependencies_types_react_be06eb09 -->|imports| types_react_cf3431a2
+    dashboard_package_devdependencies_types_react_do_1975db45 -->|imports| types_react_dom_c31b8d8e
+    dashboard_package_devdependencies_vitejs_plugin_9f61c25c -->|imports| vitejs_plugin_react_e92d0332
+    dashboard_package_devdependencies_typescript_7636f4f8 -->|imports| typescript_fb9da861
+    dashboard_package_devdependencies_vite_d7b68cef -->|imports| vite_9907d3c4
+    %% Omitted for readability: 31 nodes, 0 edges
+    class dashboard_package_dependencies_maplibre_gl_b0c20f04 function;
+    class dashboard_package_dependencies_react_ab0d08d1 function;
+    class dashboard_package_dependencies_react_dom_90b57ef5 function;
+    class dashboard_package_devdependencies_types_react_be06eb09 function;
+    class dashboard_package_devdependencies_types_react_do_1975db45 function;
+    class dashboard_package_devdependencies_typescript_7636f4f8 function;
+    class maplibre_gl_6486cca7 function;
+    class react_6b810c90 function;
+    class react_dom_1c239ab9 function;
+    class types_react_cf3431a2 function;
+    class types_react_dom_c31b8d8e function;
+    class dashboard_package_devdependencies_vitejs_plugin_9f61c25c function;
+    class vitejs_plugin_react_e92d0332 function;
+    class typescript_fb9da861 function;
+    class dashboard_package_devdependencies_vite_d7b68cef function;
+    class vite_9907d3c4 function;
+    class dashboard_package_scripts_build_d6934718 function;
+    class dashboard_package_dependencies_523ec474 function;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>package.json</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>package.json node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>name</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>name node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>private</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>private node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>version</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>version node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>type</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>type node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>scripts</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>scripts node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>dev</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>dev node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>build</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>build node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>preview</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>preview node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>dependencies</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>dependencies node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>maplibre-gl</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>maplibre-gl</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>maplibre-gl node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>maplibre-gl</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>maplibre-gl</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>maplibre-gl node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>react-dom node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>react-dom node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>devDependencies</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>devDependencies node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>@types/react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@types/react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>@types/react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>@types/react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>@types/react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>@types/react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>@types/react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@types/react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>@types/react-dom node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>@types/react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>@types/react-dom</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>@types/react-dom node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>@vitejs/plugin-react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>@vitejs/plugin-react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>@vitejs/plugin-react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>@vitejs/plugin-react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>@vitejs/plugin-react</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>@vitejs/plugin-react node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>typescript</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>typescript</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>typescript node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>typescript</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>typescript</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>typescript node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>vite</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>vite</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>vite node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>vite</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>vite</code><br><small style="color:var(--muted)">dashboard/package.json</small></td>
+  <td>No direct outbound edge</td>
+  <td>vite node in dashboard/package.json.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>tsconfig.json</code><br><small style="color:var(--muted)">dashboard/tsconfig.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>compilerOptions</code><br><small style="color:var(--muted)">dashboard/tsconfig.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>compilerOptions node in dashboard/tsconfig.json.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>target</code><br><small style="color:var(--muted)">dashboard/tsconfig.json</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>target node in dashboard/tsconfig.json.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>dashboard/package.json</code></td><td>27 nodes</td></tr>
+<tr><td><code>dashboard/tsconfig.json</code></td><td>22 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x35, imports x8, extends x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 3. Serving API ====== -->
+<h2 id="serve-api">3. Serving API</h2>
+<p>Serving API groups implementation around api, dashboard, models, services, mostly in api/models/schemas.py, api/services/consultas.py, api/routes/v1.py. This section covers 43 nodes and 71 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Serving API (43 nodes, 71 edges)
+    subgraph serve_api_api_models_schemas_py_d795c3d5["api/models/schemas.py"]
+        api_models_schemas_51cecf61("schemas.py")
+        api_models_schemas_errorout_875806aa("ErrorOut<br/><small>api/models/schemas.py</small>")
+        api_models_schemas_fuenteout_ed1b2b05("FuenteOut<br/><small>api/models/schemas.py</small>")
+        api_models_schemas_municipioout_49cee716("MunicipioOut<br/><small>api/models/schemas.py</small>")
+    end
+    subgraph serve_api_api_routes_v1_py_63044e80["api/routes/v1.py"]
+        api_routes_v1_get_territorio_ecd4da3b("get_territorio()<br/><small>api/routes/v1.py</small>")
+        api_routes_v1_get_indicador_8cb16424("get_indicador()<br/><small>api/routes/v1.py</small>")
+        api_routes_v1_get_fuentes_067dc2d7("get_fuentes()<br/><small>api/routes/v1.py</small>")
+        api_routes_v1_a60d649b("v1.py")
+    end
+    subgraph serve_api_api_services_consultas_py_37242372["api/services/consultas.py"]
+        api_services_consultas_consultar_territorio_717334c8("consultar_territorio()<br/><small>api/services/consultas.py</small>")
+        api_services_consultas_consultar_serie_d64ec00e("consultar_serie()<br/><small>api/services/consultas.py</small>")
+        api_services_consultas_listar_fuentes_48668862("listar_fuentes()<br/><small>api/services/consultas.py</small>")
+        api_services_consultas_cursor_payload_a051c8f9("_cursor_payload()<br/><small>api/services/consultas.py</small>")
+    end
+    subgraph serve_api_src_api_client_ts_e86a89f6["src/api/client.ts"]
+        dashboard_src_api_client_obtenerfuentes_0c79a5ea("obtenerFuentes()<br/><small>src/api/client.ts</small>")
+        dashboard_src_api_client_obtener_22e77f6c("obtener()<br/><small>src/api/client.ts</small>")
+    end
+    dashboard_src_app_2ad363f1("App.tsx")
+    etl_common_db_conectar_c7411f69("conectar()<br/><small>etl/common/db.py</small>")
+    etl_common_pipeline_pipelineetl_conn_e1e90f94("conn()<br/><small>etl/common/pipeline.py</small>")
+    dashboard_src_components_kpifuentes_kpifuentes_0e1432fa("KPIFuentes()<br/><small>src/components/KPIFuentes.tsx</small>")
+    api_routes_v1_get_territorio_ecd4da3b -->|calls| api_services_consultas_consultar_territorio_717334c8
+    api_routes_v1_get_indicador_8cb16424 -->|calls| api_services_consultas_consultar_serie_d64ec00e
+    api_routes_v1_get_fuentes_067dc2d7 -->|calls| api_services_consultas_listar_fuentes_48668862
+    api_services_consultas_cursor_payload_a051c8f9 -->|calls| api_services_consultas_consultar_serie_d64ec00e
+    api_services_consultas_consultar_serie_d64ec00e -->|calls| etl_common_db_conectar_c7411f69
+    api_services_consultas_listar_fuentes_48668862 -->|calls| etl_common_db_conectar_c7411f69
+    api_services_consultas_consultar_territorio_717334c8 -->|calls| etl_common_db_conectar_c7411f69
+    dashboard_src_api_client_obtener_22e77f6c -->|calls| dashboard_src_api_client_obtenerfuentes_0c79a5ea
+    dashboard_src_api_client_obtenerfuentes_0c79a5ea -->|calls| dashboard_src_components_kpifuentes_kpifuentes_0e1432fa
+    etl_common_db_conectar_c7411f69 -->|calls| etl_common_pipeline_pipelineetl_conn_e1e90f94
+    api_models_schemas_51cecf61 -->|imports| api_routes_v1_a60d649b
+    api_models_schemas_fuenteout_ed1b2b05 -->|imports| api_routes_v1_a60d649b
+    api_models_schemas_municipioout_49cee716 -->|imports| api_routes_v1_a60d649b
+    api_models_schemas_errorout_875806aa -->|imports| api_routes_v1_a60d649b
+    api_routes_v1_a60d649b -->|imports| api_services_consultas_consultar_serie_d64ec00e
+    api_routes_v1_a60d649b -->|imports| api_services_consultas_consultar_territorio_717334c8
+    api_routes_v1_a60d649b -->|imports| api_services_consultas_listar_fuentes_48668862
+    %% Omitted for readability: 25 nodes, 0 edges
+    class api_models_schemas_51cecf61 module;
+    class api_models_schemas_errorout_875806aa klass;
+    class api_models_schemas_fuenteout_ed1b2b05 klass;
+    class api_models_schemas_municipioout_49cee716 klass;
+    class api_routes_v1_get_territorio_ecd4da3b function;
+    class api_routes_v1_get_indicador_8cb16424 function;
+    class api_routes_v1_get_fuentes_067dc2d7 function;
+    class api_routes_v1_a60d649b module;
+    class api_services_consultas_consultar_territorio_717334c8 function;
+    class api_services_consultas_consultar_serie_d64ec00e function;
+    class api_services_consultas_listar_fuentes_48668862 function;
+    class api_services_consultas_cursor_payload_a051c8f9 function;
+    class dashboard_src_api_client_obtenerfuentes_0c79a5ea function;
+    class dashboard_src_api_client_obtener_22e77f6c function;
+    class dashboard_src_app_2ad363f1 ui;
+    class etl_common_db_conectar_c7411f69 function;
+    class etl_common_pipeline_pipelineetl_conn_e1e90f94 function;
+    class dashboard_src_components_kpifuentes_kpifuentes_0e1432fa ui;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>schemas.py</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>Module file in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>FuenteOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>FuenteOut node in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>BaseModel</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BaseModel node in project.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>MunicipioOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>MunicipioOut node in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>SerieOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>SerieOut node in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>Pagina</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>Pagina node in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>ErrorOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td>ErrorOut node in api/models/schemas.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>Modelos Pydantic de la API (sección 8: tipado y documentación automática).</code><br><small style="color:var(--muted)">api/models/schemas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Modelos Pydantic de la API (sección 8: tipado y documentación automática)..</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>ErrorOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small><br><code>FuenteOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small><br><code>MunicipioOut</code><br><small style="color:var(--muted)">api/models/schemas.py</small><br>+3 more</td>
+  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br>+1 more</td>
+  <td>Module file in api/routes/v1.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>get</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>get node in project.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>get_territorio()</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td>get_territorio() node in api/routes/v1.py.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>get_indicador()</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td>get_indicador() node in api/routes/v1.py.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>get_fuentes()</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>listar_fuentes()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td>get_fuentes() node in api/routes/v1.py.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Rutas núcleo de la API v1 (sección 8).</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Rutas núcleo de la API v1 (sección 8)..</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>Module file in api/services/consultas.py.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>_cursor_payload()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td>_cursor_payload() node in api/services/consultas.py.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_cursor_payload()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>get_indicador()</code><br><small style="color:var(--muted)">api/routes/v1.py</small><br><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>consultar_serie() node in api/services/consultas.py.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>listar_fuentes()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>get_fuentes()</code><br><small style="color:var(--muted)">api/routes/v1.py</small><br><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>listar_fuentes() node in api/services/consultas.py.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>get_territorio()</code><br><small style="color:var(--muted)">api/routes/v1.py</small><br><code>v1.py</code><br><small style="color:var(--muted)">api/routes/v1.py</small></td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>consultar_territorio() node in api/services/consultas.py.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>Servicios de acceso a datos desde curated (solo lectura, sección 7.3).</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Servicios de acceso a datos desde curated (solo lectura, sección 7.3)..</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>Serie histórica con paginación basada en cursor (sección 8). El cursor codifica…</code><br><small style="color:var(--muted)">api/services/consultas.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Serie histórica con paginación basada en cursor (sección 8). El cursor codifica….</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>consultar_serie()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultar_territorio()</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br><code>consultas.py</code><br><small style="color:var(--muted)">api/services/consultas.py</small><br>+1 more</td>
+  <td><code>conn()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td>conectar() node in etl/common/db.py.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>.conn()</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>conectar()</code><br><small style="color:var(--muted)">etl/common/db.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.conn() node in etl/common/pipeline.py.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Connection node in project.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>Conexión perezosa: solo se abre al ejecutar el pipeline.</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Conexión perezosa: solo se abre al ejecutar el pipeline..</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">dashboard/src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>Inicio()</code><br><small style="color:var(--muted)">src/pages/Inicio.tsx</small><br><code>Inicio.tsx</code><br><small style="color:var(--muted)">src/pages/Inicio.tsx</small><br><code>main.tsx</code><br><small style="color:var(--muted)">dashboard/src/main.tsx</small></td>
+  <td>Module file in dashboard/src/App.tsx.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>App()</code><br><small style="color:var(--muted)">dashboard/src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>main.tsx</code><br><small style="color:var(--muted)">dashboard/src/main.tsx</small></td>
+  <td>App() node in dashboard/src/App.tsx.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>client.ts</code><br><small style="color:var(--muted)">src/api/client.ts</small></td>
+  <td><span class="tag tag-cmd">Entry</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>KPIFuentes.tsx</code><br><small style="color:var(--muted)">src/components/KPIFuentes.tsx</small></td>
+  <td>Module file in src/api/client.ts.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>Fuente</code><br><small style="color:var(--muted)">src/api/client.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>KPIFuentes.tsx</code><br><small style="color:var(--muted)">src/components/KPIFuentes.tsx</small></td>
+  <td>Fuente node in src/api/client.ts.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>obtener()</code><br><small style="color:var(--muted)">src/api/client.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>obtenerFuentes()</code><br><small style="color:var(--muted)">src/api/client.ts</small></td>
+  <td>obtener() node in src/api/client.ts.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>api/models/schemas.py</code></td><td>7 nodes</td></tr>
+<tr><td><code>api/services/consultas.py</code></td><td>7 nodes</td></tr>
+<tr><td><code>api/routes/v1.py</code></td><td>5 nodes</td></tr>
+<tr><td><code>src/api/client.ts</code></td><td>4 nodes</td></tr>
+<tr><td><code>api/__init__.py</code></td><td>2 nodes</td></tr>
+<tr><td><code>dashboard/src/App.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/components/KPIFuentes.tsx</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/maps/MapaNacional.tsx</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x19, imports x15, calls x10, references x9. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 4. Tests & Fixtures ====== -->
+<h2 id="tests-fixtures">4. Tests &amp; Fixtures</h2>
+<p>Tests &amp; Fixtures groups implementation around etl, test, pipelinepy, tests, mostly in tests/test_pipelines.py, etl/common/cargar.py, etl/dane/pipeline.py. This section covers 212 nodes and 441 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Tests &amp; Fixtures (212 nodes, 441 edges)
+    subgraph tests_fixtures_etl_common_cargar_py_8ee64f56["etl/common/cargar.py"]
+        etl_common_cargar_slugificar_e07cf7c3("slugificar()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_upsert_fuente_17828c0a("upsert_fuente()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_upsert_indicador_3a6b4647("upsert_indicador()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_resolver_territorio_9f0a78dd("resolver_territorio()<br/><small>etl/common/cargar.py</small>")
+        etl_common_cargar_insertar_serie_7cf706a6("insertar_serie()<br/><small>etl/common/cargar.py</small>")
+    end
+    subgraph tests_fixtures_etl_pdet_pipeline_py_719a7071["etl/pdet/pipeline.py"]
+        etl_pdet_pipeline_art_pdet_b7e0ec57("ART_PDET<br/><small>etl/pdet/pipeline.py</small>")
+        etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba("cargar_curated()<br/><small>etl/pdet/pipeline.py</small>")
+        etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230("_cargar_inversion()<br/><small>etl/pdet/pipeline.py</small>")
+        etl_pdet_pipeline_art_pdet_cargar_proyectos_3d8c5a8e("_cargar_proyectos()<br/><small>etl/pdet/pipeline.py</small>")
+    end
+    subgraph tests_fixtures_etl_common_lineage_py_6bf4a0d5["etl/common/lineage.py"]
+        etl_common_lineage_lineage_130d1228("Lineage<br/><small>etl/common/lineage.py</small>")
+        etl_common_lineage_117b09df("lineage.py")
+    end
+    subgraph tests_fixtures_etl_dane_pipeline_py_bf192c66["etl/dane/pipeline.py"]
+        etl_dane_pipeline_dane_poblacion_a90429a3("DANE_Poblacion<br/><small>etl/dane/pipeline.py</small>")
+        etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d("cargar_curated()<br/><small>etl/dane/pipeline.py</small>")
+    end
+    etl_common_pipeline_pipelineetl_63e6d9b9("PipelineETL<br/><small>etl/common/pipeline.py</small>")
+    etl_common_validation_validar_a99ef102("validar()<br/><small>etl/common/validation.py</small>")
+    etl_internacional_world_bank_internacional_world_6d76972d("_fuente_id()<br/><small>etl/internacional/world_bank.py</small>")
+    etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8("cargar_curated()<br/><small>etl/victimas/pipeline.py</small>")
+    tests_test_pipelines_test_slugificar_f47d1da7("test_slugificar()<br/><small>tests/test_pipelines.py</small>")
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_common_cargar_upsert_fuente_17828c0a
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_cargar_slugificar_e07cf7c3 -->|calls| tests_test_pipelines_test_slugificar_f47d1da7
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_internacional_world_bank_internacional_world_6d76972d
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba
+    etl_common_cargar_upsert_fuente_17828c0a -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230
+    etl_common_cargar_upsert_indicador_3a6b4647 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_cargar_resolver_territorio_9f0a78dd -->|calls| etl_common_cargar_insertar_serie_7cf706a6
+    etl_common_cargar_resolver_territorio_9f0a78dd -->|calls| etl_pdet_pipeline_art_pdet_cargar_proyectos_3d8c5a8e
+    etl_common_cargar_insertar_serie_7cf706a6 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_cargar_insertar_serie_7cf706a6 -->|calls| etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230
+    etl_common_cargar_insertar_serie_7cf706a6 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_common_validation_validar_a99ef102 -->|calls| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_common_validation_validar_a99ef102 -->|calls| etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230
+    etl_common_validation_validar_a99ef102 -->|calls| etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8
+    etl_dane_pipeline_dane_poblacion_a90429a3 -->|method| etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d
+    etl_pdet_pipeline_art_pdet_b7e0ec57 -->|method| etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba
+    etl_pdet_pipeline_art_pdet_b7e0ec57 -->|method| etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230
+    etl_pdet_pipeline_art_pdet_b7e0ec57 -->|method| etl_pdet_pipeline_art_pdet_cargar_proyectos_3d8c5a8e
+    etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba -->|calls| etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230
+    etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba -->|calls| etl_pdet_pipeline_art_pdet_cargar_proyectos_3d8c5a8e
+    %% Omitted for readability: 194 nodes, 0 edges
+    class etl_common_cargar_slugificar_e07cf7c3 function;
+    class etl_common_cargar_upsert_fuente_17828c0a function;
+    class etl_common_cargar_upsert_indicador_3a6b4647 function;
+    class etl_common_cargar_resolver_territorio_9f0a78dd function;
+    class etl_common_cargar_insertar_serie_7cf706a6 function;
+    class etl_pdet_pipeline_art_pdet_b7e0ec57 klass;
+    class etl_pdet_pipeline_art_pdet_cargar_curated_71d754ba function;
+    class etl_pdet_pipeline_art_pdet_cargar_inversion_6a618230 function;
+    class etl_pdet_pipeline_art_pdet_cargar_proyectos_3d8c5a8e function;
+    class etl_common_lineage_lineage_130d1228 klass;
+    class etl_common_lineage_117b09df module;
+    class etl_dane_pipeline_dane_poblacion_a90429a3 klass;
+    class etl_dane_pipeline_dane_poblacion_cargar_curated_3071457d function;
+    class etl_common_pipeline_pipelineetl_63e6d9b9 klass;
+    class etl_common_validation_validar_a99ef102 function;
+    class etl_internacional_world_bank_internacional_world_6d76972d function;
+    class etl_victimas_pipeline_victimas_hechos_cargar_cur_51c84da8 function;
+    class tests_test_pipelines_test_slugificar_f47d1da7 test;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>hash_registro()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>lineage.py</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+3 more</td>
+  <td>Module file in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>test_pipelines.py</code><br><small style="color:var(--muted)">tests/test_pipelines.py</small><br>+2 more</td>
+  <td>slugificar() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>slugificar()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><code>_fuente_id()</code><br><small style="color:var(--muted)">etl/internacional/world_bank.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br>+5 more</td>
+  <td>upsert_fuente() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>Connection</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Connection node in project.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>upsert_indicador()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>_cargar_inversion()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+3 more</td>
+  <td>upsert_indicador() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>resolver_territorio()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>_cargar_proyectos()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>resolver_territorio() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>resolver_territorio()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><code>_cargar_inversion()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+4 more</td>
+  <td>insertar_serie() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>DataFrame node in project.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>periodo_anual()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br>+2 more</td>
+  <td>periodo_anual() node in etl/common/cargar.py.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>date</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>date node in project.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>Carga a curated con resolución de catálogos y linaje (secciones 7 y 12).…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Carga a curated con resolución de catálogos y linaje (secciones 7 y 12).….</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>Normaliza un texto a código seguro: minúsculas, sin acentos, guiones bajos.</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Normaliza un texto a código seguro: minúsculas, sin acentos, guiones bajos..</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>Inserta o recupera el fuente_id del catálogo curated.fuentes. codigo (slug…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Inserta o recupera el fuente_id del catálogo curated.fuentes. codigo (slug….</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>Inserta o recupera el indicador_id del catálogo curated.indicadores.…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Inserta o recupera el indicador_id del catálogo curated.indicadores.….</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>Resuelve código DIVIPOLA a (municipio_id, departamento_id) vigentes (sección…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Resuelve código DIVIPOLA a (municipio_id, departamento_id) vigentes (sección….</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>Inserta filas normalizadas en curated.serie_historica con deduplicación por…</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Inserta filas normalizadas en curated.serie_historica con deduplicación por….</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>Periodo flexible (sección 7.1): un año completo.</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Periodo flexible (sección 7.1): un año completo..</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>EsquemaSerieNormalizada</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>DANE_Poblacion</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>pipeline.py</code><br><small style="color:var(--muted)">etl/victimas/pipeline.py</small><br>+4 more</td>
+  <td>EsquemaSerieNormalizada node in etl/common/validation.py.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Formato normalizado que consume insertar_serie (etl/common/cargar.py). Es el…</code><br><small style="color:var(--muted)">etl/common/validation.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Formato normalizado que consume insertar_serie (etl/common/cargar.py). Es el….</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>DANE_Poblacion</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>EsquemaSerieNormalizada</code><br><small style="color:var(--muted)">etl/common/validation.py</small><br><code>Lineage</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><code>area mantiene filas()</code><br><small style="color:var(--muted)">tests/test_pipelines.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>dane transformar normaliza()</code><br><small style="color:var(--muted)">tests/test_pipelines.py</small><br>+7 more</td>
+  <td>DANE_Poblacion node in etl/dane/pipeline.py.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>DANE_Poblacion</code><br><small style="color:var(--muted)">etl/dane/pipeline.py</small><br><code>insertar_serie()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>.cargar_curated() node in etl/dane/pipeline.py.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>pdet/pipeline.py</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>cargar.py</code><br><small style="color:var(--muted)">etl/common/cargar.py</small><br><code>EsquemaSerieNormalizada</code><br><small style="color:var(--muted)">etl/common/validation.py</small><br><code>hash_registro()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br>+11 more</td>
+  <td><code>run_all.py</code><br><small style="color:var(--muted)">etl/run_all.py</small><br><code>test_pipelines.py</code><br><small style="color:var(--muted)">tests/test_pipelines.py</small></td>
+  <td>Module file in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>_columna()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>transformar()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>_columna() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>DataFrame</code><br><small style="color:var(--muted)"></small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>DataFrame node in project.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>_columna_opcional()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>transformar()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>_columna_opcional() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>EsquemaSerieNormalizada</code><br><small style="color:var(--muted)">etl/common/validation.py</small><br><code>Lineage</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>PipelineETL</code><br><small style="color:var(--muted)">etl/common/pipeline.py</small></td>
+  <td><code>_cargar_inversion()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>_cargar_proyectos()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br>+7 more</td>
+  <td>ART_PDET node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>.extraer()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ahora()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.extraer() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>.transformar()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>_columna()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>_columna_opcional()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>No direct outbound edge</td>
+  <td>.transformar() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>.cargar_curated()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>upsert_fuente()</code><br><small style="color:var(--muted)">etl/common/cargar.py</small></td>
+  <td><code>_cargar_inversion()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>_cargar_proyectos()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td>.cargar_curated() node in etl/pdet/pipeline.py.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>._cargar_proyectos()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ART_PDET</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>cargar_curated()</code><br><small style="color:var(--muted)">etl/pdet/pipeline.py</small><br><code>hash_registro()</code><br><small style="color:var(--muted)">etl/common/lineage.py</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>._cargar_proyectos() node in etl/pdet/pipeline.py.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>tests/test_pipelines.py</code></td><td>24 nodes</td></tr>
+<tr><td><code>etl/common/cargar.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>etl/dane/pipeline.py</code></td><td>14 nodes</td></tr>
+<tr><td><code>etl/common/pipeline.py</code></td><td>12 nodes</td></tr>
+<tr><td><code>tests/test_api.py</code></td><td>11 nodes</td></tr>
+<tr><td><code>etl/pdet/pipeline.py</code></td><td>10 nodes</td></tr>
+<tr><td><code>etl/common/validation.py</code></td><td>9 nodes</td></tr>
+<tr><td><code>etl/internacional/world_bank.py</code></td><td>9 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: calls x82, contains x80, imports x63, references x61. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 5. Common Etl Utilidades ====== -->
+<h2 id="common-etl-utilidades">5. Common Etl Utilidades</h2>
+<p>Common Etl Utilidades groups implementation around common, etl, utilidades, compartidas, mostly in etl/common/__init__.py. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Common Etl Utilidades (2 nodes, 1 edges)
+    etl_common_init_78fd7434("__init__.py")
+    etl_common_init_rationale_1_698ca575("Utilidades compartidas del ETL: linaje,...<br/><small>etl/common/__init__.py</small>")
+    etl_common_init_78fd7434 -->|explains| etl_common_init_rationale_1_698ca575
+    class etl_common_init_78fd7434 module;
+    class etl_common_init_rationale_1_698ca575 concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>common/__init__.py</code><br><small style="color:var(--muted)">etl/common/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in etl/common/__init__.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>Utilidades compartidas del ETL: linaje, validación, base de datos y pipelines.</code><br><small style="color:var(--muted)">etl/common/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Utilidades compartidas del ETL: linaje, validación, base de datos y pipelines..</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>etl/common/__init__.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 6. Etl Observatorio Para ====== -->
+<h2 id="etl-observatorio-para">6. Etl Observatorio Para</h2>
+<p>Etl Observatorio Para groups implementation around etl, observatorio, para, paz, mostly in etl/__init__.py. This section covers 2 nodes and 1 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Etl Observatorio Para (2 nodes, 1 edges)
+    etl_init_80737246("__init__.py")
+    etl_init_rationale_1_bc3589d9("Observatorio para la Paz en Colombia -...<br/><small>etl/__init__.py</small>")
+    etl_init_80737246 -->|explains| etl_init_rationale_1_bc3589d9
+    class etl_init_80737246 module;
+    class etl_init_rationale_1_bc3589d9 concept;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>etl/__init__.py</code><br><small style="color:var(--muted)">etl/__init__.py</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in etl/__init__.py.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>Observatorio para la Paz en Colombia - ETL (sección 6 del plan).</code><br><small style="color:var(--muted)">etl/__init__.py</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Design note for Observatorio para la Paz en Colombia - ETL (sección 6 del plan)..</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>etl/__init__.py</code></td><td>2 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: explains x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 7. Viteconfigts Dashboard ====== -->
+<h2 id="viteconfigts-dashboard">7. Viteconfigts Dashboard</h2>
+<p>Viteconfigts Dashboard groups implementation around viteconfigts, dashboard, mostly in dashboard/vite.config.ts. This section covers 1 nodes and 0 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Viteconfigts Dashboard (1 nodes, 0 edges)
+    dashboard_vite_config_26a00549("vite.config.ts")
+    class dashboard_vite_config_26a00549 module;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>vite.config.ts</code><br><small style="color:var(--muted)">dashboard/vite.config.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in dashboard/vite.config.ts.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>dashboard/vite.config.ts</code></td><td>1 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: No high-confidence call edges detected. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<h2 id="stats">Project Statistics</h2>
+
+<div class="grid">
+  <div class="card">
+    <h4>Graph</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>Nodes</td><td>309</td></tr>
+      <tr><td>Edges</td><td>568</td></tr>
+      <tr><td>Hyperedges</td><td>0</td></tr>
+      <tr><td>Communities</td><td>19</td></tr>
+      <tr><td>Documented Sections</td><td>6</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Edge Confidence</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><td>EXTRACTED</td><td>543</td></tr>
+      <tr><td>INFERRED</td><td>25</td></tr>
+      <tr><td>AMBIGUOUS</td><td>0</td></tr>
+    </table>
+  </div>
+</div>
+
+<div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
+  <p>grafiphy — Architecture Documentation</p>
+  <p>Generated: 2026-08-02 12:53 UTC · graphify callflow-html</p>
+</div>
+
+</div><!-- .container -->
+
+<script>
+(function () {
+  const mermaidConfig = {
+    startOnLoad: false,
+    theme: 'dark',
+    securityLevel: 'loose',
+    flowchart: { htmlLabels: true, useMaxWidth: true },
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#e2e8f0',
+      primaryBorderColor: '#38bdf8',
+      secondaryColor: '#0f172a',
+      tertiaryColor: '#334155',
+      lineColor: '#64748b',
+      textColor: '#e2e8f0',
+    }
+  };
+
+  mermaid.initialize(mermaidConfig);
+
+  function clamp(value, min, max) {
+    return Math.min(max, Math.max(min, value));
+  }
+
+  function enhanceMermaidDiagrams() {
+    document.querySelectorAll('.mermaid').forEach((container) => {
+      if (container.dataset.zoomReady === 'true') return;
+      const svg = container.querySelector('svg');
+      if (!svg) return;
+
+      container.dataset.zoomReady = 'true';
+      container.classList.add('is-enhanced');
+
+      const viewport = document.createElement('div');
+      viewport.className = 'mermaid-viewport';
+      svg.parentNode.insertBefore(viewport, svg);
+      viewport.appendChild(svg);
+
+      const toolbar = document.createElement('div');
+      toolbar.className = 'mermaid-toolbar';
+      toolbar.innerHTML = [
+        '<button type="button" data-action="zoom-out" title="Zoom out">-</button>',
+        '<span class="zoom-level" data-role="level">100%</span>',
+        '<button type="button" data-action="zoom-in" title="Zoom in">+</button>',
+        '<button type="button" data-action="fit" title="Fit width">Fit</button>',
+        '<button type="button" data-action="reset" title="Reset view">Reset</button>'
+      ].join('');
+      container.insertBefore(toolbar, viewport);
+
+      const state = { scale: 1, x: 0, y: 0, dragging: false, startX: 0, startY: 0, originX: 0, originY: 0 };
+      const level = toolbar.querySelector('[data-role="level"]');
+
+      function applyTransform() {
+        svg.style.transform = `translate(${state.x}px, ${state.y}px) scale(${state.scale})`;
+        level.textContent = `${Math.round(state.scale * 100)}%`;
+      }
+
+      function zoomBy(delta) {
+        state.scale = clamp(state.scale + delta, 0.25, 3);
+        applyTransform();
+      }
+
+      function reset() {
+        state.scale = 1;
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      function fitWidth() {
+        const rawWidth = svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width
+          ? svg.viewBox.baseVal.width
+          : svg.getBoundingClientRect().width / state.scale;
+        if (!rawWidth) {
+          reset();
+          return;
+        }
+        state.scale = clamp((viewport.clientWidth - 48) / rawWidth, 0.25, 1.4);
+        state.x = 0;
+        state.y = 0;
+        applyTransform();
+      }
+
+      toolbar.addEventListener('click', (event) => {
+        const button = event.target.closest('button[data-action]');
+        if (!button) return;
+        const action = button.dataset.action;
+        if (action === 'zoom-in') zoomBy(0.15);
+        if (action === 'zoom-out') zoomBy(-0.15);
+        if (action === 'fit') fitWidth();
+        if (action === 'reset') reset();
+      });
+
+      viewport.addEventListener('wheel', (event) => {
+        if (!event.ctrlKey && !event.metaKey) return;
+        event.preventDefault();
+        zoomBy(event.deltaY < 0 ? 0.1 : -0.1);
+      }, { passive: false });
+
+      viewport.addEventListener('pointerdown', (event) => {
+        if (event.button !== 0) return;
+        state.dragging = true;
+        state.startX = event.clientX;
+        state.startY = event.clientY;
+        state.originX = state.x;
+        state.originY = state.y;
+        viewport.classList.add('is-dragging');
+        viewport.setPointerCapture(event.pointerId);
+      });
+
+      viewport.addEventListener('pointermove', (event) => {
+        if (!state.dragging) return;
+        state.x = state.originX + event.clientX - state.startX;
+        state.y = state.originY + event.clientY - state.startY;
+        applyTransform();
+      });
+
+      function endDrag(event) {
+        if (!state.dragging) return;
+        state.dragging = false;
+        viewport.classList.remove('is-dragging');
+        if (viewport.hasPointerCapture(event.pointerId)) {
+          viewport.releasePointerCapture(event.pointerId);
+        }
+      }
+
+      viewport.addEventListener('pointerup', endDrag);
+      viewport.addEventListener('pointercancel', endDrag);
+      applyTransform();
+    });
+  }
+
+  function renderMermaid() {
+    const result = mermaid.run
+      ? mermaid.run({ querySelector: '.mermaid' })
+      : Promise.resolve();
+    Promise.resolve(result)
+      .then(enhanceMermaidDiagrams)
+      .catch((error) => {
+        console.error('Mermaid render failed:', error);
+        enhanceMermaidDiagrams();
+      });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderMermaid);
+  } else {
+    renderMermaid();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -176,3 +176,62 @@ def test_pdet_transformar_normaliza():
     resultado = ART_PDET().transformar(df)
     assert len(resultado) == 1
     assert float(resultado["valor_inversion"].iloc[0]) == 1.2e9
+
+
+def test_pdet_transformar_con_shape_real_de_iniciativas():
+    """Shape real de 'Iniciativas PDET' (datos.gov.co/gmvf-t63e, auditoría
+    2026-08-02): codigodane/t_tulo_iniciativa y sin estado/avance/inversión/año.
+    El conector debe normalizar sin crashear y con valores None."""
+    df = pd.DataFrame(
+        {
+            "subregi_n": ["CUENCA DEL CAGUÁN", "CUENCA DEL CAGUÁN"],
+            "codigodane": ["18610", "18592"],
+            "municipio_sujeto_concertaci": ["SAN JOSÉ DEL FRAGUA", "PUERTO RICO"],
+            "t_tulo_iniciativa": ["CREAR LA EPS INDÍGENA", "CREAR IPS INDÍGENA"],
+            "pilar": ["3. SALUD RURAL", "3. SALUD RURAL"],
+        }
+    )
+    resultado = ART_PDET().transformar(df)
+    assert len(resultado) == 2
+    assert resultado["codigo_divipola"].tolist() == ["18610", "18592"]
+    assert resultado["nombre"].tolist() == ["CREAR LA EPS INDÍGENA", "CREAR IPS INDÍGENA"]
+    assert resultado["anio"].isna().all()
+    assert resultado["valor_inversion"].isna().all()
+
+
+def test_pdet_pipeline_completo_con_respuesta_real(monkeypatch):
+    """extraer() contra la forma de respuesta real del dataset Iniciativas PDET:
+    las filas se normalizan con las columnas opcionales ausentes."""
+    import etl.pdet.pipeline as pdet
+
+    class Respuesta:
+        def raise_for_status(self):
+            pass
+
+        def json(self):
+            return [
+                {"codigodane": "18610", "t_tulo_iniciativa": "CREAR LA EPS INDÍGENA"},
+                {"codigodane": "18592", "t_tulo_iniciativa": "CREAR IPS INDÍGENA"},
+            ]
+
+    monkeypatch.setenv("PDET_URL", "https://www.datos.gov.co/resource/gmvf-t63e.json")
+    import requests
+
+    monkeypatch.setattr(requests, "get", lambda url, timeout: Respuesta())
+    pipeline = ART_PDET()
+    df, _ = pipeline.extraer()
+    resultado = pipeline.transformar(df)
+    assert len(resultado) == 2
+    assert resultado["estado"].isna().all()
+    assert resultado["anio"].isna().all()
+
+
+def test_divipola_anms_faltantes_bien_formadas():
+    """El suplemento de ANMs debe tener (codigo, nombre, codigo_depto) válidos."""
+    from etl.common.divipola import ANMS_FALTANTES
+
+    assert ANMS_FALTANTES
+    for codigo, nombre, codigo_depto in ANMS_FALTANTES:
+        assert len(codigo) == 5 and codigo.startswith("94")
+        assert nombre.strip()
+        assert len(codigo_depto) == 2

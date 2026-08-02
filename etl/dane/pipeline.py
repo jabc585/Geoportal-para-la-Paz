@@ -2,11 +2,12 @@
 
 Acceso real verificado (auditoría 2026-08-02): DANE distribuye la serie
 nacional de proyecciones de población como archivo Excel en dane.gov.co
-(DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx); no existe un
-dataset Socrata nacional con ese shape. El conector lee el Excel con
-DANE_POBLACION_XLSX_URL (recomendado) o la API Socrata con
-DANE_POBLACION_DATASET (legacy, solo datasets locales). La transformación
-normaliza a la serie estándar y valida con Pandera antes de cargar a curated.
+(DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx). No existe un
+dataset Socrata nacional con ese shape (verificado en el catálogo en dos
+rondas de auditoría), por eso la rama legacy DANE_POBLACION_DATASET se
+eliminó en la ronda 2026-08-02: el único acceso soportado es el Excel.
+La transformación normaliza a la serie estándar y valida con Pandera antes
+de cargar a curated.
 """
 
 from __future__ import annotations
@@ -20,8 +21,6 @@ from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upse
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar
-
-URL_SOCRATA = "https://www.datos.gov.co/resource"
 
 ALIASES = {
     "codigo": [
@@ -102,23 +101,16 @@ class DANE_Poblacion(PipelineETL):
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
         url_xlsx = os.getenv("DANE_POBLACION_XLSX_URL", "")
-        dataset = os.getenv("DANE_POBLACION_DATASET", "")
-        if url_xlsx:
-            hoja = os.getenv("DANE_POBLACION_HOJA", None)
-            url = url_xlsx
-            df = _leer_excel_dane(url, hoja)
-        elif dataset:
-            url = f"{URL_SOCRATA}/{dataset}.json"
-            import requests
-
-            resp = requests.get(url, params={"$limit": 50000}, timeout=60)
-            resp.raise_for_status()
-            df = pd.DataFrame(resp.json())
-        else:
+        if not url_xlsx:
             raise ValueError(
-                "Configurar DANE_POBLACION_XLSX_URL (Excel oficial de proyecciones, "
-                "ver docs/fuentes/dane.md) o DANE_POBLACION_DATASET (Socrata, legacy)"
+                "Configurar DANE_POBLACION_XLSX_URL con la URL del Excel oficial "
+                "de proyecciones de población (ver docs/fuentes/dane.md). El "
+                "legacy DANE_POBLACION_DATASET se eliminó: no existe dataset "
+                "Socrata nacional con el shape municipio x año x población."
             )
+        hoja = os.getenv("DANE_POBLACION_HOJA", None)
+        url = url_xlsx
+        df = _leer_excel_dane(url, hoja)
         lineage = Lineage.ahora(
             fuente="DANE",
             url_origen=url,

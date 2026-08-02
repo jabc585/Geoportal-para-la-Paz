@@ -2,12 +2,14 @@ services:
   postgres:
     image: postgis/postgis:17-3.4
     container_name: observatorio-postgres
+    restart: unless-stopped
     environment:
       POSTGRES_DB: observatorio
       POSTGRES_USER: observatorio
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-observatorio_dev}
     ports:
-      - "5432:5432"
+      # Solo loopback (auditoría 2026-08-02): evita exponer Postgres en la LAN
+      - "127.0.0.1:5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       # docker-entrypoint-initdb.d NO se ejecuta recursivamente: cada SQL se
@@ -20,6 +22,7 @@ services:
       - ../database/migrations/0005_pdet_proyectos.sql:/docker-entrypoint-initdb.d/06_pdet_proyectos.sql:ro
       - ../database/migrations/0006_fix_fuentes_codigo.sql:/docker-entrypoint-initdb.d/07_fix_fuentes_codigo.sql:ro
       - ../database/migrations/0007_seed_departamentos.sql:/docker-entrypoint-initdb.d/08_seed_departamentos.sql:ro
+      - ../database/migrations/0008_pdet_anio_opcional.sql:/docker-entrypoint-initdb.d/09_pdet_anio_opcional.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U observatorio -d observatorio"]
       interval: 5s
@@ -31,6 +34,7 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.etl
     container_name: observatorio-etl
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -45,14 +49,16 @@ services:
       context: ..
       dockerfile: docker/Dockerfile.api
     container_name: observatorio-api
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://observatorio:${POSTGRES_PASSWORD:-observatorio_dev}@postgres:5432/observatorio
     ports:
-      - "8000:8000"
-    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+      # Solo loopback (auditoría 2026-08-02)
+      - "127.0.0.1:8000:8000"
+    command: ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 volumes:
   postgres_data:

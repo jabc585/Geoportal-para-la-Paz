@@ -22,6 +22,14 @@ DEFAULT_DEPT_DATASET = "vcjz-niiq"
 DEFAULT_MUN_DATASET = "gdxc-w37w"
 URL_SOCRATA = "https://www.datos.gov.co/resource"
 
+# Áreas No Municipalizadas (ANM) que el dataset Socrata de municipios
+# (gdxc-w37w) no publica pero DANE sí incluye en las proyecciones de
+# población 2020-2035 (auditoría 2026-08-02: Mapiripana, 94663, faltaba y
+# descartaba 16 filas/año del pipeline). Formato: (codigo, nombre, codigo_depto).
+ANMS_FALTANTES = [
+    ("94663", "MAPIRIPANA", "94"),
+]
+
 
 def _descargar(dataset_id: str, limite: int = 50000) -> list[dict]:
     url = f"{URL_SOCRATA}/{dataset_id}.json"
@@ -65,6 +73,18 @@ def sembrar_municipios(conn: psycopg.Connection) -> int:
             )
             insertadas += cur.rowcount > 0
             con_departamento_ausente += cur.rowcount == 0
+        for codigo, nombre, codigo_depto in ANMS_FALTANTES:
+            cur.execute(
+                """
+                INSERT INTO curated.municipio (codigo_divipola, nombre, departamento_id, valido_desde)
+                SELECT %s, %s, d.departamento_id, CURRENT_DATE
+                FROM curated.departamento d
+                WHERE d.codigo_divipola = %s AND d.vigente
+                ON CONFLICT (codigo_divipola, valido_desde) DO NOTHING
+                """,
+                (codigo, nombre, codigo_depto),
+            )
+            insertadas += cur.rowcount > 0
     if con_departamento_ausente:
         print(f"[divipola] {con_departamento_ausente} municipios sin departamento vigente (descartados)")
     return insertadas

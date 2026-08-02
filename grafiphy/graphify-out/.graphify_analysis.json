@@ -1,0 +1,518 @@
+{
+  "communities": {
+    "0": [
+      "etl_common_cargar",
+      "etl_common_cargar_insertar_serie",
+      "etl_common_cargar_periodo_anual",
+      "etl_common_cargar_py_connection",
+      "etl_common_cargar_py_dataframe",
+      "etl_common_cargar_py_date",
+      "etl_common_cargar_rationale_1",
+      "etl_common_cargar_rationale_100",
+      "etl_common_cargar_rationale_159",
+      "etl_common_cargar_rationale_21",
+      "etl_common_cargar_rationale_28",
+      "etl_common_cargar_rationale_50",
+      "etl_common_cargar_rationale_81",
+      "etl_common_cargar_resolver_territorio",
+      "etl_common_cargar_slugificar",
+      "etl_common_cargar_upsert_fuente",
+      "etl_common_cargar_upsert_indicador",
+      "etl_common_validation_esquemaserienormalizada",
+      "etl_common_validation_rationale_31",
+      "etl_dane_pipeline_dane_poblacion",
+      "etl_dane_pipeline_dane_poblacion_cargar_curated",
+      "etl_pdet_pipeline",
+      "etl_pdet_pipeline_art_pdet",
+      "etl_pdet_pipeline_art_pdet_cargar_curated",
+      "etl_pdet_pipeline_art_pdet_cargar_inversion",
+      "etl_pdet_pipeline_art_pdet_cargar_proyectos",
+      "etl_pdet_pipeline_art_pdet_extraer",
+      "etl_pdet_pipeline_art_pdet_transformar",
+      "etl_pdet_pipeline_columna",
+      "etl_pdet_pipeline_columna_opcional",
+      "etl_pdet_pipeline_py_dataframe",
+      "etl_pdet_pipeline_rationale_1",
+      "etl_run_all",
+      "etl_run_all_rationale_1",
+      "etl_run_all_run_all",
+      "etl_victimas_pipeline",
+      "etl_victimas_pipeline_columna",
+      "etl_victimas_pipeline_py_dataframe",
+      "etl_victimas_pipeline_rationale_1",
+      "etl_victimas_pipeline_victimas_hechos",
+      "etl_victimas_pipeline_victimas_hechos_cargar_curated",
+      "etl_victimas_pipeline_victimas_hechos_transformar",
+      "tests_test_pipelines",
+      "tests_test_pipelines_rationale_1",
+      "tests_test_pipelines_rationale_125",
+      "tests_test_pipelines_rationale_182",
+      "tests_test_pipelines_rationale_203",
+      "tests_test_pipelines_rationale_230",
+      "tests_test_pipelines_rationale_54",
+      "tests_test_pipelines_rationale_76",
+      "tests_test_pipelines_test_dane_pipeline_completo_contra_excel_con_footer",
+      "tests_test_pipelines_test_dane_transformar_con_formato_real_del_excel",
+      "tests_test_pipelines_test_dane_transformar_descarta_invalidos",
+      "tests_test_pipelines_test_dane_transformar_normaliza",
+      "tests_test_pipelines_test_dane_transformar_sin_columna_area_mantiene_filas",
+      "tests_test_pipelines_test_divipola_anms_faltantes_bien_formadas",
+      "tests_test_pipelines_test_pdet_pipeline_completo_con_respuesta_real",
+      "tests_test_pipelines_test_pdet_transformar_con_shape_real_de_iniciativas",
+      "tests_test_pipelines_test_pdet_transformar_normaliza",
+      "tests_test_pipelines_test_periodo_anual",
+      "tests_test_pipelines_test_slugificar",
+      "tests_test_pipelines_test_victimas_transformar_agrega_por_tipo"
+    ],
+    "1": [
+      "abc",
+      "etl_common_lineage",
+      "etl_common_lineage_archivo_raw",
+      "etl_common_lineage_hash_registro",
+      "etl_common_lineage_lineage",
+      "etl_common_lineage_rationale_1",
+      "etl_common_lineage_rationale_35",
+      "etl_common_lineage_rationale_41",
+      "etl_common_pipeline",
+      "etl_common_pipeline_pipelineetl",
+      "etl_common_pipeline_pipelineetl_cargar_curated",
+      "etl_common_pipeline_pipelineetl_ejecutar",
+      "etl_common_pipeline_pipelineetl_extraer",
+      "etl_common_pipeline_pipelineetl_init",
+      "etl_common_pipeline_pipelineetl_transformar",
+      "etl_common_pipeline_py_dataframe",
+      "etl_common_pipeline_rationale_1",
+      "etl_common_pipeline_rationale_21",
+      "etl_common_pipeline_rationale_39",
+      "etl_common_pipeline_rationale_43",
+      "etl_common_pipeline_rationale_47",
+      "etl_fiscalia_pipeline",
+      "etl_fiscalia_pipeline_rationale_1",
+      "etl_ideam_pipeline",
+      "etl_ideam_pipeline_ideam_ambiental",
+      "etl_ideam_pipeline_ideam_ambiental_cargar_curated",
+      "etl_ideam_pipeline_ideam_ambiental_extraer",
+      "etl_ideam_pipeline_ideam_ambiental_transformar",
+      "etl_ideam_pipeline_py_dataframe",
+      "etl_ideam_pipeline_rationale_1",
+      "etl_internacional_world_bank",
+      "etl_internacional_world_bank_rationale_1",
+      "etl_memoria_pipeline",
+      "etl_memoria_pipeline_memoria_historica",
+      "etl_memoria_pipeline_memoria_historica_cargar_curated",
+      "etl_memoria_pipeline_memoria_historica_extraer",
+      "etl_memoria_pipeline_memoria_historica_transformar",
+      "etl_memoria_pipeline_py_dataframe",
+      "etl_memoria_pipeline_rationale_1",
+      "etl_policia_pipeline",
+      "etl_policia_pipeline_policia_delitos",
+      "etl_policia_pipeline_policia_delitos_cargar_curated",
+      "etl_policia_pipeline_policia_delitos_extraer",
+      "etl_policia_pipeline_policia_delitos_transformar",
+      "etl_policia_pipeline_py_dataframe",
+      "etl_policia_pipeline_rationale_1",
+      "tests_test_lineage",
+      "tests_test_lineage_rationale_1",
+      "tests_test_lineage_test_hash_determinista",
+      "tests_test_lineage_test_hash_sensible_al_orden_y_contenido"
+    ],
+    "2": [
+      "dashboard_package",
+      "dashboard_package_dependencies",
+      "dashboard_package_dependencies_maplibre_gl",
+      "dashboard_package_dependencies_react",
+      "dashboard_package_dependencies_react_dom",
+      "dashboard_package_devdependencies",
+      "dashboard_package_devdependencies_types_react",
+      "dashboard_package_devdependencies_types_react_dom",
+      "dashboard_package_devdependencies_typescript",
+      "dashboard_package_devdependencies_vite",
+      "dashboard_package_devdependencies_vitejs_plugin_react",
+      "dashboard_package_name",
+      "dashboard_package_private",
+      "dashboard_package_scripts",
+      "dashboard_package_scripts_build",
+      "dashboard_package_scripts_dev",
+      "dashboard_package_scripts_preview",
+      "dashboard_package_type",
+      "dashboard_package_version",
+      "maplibre_gl",
+      "react",
+      "react_dom",
+      "types_react",
+      "types_react_dom",
+      "typescript",
+      "vite",
+      "vitejs_plugin_react"
+    ],
+    "3": [
+      "api_models_schemas",
+      "api_models_schemas_errorout",
+      "api_models_schemas_fuenteout",
+      "api_models_schemas_municipioout",
+      "api_models_schemas_pagina",
+      "api_models_schemas_rationale_1",
+      "api_models_schemas_serieout",
+      "api_routes_v1",
+      "api_routes_v1_get_fuentes",
+      "api_routes_v1_get_indicador",
+      "api_routes_v1_get_territorio",
+      "api_routes_v1_py_get",
+      "api_routes_v1_rationale_1",
+      "api_services_consultas",
+      "api_services_consultas_consultar_serie",
+      "api_services_consultas_consultar_territorio",
+      "api_services_consultas_cursor_payload",
+      "api_services_consultas_listar_fuentes",
+      "api_services_consultas_rationale_1",
+      "api_services_consultas_rationale_25",
+      "basemodel",
+      "etl_common_db_conectar",
+      "etl_common_pipeline_pipelineetl_conn",
+      "etl_common_pipeline_py_connection",
+      "etl_common_pipeline_rationale_32"
+    ],
+    "4": [
+      "etl_common_db",
+      "etl_common_db_insertar_raw",
+      "etl_common_db_py_connection",
+      "etl_common_db_rationale_1",
+      "etl_common_db_rationale_17",
+      "etl_common_db_rationale_55",
+      "etl_common_db_rationale_88",
+      "etl_common_db_registrar_metricas",
+      "etl_common_db_sanear_json",
+      "etl_common_divipola",
+      "etl_common_divipola_descargar",
+      "etl_common_divipola_py_connection",
+      "etl_common_divipola_rationale_1",
+      "etl_common_divipola_sembrar_departamentos",
+      "etl_common_divipola_sembrar_municipios",
+      "tests_test_db",
+      "tests_test_db_rationale_1",
+      "tests_test_db_test_dict_anidado_sanea_recursivamente",
+      "tests_test_db_test_fecha_se_conserva",
+      "tests_test_db_test_nan_float_escala_a_none",
+      "tests_test_db_test_numpy_nan_a_none",
+      "tests_test_db_test_pandas_na_y_nat_a_none",
+      "tests_test_db_test_valores_validos_intactos"
+    ],
+    "5": [
+      "etl_common_lineage_lineage_ahora",
+      "etl_common_lineage_py_date",
+      "etl_fiscalia_pipeline_fiscalia_estadisticas",
+      "etl_fiscalia_pipeline_fiscalia_estadisticas_cargar_curated",
+      "etl_fiscalia_pipeline_fiscalia_estadisticas_extraer",
+      "etl_fiscalia_pipeline_fiscalia_estadisticas_transformar",
+      "etl_fiscalia_pipeline_py_dataframe",
+      "etl_internacional_init",
+      "etl_internacional_init_rationale_1",
+      "etl_internacional_world_bank_internacional_worldbank",
+      "etl_internacional_world_bank_internacional_worldbank_cargar_curated",
+      "etl_internacional_world_bank_internacional_worldbank_extraer",
+      "etl_internacional_world_bank_internacional_worldbank_fuente_id",
+      "etl_internacional_world_bank_internacional_worldbank_indicadores",
+      "etl_internacional_world_bank_internacional_worldbank_transformar",
+      "etl_internacional_world_bank_py_dataframe",
+      "etl_internacional_world_bank_rationale_29",
+      "etl_victimas_pipeline_victimas_hechos_extraer",
+      "tests_test_internacional",
+      "tests_test_internacional_rationale_1",
+      "tests_test_internacional_test_esqueleto_nacional_pendiente",
+      "tests_test_internacional_test_transformar_limpia_valores",
+      "tests_test_lineage_test_lineage_completo"
+    ],
+    "6": [
+      "dashboard_tsconfig",
+      "dashboard_tsconfig_compileroptions",
+      "dashboard_tsconfig_compileroptions_allowimportingtsextensions",
+      "dashboard_tsconfig_compileroptions_isolatedmodules",
+      "dashboard_tsconfig_compileroptions_jsx",
+      "dashboard_tsconfig_compileroptions_lib",
+      "dashboard_tsconfig_compileroptions_module",
+      "dashboard_tsconfig_compileroptions_moduledetection",
+      "dashboard_tsconfig_compileroptions_moduleresolution",
+      "dashboard_tsconfig_compileroptions_noemit",
+      "dashboard_tsconfig_compileroptions_nofallthroughcasesinswitch",
+      "dashboard_tsconfig_compileroptions_nounusedlocals",
+      "dashboard_tsconfig_compileroptions_nounusedparameters",
+      "dashboard_tsconfig_compileroptions_skiplibcheck",
+      "dashboard_tsconfig_compileroptions_strict",
+      "dashboard_tsconfig_compileroptions_target",
+      "dashboard_tsconfig_compileroptions_usedefineforclassfields",
+      "dashboard_tsconfig_include",
+      "ref_dom",
+      "ref_dom_iterable",
+      "ref_es2020",
+      "ref_src"
+    ],
+    "7": [
+      "dataframemodel",
+      "etl_common_validation",
+      "etl_common_validation_config",
+      "etl_common_validation_esquemabase",
+      "etl_common_validation_py_dataframe",
+      "etl_common_validation_rationale_1",
+      "etl_common_validation_rationale_14",
+      "etl_common_validation_rationale_44",
+      "etl_common_validation_validar",
+      "parametrize",
+      "tests_test_validation",
+      "tests_test_validation_df_valido",
+      "tests_test_validation_rationale_1",
+      "tests_test_validation_test_validar_acepta_serie_correcta",
+      "tests_test_validation_test_validar_codigos_digitos_ok",
+      "tests_test_validation_test_validar_datos_vacios_no_falla",
+      "tests_test_validation_test_validar_rechaza_codigo_divipola_invalido",
+      "tests_test_validation_test_validar_rechaza_periodo_incoherente",
+      "tests_test_validation_test_validar_rechaza_valor_negativo"
+    ],
+    "8": [
+      "api_main",
+      "api_main_os_env_list",
+      "api_main_py_get",
+      "api_main_raiz",
+      "api_main_rationale_1",
+      "fixture",
+      "tests_test_api",
+      "tests_test_api_rationale_1",
+      "tests_test_api_simular_servicios",
+      "tests_test_api_test_consultar_indicador",
+      "tests_test_api_test_consultar_indicador_con_filtros",
+      "tests_test_api_test_consultar_indicador_rechaza_limit_mayor_1000",
+      "tests_test_api_test_consultar_territorio_existente",
+      "tests_test_api_test_consultar_territorio_inexistente",
+      "tests_test_api_test_listar_fuentes",
+      "tests_test_api_test_openapi_disponible",
+      "tests_test_api_test_raiz"
+    ],
+    "9": [
+      "etl_dane_pipeline",
+      "etl_dane_pipeline_columna",
+      "etl_dane_pipeline_dane_poblacion_extraer",
+      "etl_dane_pipeline_dane_poblacion_transformar",
+      "etl_dane_pipeline_detectar_fila_encabezado",
+      "etl_dane_pipeline_leer_excel_dane",
+      "etl_dane_pipeline_normalizar",
+      "etl_dane_pipeline_normalizar_columnas",
+      "etl_dane_pipeline_py_dataframe",
+      "etl_dane_pipeline_rationale_1",
+      "etl_dane_pipeline_rationale_39",
+      "etl_dane_pipeline_rationale_56",
+      "etl_dane_pipeline_rationale_71",
+      "tests_test_pipelines_rationale_89",
+      "tests_test_pipelines_rationale_98",
+      "tests_test_pipelines_test_dane_detecta_fila_encabezado_en_excel",
+      "tests_test_pipelines_test_dane_lector_excel_recorta_footer"
+    ],
+    "10": [
+      "dashboard_src_api_client",
+      "dashboard_src_api_client_fuente",
+      "dashboard_src_api_client_obtener",
+      "dashboard_src_api_client_obtenerfuentes",
+      "dashboard_src_app",
+      "dashboard_src_app_app",
+      "dashboard_src_components_kpifuentes",
+      "dashboard_src_components_kpifuentes_kpifuentes",
+      "dashboard_src_main",
+      "dashboard_src_maps_mapanacional",
+      "dashboard_src_maps_mapanacional_mapanacional",
+      "dashboard_src_pages_inicio",
+      "dashboard_src_pages_inicio_inicio"
+    ],
+    "11": [
+      "api_init",
+      "api_init_rationale_1"
+    ],
+    "12": [
+      "etl_common_init",
+      "etl_common_init_rationale_1"
+    ],
+    "13": [
+      "etl_init",
+      "etl_init_rationale_1"
+    ],
+    "14": [
+      "api_models_init"
+    ],
+    "15": [
+      "api_routes_init"
+    ],
+    "16": [
+      "api_services_init"
+    ],
+    "17": [
+      "dashboard_vite_config"
+    ],
+    "18": [
+      "tests_init"
+    ]
+  },
+  "cohesion": {
+    "0": 0.0671602326811211,
+    "1": 0.07755102040816327,
+    "2": 0.07407407407407407,
+    "3": 0.16666666666666666,
+    "4": 0.13438735177865613,
+    "5": 0.11857707509881422,
+    "6": 0.09090909090909091,
+    "7": 0.18128654970760233,
+    "8": 0.11764705882352941,
+    "9": 0.19852941176470587,
+    "10": 0.2564102564102564,
+    "11": 1.0,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0
+  },
+  "gods": [
+    {
+      "id": "etl_common_lineage_lineage",
+      "label": "Lineage",
+      "degree": 30
+    },
+    {
+      "id": "etl_common_pipeline_pipelineetl",
+      "label": "PipelineETL",
+      "degree": 26
+    },
+    {
+      "id": "etl_common_validation_validar",
+      "label": "validar()",
+      "degree": 17
+    },
+    {
+      "id": "dashboard_tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 16
+    },
+    {
+      "id": "etl_dane_pipeline_dane_poblacion",
+      "label": "DANE_Poblacion",
+      "degree": 14
+    },
+    {
+      "id": "etl_pdet_pipeline_art_pdet",
+      "label": "ART_PDET",
+      "degree": 14
+    },
+    {
+      "id": "etl_common_lineage_hash_registro",
+      "label": "hash_registro()",
+      "degree": 13
+    },
+    {
+      "id": "etl_common_cargar_upsert_fuente",
+      "label": "upsert_fuente()",
+      "degree": 12
+    },
+    {
+      "id": "etl_common_cargar_insertar_serie",
+      "label": "insertar_serie()",
+      "degree": 12
+    },
+    {
+      "id": "etl_internacional_world_bank_internacional_worldbank",
+      "label": "Internacional_WorldBank",
+      "degree": 12
+    }
+  ],
+  "surprises": [
+    {
+      "source": "test_slugificar()",
+      "target": "slugificar()",
+      "source_files": [
+        "tests/test_pipelines.py",
+        "etl/common/cargar.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_slugificar()` unexpectedly reaches hub `slugificar()`"
+    },
+    {
+      "source": "test_periodo_anual()",
+      "target": "periodo_anual()",
+      "source_files": [
+        "tests/test_pipelines.py",
+        "etl/common/cargar.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_periodo_anual()` unexpectedly reaches hub `periodo_anual()`"
+    },
+    {
+      "source": "test_dict_anidado_sanea_recursivamente()",
+      "target": "sanear_json()",
+      "source_files": [
+        "tests/test_db.py",
+        "etl/common/db.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_dict_anidado_sanea_recursivamente()` unexpectedly reaches hub `sanear_json()`"
+    },
+    {
+      "source": "test_fecha_se_conserva()",
+      "target": "sanear_json()",
+      "source_files": [
+        "tests/test_db.py",
+        "etl/common/db.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_fecha_se_conserva()` unexpectedly reaches hub `sanear_json()`"
+    },
+    {
+      "source": "test_nan_float_escala_a_none()",
+      "target": "sanear_json()",
+      "source_files": [
+        "tests/test_db.py",
+        "etl/common/db.py"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `test_nan_float_escala_a_none()` unexpectedly reaches hub `sanear_json()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `conectar()` connect `Community 3` to `Community 1`, `Community 4`?",
+      "why": "High betweenness centrality (0.136) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Lineage` connect `Community 1` to `Community 0`, `Community 9`, `Community 5`?",
+      "why": "High betweenness centrality (0.119) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `PipelineETL` connect `Community 1` to `Community 0`, `Community 9`, `Community 3`, `Community 5`?",
+      "why": "High betweenness centrality (0.093) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 9 inferred relationships involving `Lineage` (e.g. with `PipelineETL` and `DANE_Poblacion`) actually correct?",
+      "why": "`Lineage` has 9 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 9 inferred relationships involving `PipelineETL` (e.g. with `Lineage` and `DANE_Poblacion`) actually correct?",
+      "why": "`PipelineETL` has 9 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 3 inferred relationships involving `DANE_Poblacion` (e.g. with `Lineage` and `PipelineETL`) actually correct?",
+      "why": "`DANE_Poblacion` has 3 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `name`, `private`, `version` to the rest of the system?",
+      "why": "34 weakly-connected nodes found - possible documentation gaps or missing edges."
+    }
+  ]
+}

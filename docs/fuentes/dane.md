@@ -25,9 +25,10 @@ Fuente oficial de estadísticas sociodemográficas de Colombia. Para el observat
 
 Variables de entorno requeridas:
 
-- `DANE_POBLACION_XLSX_URL` — URL directa del Excel de proyecciones por municipio (recomendado)
+- `DANE_POBLACION_XLSX_URL` — URL directa del Excel de proyecciones por municipio
 - `DANE_POBLACION_HOJA` — nombre de la hoja (opcional; default: primera)
-- `DANE_POBLACION_DATASET` — legacy: identificador Socrata, solo para datasets locales que cumplan el shape
+
+> El legacy `DANE_POBLACION_DATASET` (Socrata) **se eliminó** en la auditoría 2026-08-02: no existe ningún dataset nacional en `datos.gov.co` con el shape `municipio × año × población` (verificado en el catálogo en dos rondas); la única distribución autorizada de la serie completa es el Excel.
 
 ## Transformaciones aplicadas
 

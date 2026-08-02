@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Observatorio para la Paz — graphify tree viewer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      margin: 20px 0 0 24px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #1e3a56;
+    }
+    .controls {
+      margin: 20px 0 15px 24px;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease-in-out;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    button:hover {
+      background: #0056b3;
+    }
+    button:active {
+      background: #004085;
+    }
+    #tree-container {
+      width: calc(100vw - 48px); /* Adjust for body margin/padding */
+      height: 85vh;
+      overflow: auto;
+      border-radius: 8px;
+      background: #fff;
+      margin-left: 24px;
+      margin-right: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      border: 1px solid #ddd;
+    }
+    svg {
+      background: #fff;
+      border-radius: 8px;
+      display: block; /* Important for D3 */
+    }
+    .node circle {
+      stroke-width: 2.5px;
+    }
+    .node text { /* Base style for the <text> container */
+      font: 13px 'Segoe UI', sans-serif;
+      paint-order: stroke fill; /* Ensures text is readable over lines */
+      stroke: #fff; /* White halo */
+      stroke-width: 3px; /* Halo thickness */
+      stroke-linejoin: round;
+      stroke-opacity: 0.85; /* Halo opacity */
+    }
+    .link {
+      fill: none;
+      stroke-opacity: 0.7;
+      stroke-width: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Observatorio para la Paz — Knowledge Graph</h1>
+  <div class="controls">
+    <button onclick="expandAll()">Expand All</button>
+    <button onclick="collapseAll()">Collapse All</button>
+    <button onclick="resetView()">Reset View</button>
+  </div>
+  <div id="tree-container">
+    <svg id="tree-svg" width="6000" height="8000"></svg>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    const initialJsonData = {"name":"Observatorio para la Paz","total_count":249,"children":[{"name":"__init__.py","total_count":1,"children":[{"name":"API v1 del Observatorio para la Paz (secci\u00f3n 8 del plan).","total_count":1,"children":[]}]},{"name":"__init__.py","total_count":1,"children":[{"name":"Observatorio para la Paz en Colombia - ETL (secci\u00f3n 6 del plan).","total_count":1,"children":[]}]},{"name":"__init__.py","total_count":1,"children":[{"name":"Utilidades compartidas del ETL: linaje, validaci\u00f3n, base de datos y pipelines.","total_count":1,"children":[]}]},{"name":"__init__.py","total_count":1,"children":[{"name":"Conector de comparabilidad internacional (secci\u00f3n 5.2). La capa de\u2026","total_count":1,"children":[]}]},{"name":"App.tsx","total_count":1,"children":[{"name":"App()","total_count":1,"children":[]}]},{"name":"cargar.py","total_count":13,"children":[{"name":"Carga a curated con resoluci\u00f3n de cat\u00e1logos y linaje (secciones 7 y 12).\u2026","total_count":1,"children":[]},{"name":"Inserta filas normalizadas en curated.serie_historica con deduplicaci\u00f3n por\u2026","total_count":1,"children":[]},{"name":"Inserta o recupera el fuente_id del cat\u00e1logo curated.fuentes. codigo (slug\u2026","total_count":1,"children":[]},{"name":"Inserta o recupera el indicador_id del cat\u00e1logo curated.indicadores.\u2026","total_count":1,"children":[]},{"name":"insertar_serie()","total_count":1,"children":[]},{"name":"Normaliza un texto a c\u00f3digo seguro: min\u00fasculas, sin acentos, guiones bajos.","total_count":1,"children":[]},{"name":"Periodo flexible (secci\u00f3n 7.1): un a\u00f1o completo.","total_count":1,"children":[]},{"name":"periodo_anual()","total_count":1,"children":[]},{"name":"resolver_territorio()","total_count":1,"children":[]},{"name":"Resuelve c\u00f3digo DIVIPOLA a (municipio_id, departamento_id) vigentes (secci\u00f3n\u2026","total_count":1,"children":[]},{"name":"slugificar()","total_count":1,"children":[]},{"name":"upsert_fuente()","total_count":1,"children":[]},{"name":"upsert_indicador()","total_count":1,"children":[]}]},{"name":"client.ts","total_count":3,"children":[{"name":"Fuente","total_count":1,"children":[]},{"name":"obtener()","total_count":1,"children":[]},{"name":"obtenerFuentes()","total_count":1,"children":[]}]},{"name":"consultas.py","total_count":6,"children":[{"name":"_cursor_payload()","total_count":1,"children":[]},{"name":"consultar_serie()","total_count":1,"children":[]},{"name":"consultar_territorio()","total_count":1,"children":[]},{"name":"listar_fuentes()","total_count":1,"children":[]},{"name":"Serie hist\u00f3rica con paginaci\u00f3n basada en cursor (secci\u00f3n 8). El cursor codifica\u2026","total_count":1,"children":[]},{"name":"Servicios de acceso a datos desde curated (solo lectura, secci\u00f3n 7.3).","total_count":1,"children":[]}]},{"name":"db.py","total_count":8,"children":[{"name":"conectar()","total_count":1,"children":[]},{"name":"Conexi\u00f3n a base de datos y registro de m\u00e9tricas de calidad (secciones 7.3 y\u2026","total_count":1,"children":[]},{"name":"Convierte NaN/NaT/NA a None recursivamente (hallazgo de auditor\u00eda 2026-08-02).\u2026","total_count":1,"children":[]},{"name":"Inserta filas en raw.<tabla> conservando linaje (secci\u00f3n 7.3).","total_count":1,"children":[]},{"name":"insertar_raw()","total_count":1,"children":[]},{"name":"Registra m\u00e9tricas de calidad de la corrida (secci\u00f3n 7.4).","total_count":1,"children":[]},{"name":"registrar_metricas()","total_count":1,"children":[]},{"name":"sanear_json()","total_count":1,"children":[]}]},{"name":"divipola.py","total_count":4,"children":[{"name":"_descargar()","total_count":1,"children":[]},{"name":"Seed del cat\u00e1logo territorial DIVIPOLA (secciones 5.1 y 7.2). Descarga los\u2026","total_count":1,"children":[]},{"name":"sembrar_departamentos()","total_count":1,"children":[]},{"name":"sembrar_municipios()","total_count":1,"children":[]}]},{"name":"Inicio.tsx","total_count":1,"children":[{"name":"Inicio()","total_count":1,"children":[]}]},{"name":"KPIFuentes.tsx","total_count":1,"children":[{"name":"KPIFuentes()","total_count":1,"children":[]}]},{"name":"lineage.py","total_count":7,"children":[{"name":".ahora()","total_count":1,"children":[]},{"name":"archivo_raw()","total_count":1,"children":[]},{"name":"Hash determinista del contenido de una fila para detecci\u00f3n de\u2026","total_count":1,"children":[]},{"name":"hash_registro()","total_count":1,"children":[]},{"name":"Linaje de datos obligatorio (secci\u00f3n 3, punto 4 y secci\u00f3n 7). Todo registro\u2026","total_count":1,"children":[]},{"name":"Lineage","total_count":1,"children":[]},{"name":"Marca de inmutabilidad: los datos crudos se almacenan tal como se descargan.","total_count":1,"children":[]}]},{"name":"main.py","total_count":3,"children":[{"name":"os_env_list()","total_count":1,"children":[]},{"name":"Punto de entrada de la API (secci\u00f3n 8: FastAPI + OpenAPI en /docs). CORS\u2026","total_count":1,"children":[]},{"name":"raiz()","total_count":1,"children":[]}]},{"name":"MapaNacional.tsx","total_count":1,"children":[{"name":"MapaNacional()","total_count":1,"children":[]}]},{"name":"package.json","total_count":26,"children":[{"name":"@types/react","total_count":1,"children":[]},{"name":"@types/react","total_count":1,"children":[]},{"name":"@types/react-dom","total_count":1,"children":[]},{"name":"@types/react-dom","total_count":1,"children":[]},{"name":"@vitejs/plugin-react","total_count":1,"children":[]},{"name":"@vitejs/plugin-react","total_count":1,"children":[]},{"name":"build","total_count":1,"children":[]},{"name":"dependencies","total_count":1,"children":[]},{"name":"dev","total_count":1,"children":[]},{"name":"devDependencies","total_count":1,"children":[]},{"name":"maplibre-gl","total_count":1,"children":[]},{"name":"maplibre-gl","total_count":1,"children":[]},{"name":"name","total_count":1,"children":[]},{"name":"preview","total_count":1,"children":[]},{"name":"private","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"react-dom","total_count":1,"children":[]},{"name":"scripts","total_count":1,"children":[]},{"name":"type","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"typescript","total_count":1,"children":[]},{"name":"version","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]},{"name":"vite","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":13,"children":[{"name":".__init__()","total_count":1,"children":[]},{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".conn()","total_count":1,"children":[]},{"name":".ejecutar()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conexi\u00f3n perezosa: solo se abre al ejecutar el pipeline.","total_count":1,"children":[]},{"name":"Descarga los datos crudos y devuelve (dataframe, linaje).","total_count":1,"children":[]},{"name":"Normaliza a staging (c\u00f3digos DIVIPOLA, periodos, valores num\u00e9ricos).","total_count":1,"children":[]},{"name":"Pipeline base: extrae, carga crudo con linaje y reporta m\u00e9tricas de calidad.","total_count":1,"children":[]},{"name":"PipelineETL","total_count":1,"children":[]},{"name":"Plantilla base de pipeline ETL con trazabilidad y m\u00e9tricas (secciones 7.4 y\u2026","total_count":1,"children":[]},{"name":"Promueve datos validados a curated.serie_historica.","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":13,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"_columna()","total_count":1,"children":[]},{"name":"_detectar_fila_encabezado()","total_count":1,"children":[]},{"name":"_leer_excel_dane()","total_count":1,"children":[]},{"name":"_normalizar()","total_count":1,"children":[]},{"name":"_normalizar_columnas()","total_count":1,"children":[]},{"name":"Busca la fila de encabezados real dentro de las primeras 20 filas. El Excel\u2026","total_count":1,"children":[]},{"name":"Conector piloto DANE (poblaci\u00f3n) - fuente de la fase 2 del plan. Acceso real\u2026","total_count":1,"children":[]},{"name":"DANE_Poblacion","total_count":1,"children":[]},{"name":"Lee el Excel con una sola descarga y encabezado detectado. sheet_name=None en\u2026","total_count":1,"children":[]},{"name":"Min\u00fasculas, sin acentos y espacios a guion bajo (p. ej. '\u00c1REA GEOGR\u00c1FICA').","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":5,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conector Fiscal\u00eda General de la Naci\u00f3n (esqueleto - secci\u00f3n 21, paso 11).\u2026","total_count":1,"children":[]},{"name":"Fiscalia_Estadisticas","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":5,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conector IDEAM (esqueleto - secci\u00f3n 21, paso 11). Fuente: variables ambientales\u2026","total_count":1,"children":[]},{"name":"IDEAM_Ambiental","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":5,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conector memoria hist\u00f3rica CNMH (esqueleto - secci\u00f3n 21, paso 11). Fuente:\u2026","total_count":1,"children":[]},{"name":"Memoria_Historica","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":9,"children":[{"name":"._cargar_inversion()","total_count":1,"children":[]},{"name":"._cargar_proyectos()","total_count":1,"children":[]},{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"_columna()","total_count":1,"children":[]},{"name":"_columna_opcional()","total_count":1,"children":[]},{"name":"ART_PDET","total_count":1,"children":[]},{"name":"Conector piloto ART/PDET - fuente de la fase 2 del plan. Acceso: datos abiertos\u2026","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":5,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conector Polic\u00eda Nacional (esqueleto - secci\u00f3n 21, paso 11). Fuente: delitos\u2026","total_count":1,"children":[]},{"name":"Policia_Delitos","total_count":1,"children":[]}]},{"name":"pipeline.py","total_count":6,"children":[{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"_columna()","total_count":1,"children":[]},{"name":"Conector piloto Unidad de V\u00edctimas (Datos Paz) - fuente de la fase 2 del plan.\u2026","total_count":1,"children":[]},{"name":"Victimas_Hechos","total_count":1,"children":[]}]},{"name":"run_all.py","total_count":2,"children":[{"name":"Ejecuta los pipelines activos (secci\u00f3n 21, pasos 4 y 11). Los conectores de la\u2026","total_count":1,"children":[]},{"name":"run_all()","total_count":1,"children":[]}]},{"name":"schemas.py","total_count":6,"children":[{"name":"ErrorOut","total_count":1,"children":[]},{"name":"FuenteOut","total_count":1,"children":[]},{"name":"Modelos Pydantic de la API (secci\u00f3n 8: tipado y documentaci\u00f3n autom\u00e1tica).","total_count":1,"children":[]},{"name":"MunicipioOut","total_count":1,"children":[]},{"name":"Pagina","total_count":1,"children":[]},{"name":"SerieOut","total_count":1,"children":[]}]},{"name":"test_api.py","total_count":10,"children":[{"name":"Pruebas de la API v1 (secci\u00f3n 8) con servicios simulados \u2014 sin BD.","total_count":1,"children":[]},{"name":"simular_servicios()","total_count":1,"children":[]},{"name":"test_consultar_indicador()","total_count":1,"children":[]},{"name":"test_consultar_indicador_con_filtros()","total_count":1,"children":[]},{"name":"test_consultar_indicador_rechaza_limit_mayor_1000()","total_count":1,"children":[]},{"name":"test_consultar_territorio_existente()","total_count":1,"children":[]},{"name":"test_consultar_territorio_inexistente()","total_count":1,"children":[]},{"name":"test_listar_fuentes()","total_count":1,"children":[]},{"name":"test_openapi_disponible()","total_count":1,"children":[]},{"name":"test_raiz()","total_count":1,"children":[]}]},{"name":"test_db.py","total_count":7,"children":[{"name":"Pruebas del saneo NaN\u2192None en la frontera jsonb (hallazgo de auditor\u00eda\u2026","total_count":1,"children":[]},{"name":"test_dict_anidado_sanea_recursivamente()","total_count":1,"children":[]},{"name":"test_fecha_se_conserva()","total_count":1,"children":[]},{"name":"test_nan_float_escala_a_none()","total_count":1,"children":[]},{"name":"test_numpy_nan_a_none()","total_count":1,"children":[]},{"name":"test_pandas_na_y_nat_a_none()","total_count":1,"children":[]},{"name":"test_valores_validos_intactos()","total_count":1,"children":[]}]},{"name":"test_internacional.py","total_count":3,"children":[{"name":"Pruebas del conector internacional World Bank (secci\u00f3n 5.2 y 7.6).","total_count":1,"children":[]},{"name":"test_esqueleto_nacional_pendiente()","total_count":1,"children":[]},{"name":"test_transformar_limpia_valores()","total_count":1,"children":[]}]},{"name":"test_lineage.py","total_count":4,"children":[{"name":"Pruebas del m\u00f3dulo de linaje (secci\u00f3n 3, punto 4).","total_count":1,"children":[]},{"name":"test_hash_determinista()","total_count":1,"children":[]},{"name":"test_hash_sensible_al_orden_y_contenido()","total_count":1,"children":[]},{"name":"test_lineage_completo()","total_count":1,"children":[]}]},{"name":"test_pipelines.py","total_count":23,"children":[{"name":"Ejecuta extraer+transformar con un Excel que replica el layout real (metadata,\u2026","total_count":1,"children":[]},{"name":"El Excel real trae filas de pie de p\u00e1gina totalmente vac\u00edas tras los datos\u2026","total_count":1,"children":[]},{"name":"El suplemento de ANMs debe tener (codigo, nombre, codigo_depto) v\u00e1lidos.","total_count":1,"children":[]},{"name":"extraer() contra la forma de respuesta real del dataset Iniciativas PDET: las\u2026","total_count":1,"children":[]},{"name":"Formato verificado en auditor\u00eda: encabezado fila 9, columna MPIO, y 3 filas por\u2026","total_count":1,"children":[]},{"name":"Legacy Socrata sin columna de \u00e1rea: no se descarta nada.","total_count":1,"children":[]},{"name":"Pruebas del ciclo de transformaci\u00f3n/carga de los pipelines piloto. Las\u2026","total_count":1,"children":[]},{"name":"Replica el layout real: 9 filas de metadata antes del encabezado.","total_count":1,"children":[]},{"name":"Shape real de 'Iniciativas PDET' (datos.gov.co/gmvf-t63e, auditor\u00eda\u2026","total_count":1,"children":[]},{"name":"test_dane_detecta_fila_encabezado_en_excel()","total_count":1,"children":[]},{"name":"test_dane_lector_excel_recorta_footer()","total_count":1,"children":[]},{"name":"test_dane_pipeline_completo_contra_excel_con_footer()","total_count":1,"children":[]},{"name":"test_dane_transformar_con_formato_real_del_excel()","total_count":1,"children":[]},{"name":"test_dane_transformar_descarta_invalidos()","total_count":1,"children":[]},{"name":"test_dane_transformar_normaliza()","total_count":1,"children":[]},{"name":"test_dane_transformar_sin_columna_area_mantiene_filas()","total_count":1,"children":[]},{"name":"test_divipola_anms_faltantes_bien_formadas()","total_count":1,"children":[]},{"name":"test_pdet_pipeline_completo_con_respuesta_real()","total_count":1,"children":[]},{"name":"test_pdet_transformar_con_shape_real_de_iniciativas()","total_count":1,"children":[]},{"name":"test_pdet_transformar_normaliza()","total_count":1,"children":[]},{"name":"test_periodo_anual()","total_count":1,"children":[]},{"name":"test_slugificar()","total_count":1,"children":[]},{"name":"test_victimas_transformar_agrega_por_tipo()","total_count":1,"children":[]}]},{"name":"test_validation.py","total_count":8,"children":[{"name":"_df_valido()","total_count":1,"children":[]},{"name":"Pruebas de la validaci\u00f3n con Pandera (secciones 7.4 y 12).","total_count":1,"children":[]},{"name":"test_validar_acepta_serie_correcta()","total_count":1,"children":[]},{"name":"test_validar_codigos_digitos_ok()","total_count":1,"children":[]},{"name":"test_validar_datos_vacios_no_falla()","total_count":1,"children":[]},{"name":"test_validar_rechaza_codigo_divipola_invalido()","total_count":1,"children":[]},{"name":"test_validar_rechaza_periodo_incoherente()","total_count":1,"children":[]},{"name":"test_validar_rechaza_valor_negativo()","total_count":1,"children":[]}]},{"name":"tsconfig.json","total_count":21,"children":[{"name":"allowImportingTsExtensions","total_count":1,"children":[]},{"name":"compilerOptions","total_count":1,"children":[]},{"name":"DOM","total_count":1,"children":[]},{"name":"DOM.Iterable","total_count":1,"children":[]},{"name":"ES2020","total_count":1,"children":[]},{"name":"include","total_count":1,"children":[]},{"name":"isolatedModules","total_count":1,"children":[]},{"name":"jsx","total_count":1,"children":[]},{"name":"lib","total_count":1,"children":[]},{"name":"module","total_count":1,"children":[]},{"name":"moduleDetection","total_count":1,"children":[]},{"name":"moduleResolution","total_count":1,"children":[]},{"name":"noEmit","total_count":1,"children":[]},{"name":"noFallthroughCasesInSwitch","total_count":1,"children":[]},{"name":"noUnusedLocals","total_count":1,"children":[]},{"name":"noUnusedParameters","total_count":1,"children":[]},{"name":"skipLibCheck","total_count":1,"children":[]},{"name":"src","total_count":1,"children":[]},{"name":"strict","total_count":1,"children":[]},{"name":"target","total_count":1,"children":[]},{"name":"useDefineForClassFields","total_count":1,"children":[]}]},{"name":"v1.py","total_count":4,"children":[{"name":"get_fuentes()","total_count":1,"children":[]},{"name":"get_indicador()","total_count":1,"children":[]},{"name":"get_territorio()","total_count":1,"children":[]},{"name":"Rutas n\u00facleo de la API v1 (secci\u00f3n 8).","total_count":1,"children":[]}]},{"name":"validation.py","total_count":8,"children":[{"name":"Config","total_count":1,"children":[]},{"name":"Contrato m\u00ednimo para toda serie: territorio, periodo y valor num\u00e9rico. Nota: la\u2026","total_count":1,"children":[]},{"name":"EsquemaBase","total_count":1,"children":[]},{"name":"EsquemaSerieNormalizada","total_count":1,"children":[]},{"name":"Formato normalizado que consume insertar_serie (etl/common/cargar.py). Es el\u2026","total_count":1,"children":[]},{"name":"Valida un DataFrame contra el contrato y devuelve (datos v\u00e1lidos, rechazados).\u2026","total_count":1,"children":[]},{"name":"Validaci\u00f3n de datos con contratos (secci\u00f3n 4.1 y 12). Los pipelines validan\u2026","total_count":1,"children":[]},{"name":"validar()","total_count":1,"children":[]}]},{"name":"world_bank.py","total_count":8,"children":[{"name":"._fuente_id()","total_count":1,"children":[]},{"name":"._indicadores()","total_count":1,"children":[]},{"name":".cargar_curated()","total_count":1,"children":[]},{"name":".extraer()","total_count":1,"children":[]},{"name":".transformar()","total_count":1,"children":[]},{"name":"Conector de comparabilidad internacional: Banco Mundial (secci\u00f3n 5.2 y 7.6).\u2026","total_count":1,"children":[]},{"name":"Devuelve {codigo_indicator: nombre} desde WB_INDICADORES.","total_count":1,"children":[]},{"name":"Internacional_WorldBank","total_count":1,"children":[]}]},{"name":"__init__.py","total_count":1,"children":[]},{"name":"__init__.py","total_count":1,"children":[]},{"name":"__init__.py","total_count":1,"children":[]},{"name":"__init__.py","total_count":1,"children":[]},{"name":"main.tsx","total_count":1,"children":[]},{"name":"vite.config.ts","total_count":1,"children":[]}]};
+
+    function transformData(jsonData) {
+        // Helper function to recursively build the children structure
+        function processNode(node, parentL1StageName) {
+            let displayName = node.name;
+            // Append total_count if it exists and is not already in the name
+            if (node.total_count !== undefined) {
+                if (!/\(Total Count: \d+\)$/.test(displayName)) {
+                    displayName += ` (Total Count: ${node.total_count})`;
+                }
+            }
+
+            const newNode = { name: displayName };
+
+            if (parentL1StageName === "Root") {
+                 newNode.originalStageName = node.name;
+            } else {
+                newNode.originalStageName = parentL1StageName;
+            }
+
+            if (node.children && node.children.length > 0) {
+                const stageNameToPass = (parentL1StageName === "Root") ? node.name : parentL1StageName;
+                newNode.children = node.children.map(child => processNode(child, stageNameToPass));
+            }
+
+            return newNode;
+        }
+
+        let rootDisplayName = jsonData.name;
+        if (jsonData.total_count !== undefined && !/\(Total Count: \d+\)$/.test(rootDisplayName)) {
+            rootDisplayName += ` (Total Count: ${jsonData.total_count})`;
+        }
+
+        return {
+            name: rootDisplayName,
+            originalStageName: "Root",
+            children: (jsonData.children || []).map(child => processNode(child, "Root"))
+        };
+    }
+
+    const treeData = transformData(initialJsonData);
+
+    // Auto-populated phaseColors: every depth-1 child of the root gets
+    // a stable colour from a bigger palette so all top-level dirs are
+    // distinguishable.
+    const PALETTE = [
+      ["#3498DB","#2980B9","#AED6F1"], ["#2ECC71","#27AE60","#A9DFBF"],
+      ["#E74C3C","#C0392B","#F5B7B1"], ["#9B59B6","#8E44AD","#D7BDE2"],
+      ["#F39C12","#D68910","#FAD7A0"], ["#1ABC9C","#117864","#A2D9CE"],
+      ["#34495E","#1B2631","#ABB2B9"], ["#E67E22","#BA4A00","#F5CBA7"],
+      ["#16A085","#0E6655","#A2D9CE"], ["#D35400","#A04000","#EDBB99"],
+      ["#7F8C8D","#566573","#D5DBDB"], ["#C0392B","#7B241C","#F5B7B1"],
+      ["#2E86C1","#1B4F72","#A9CCE3"], ["#28B463","#196F3D","#A9DFBF"],
+      ["#AF7AC5","#6C3483","#D2B4DE"],
+    ];
+    const phaseColors = { "Root": { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+                          "Default": { fill: "#BDC3C7", stroke: "#95A5A6", collapsedFill: "#ECF0F1" } };
+    (initialJsonData.children || []).forEach((c, i) => {
+      const pal = PALETTE[i % PALETTE.length];
+      phaseColors[c.name] = { fill: pal[0], stroke: pal[1], collapsedFill: pal[2] };
+    });
+
+    const levelSpecificPalettes = {
+      0: { fill: "#4A4A4A", stroke: "#333333", collapsedFill: "#6C757D" },
+      2: { fill: "#6ab04c", stroke: "#508a38", collapsedFill: "#a3d391" },
+      3: { fill: "#f0932b", stroke: "#d0730f", collapsedFill: "#f6c07e" },
+      4: { fill: "#be2edd", stroke: "#a01cb3", collapsedFill: "#e08bf2" },
+      5: { fill: "#00a8ff", stroke: "#007ac1", collapsedFill: "#74d2ff" },
+      6: { fill: "#e55039", stroke: "#c23620", collapsedFill: "#f09a8d" },
+      default: { fill: "#747d8c", stroke: "#57606f", collapsedFill: "#a4b0be" }
+    };
+
+    const svgElement = d3.select("#tree-svg");
+    const initialSvgWidth = +svgElement.attr("width");
+    const initialSvgHeight = +svgElement.attr("height");
+    const margin = { top: 40, right: 120, bottom: 80, left: 450 };
+    let width = initialSvgWidth - margin.left - margin.right;
+    let height = initialSvgHeight - margin.top - margin.bottom;
+    const duration = 500;
+    let nodeCounter = 0;
+    const g = svgElement.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const treemap = d3.tree().nodeSize([40, 0]);
+    let rootNode = d3.hierarchy(treeData, d => d.children);
+    rootNode.x0 = 0;
+    rootNode.y0 = 0;
+
+    if (rootNode.children) {
+      rootNode.children.forEach(d_child => {
+        if (d_child.children) { collapseBranch(d_child); }
+      });
+    }
+    updateTree(rootNode);
+
+    function collapseBranch(d) { if (d.children) { d._children = d.children; d._children.forEach(collapseBranch); d.children = null; } }
+    function expandBranch(d) { if (d._children) { d.children = d._children; d._children = null; } if (d.children) { d.children.forEach(expandBranch); } }
+    window.expandAll = () => { expandBranch(rootNode); updateTree(rootNode); };
+    window.collapseAll = () => { if (rootNode.children) { rootNode.children.forEach(collapseBranch); } updateTree(rootNode); };
+    window.resetView = () => { if (rootNode.children) { rootNode.children.forEach(d_child => { if (d_child.children || d_child._children) { collapseBranch(d_child); } }); } if (rootNode._children && !rootNode.children) { rootNode.children = rootNode._children; rootNode._children = null; } updateTree(rootNode); };
+
+    function updateTree(source) {
+      const treeLayoutData = treemap(rootNode);
+      let nodes = treeLayoutData.descendants();
+      let links = treeLayoutData.descendants().slice(1);
+
+      let minX = 0;
+      let maxX = 0;
+      if (nodes.length > 0) {
+        minX = d3.min(nodes, d => d.x);
+        maxX = d3.max(nodes, d => d.x);
+      }
+
+      let neededHeight = Math.max(initialSvgHeight, maxX - minX + margin.top + margin.bottom + 100);
+      svgElement.transition().duration(duration / 2).attr("height", neededHeight);
+      g.transition().duration(duration / 2).attr("transform", `translate(${margin.left},${margin.top - minX + 40})`);
+
+      nodes.forEach(d => { d.y = d.depth * 400; }); // Adjust horizontal separation if needed
+
+      const node = g.selectAll('g.node').data(nodes, d => d.id || (d.id = ++nodeCounter));
+      const nodeEnter = node.enter().append('g')
+        .attr('class', d => "node" + (d.children || d._children ? " node--internal" : " node--leaf") + (d._children ? " _children" : ""))
+        .attr('transform', d => `translate(${source.y0},${source.x0})`)
+        .on('click', (event, d) => { if (d.children) { d._children = d.children; d.children = null; } else if (d._children) { d.children = d._children; d._children = null; } updateTree(d); })
+        .style('cursor', d => (d.children || d._children) ? 'pointer' : 'default');
+
+      nodeEnter.append('circle').attr('r', 1e-6);
+
+      nodeEnter.append('text')
+        .attr('dy', '.35em')
+        .attr('x', d => d.children || d._children ? -14 : 14)
+        .attr('text-anchor', d => d.children || d._children ? 'end' : 'start')
+        .style("fill-opacity", 1e-6)
+        .call(wrapText, 380);
+
+      const nodeUpdate = nodeEnter.merge(node);
+      nodeUpdate.transition().duration(duration)
+        .attr('transform', d => `translate(${d.y},${d.x})`)
+        .attr('class', d => "node" + (d.children ? " node--internal" : " node--leaf") + (d._children ? " node--internal _children" : ""));
+
+      nodeUpdate.select('circle').attr('r', 8.5)
+        .style('fill', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            if (d._children) return palette.collapsedFill;
+            if (d.children) return palette.fill;
+            return "#fff";
+        })
+        .style('stroke', d => {
+            let palette;
+            if (d.depth === 0) {
+                palette = levelSpecificPalettes[0];
+            } else if (d.depth === 1) {
+                palette = phaseColors[d.data.originalStageName] || phaseColors.Default;
+            } else {
+                palette = levelSpecificPalettes[d.depth] || levelSpecificPalettes.default;
+            }
+            return palette.stroke;
+        });
+      nodeUpdate.select('text').style("fill-opacity", 1).call(wrapText, 380);
+
+      const nodeExit = node.exit().transition().duration(duration).attr('transform', d => `translate(${source.y},${source.x})`).remove();
+      nodeExit.select('circle').attr('r', 1e-6);
+      nodeExit.select('text').style('fill-opacity', 1e-6);
+
+      const link = g.selectAll('path.link').data(links, d => d.id);
+      const linkEnter = link.enter().insert('path', "g").attr('class', 'link').attr('d', d => { const o = { x: source.x0, y: source.y0 }; return diagonal(o, o); });
+
+      linkEnter.merge(link).transition().duration(duration).attr('d', d => diagonal(d, d.parent))
+        .style('stroke', d => {
+            const sourceNode = d.parent;
+            if (!sourceNode) return phaseColors.Default.stroke;
+            const l1AncestorName = sourceNode.data.originalStageName;
+            const colorPalette = phaseColors[l1AncestorName] || phaseColors.Default;
+            return colorPalette.stroke;
+        });
+      link.exit().transition().duration(duration).attr('d', d => { const o = { x: source.x, y: source.y }; return diagonal(o, o); }).remove();
+      nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+    }
+
+    function diagonal(s, d) { return `M ${s.y} ${s.x} C ${(s.y + d.y) / 2} ${s.x}, ${(s.y + d.y) / 2} ${d.x}, ${d.y} ${d.x}`; }
+
+    function wrapText(textElements, maxWidth) {
+        const textPartColors = {
+            name: '#343a40',
+            count: '#0056b3'
+        };
+        const countRegex = /(\s\(Total Count: \d+\))$/;
+
+        textElements.each(function () {
+            const textD3 = d3.select(this);
+            const originalNodeText = textD3.datum().data.name;
+            const x = parseFloat(textD3.attr("x") || 0);
+            const initialDy = textD3.attr("dy");
+            const textAnchor = textD3.attr("text-anchor");
+            const lineHeight = 1.1;
+
+            textD3.text(null);
+
+            let namePart = originalNodeText;
+            let countPartText = "";
+
+            const countMatch = originalNodeText.match(countRegex);
+            if (countMatch && originalNodeText.endsWith(countMatch[0])) {
+                namePart = originalNodeText.substring(0, originalNodeText.length - countMatch[0].length).trim();
+                countPartText = countMatch[0].trim();
+            }
+
+            const tokens = [];
+            namePart.split(/\s+/).filter(Boolean).forEach(word => {
+                tokens.push({ text: word, type: 'name' });
+            });
+            if (countPartText) {
+                tokens.push({ text: countPartText, type: 'count' });
+            }
+
+            if (tokens.length === 0 && originalNodeText) {
+                tokens.push({ text: originalNodeText, type: 'name' });
+            }
+
+            let currentTspan = textD3.append("tspan").attr("x", x).attr("dy", initialDy);
+            if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+
+            let lineTokens = [];
+
+            for (let i = 0; i < tokens.length; i++) {
+                const tokenObj = tokens[i];
+
+                lineTokens.push(tokenObj);
+                currentTspan.text(lineTokens.map(t => t.text).join(" "));
+
+                if (currentTspan.node().getComputedTextLength() > maxWidth && lineTokens.length > 1) {
+                    lineTokens.pop();
+
+                    currentTspan.text(null);
+                    lineTokens.forEach((prevToken, idx) => {
+                        currentTspan.append("tspan")
+                            .text((idx > 0 ? " " : "") + prevToken.text)
+                            .style("fill", textPartColors[prevToken.type] || textPartColors.name)
+                            .style("font-weight", prevToken.type === 'count' ? "bold" : "normal");
+                    });
+
+                    lineTokens = [tokenObj];
+                    currentTspan = textD3.append("tspan").attr("x", x).attr("dy", lineHeight + "em");
+                    if (textAnchor === "end") currentTspan.attr("text-anchor", "end");
+                }
+            }
+
+            currentTspan.text(null);
+            lineTokens.forEach((token, idx) => {
+                currentTspan.append("tspan")
+                    .text((idx > 0 ? " " : "") + token.text)
+                    .style("fill", textPartColors[token.type] || textPartColors.name)
+                    .style("font-weight", token.type === 'count' ? "bold" : "normal");
+            });
+
+            if (textD3.selectAll("tspan > tspan").empty() && textD3.select("tspan").text().length === 0 && originalNodeText) {
+                let t = textD3.select("tspan");
+                let displayText = originalNodeText;
+                t.text(displayText).style("fill", textPartColors.name);
+                if (t.node() && t.node().getComputedTextLength() > maxWidth && displayText.length > 20) {
+                    let estimatedChars = Math.floor(maxWidth / (t.node().getComputedTextLength()/displayText.length) );
+                    displayText = displayText.substring(0, Math.max(0, estimatedChars - 3)) + "...";
+                    t.text(displayText);
+                }
+            }
+        });
+    }
+  </script>
+</body>
+</html>

@@ -19,17 +19,22 @@ Proyectos de los Programas de Desarrollo con Enfoque Territorial (PDET), con su 
 
 ## Método de acceso
 
-**Estado verificado (auditoría 2026-08-02): no se encontró ningún endpoint JSON público documentado.** La ART publica la información de proyectos PDET principalmente vía la "Central de Información PDET" (visor interactivo, no API REST documentada) y un portal de datos abiertos genérico. Antes de usar el conector se debe gestionar acceso con la entidad (contacto identificado en la búsqueda: `mesa.go@renovacionterritorio.gov.co`) y documentar el endpoint verificado aquí.
+**Verificado en vivo (auditoría 2026-08-02, tercera pasada):** la ART publica datos PDET en datos.gov.co (Socrata), y el conector funciona contra ellos:
 
-Variable de entorno requerida: `PDET_URL` (endpoint del catálogo de proyectos PDET).
+- **Iniciativas PDET** — `https://www.datos.gov.co/resource/gmvf-t63e.json` (~18.6k iniciativas de los 16 PDET). Columnas reales: `codigodane` (código DANE del municipio), `t_tulo_iniciativa`, `subregi_n`, `municipio_sujeto_concertaci`, `pilar`, `sector`, etc. **No reporta estado, avance, inversión ni año** → el conector los trata como opcionales (migración 0008 permite `anio` nulo).
+- **Contratación Municipios PDET** — `https://www.datos.gov.co/resource/xqtq-puna.json`: sí trae `valor_contrato` y `estado_del_proceso`, pero **sin columna de municipio** (el código DANE está embebido en el nombre de la entidad) — no se usa todavía; candidato para enriquecer inversión en una iteración futura.
+
+Variable de entorno: `PDET_URL` (cualquier dataset Socrata con `codigodane` + columna de nombre).
+
+> Nota operativa: las filas con `codigodane` `00000`/`99999` (mesas de concertación, cabildos, nivel "SUBREGIONAL") no son municipios y se descartan con aviso — comportamiento esperado, no es pérdida de datos.
 
 ## Transformaciones aplicadas
 
 El pipeline `etl/pdet/pipeline.py`:
 
-1. Normaliza nombres de columnas y detecta aliases (código DIVIPOLA, nombre del proyecto, estado, avance, inversión, año).
-2. Carga proyectos en `curated.pdet_proyectos` con linaje completo.
-3. Agrega la inversión por municipio/año y carga en `curated.serie_historica` con indicador `pdet_inversion`.
+1. Normaliza nombres de columnas y detecta aliases (código DIVIPOLA, nombre del proyecto, estado, avance, inversión, año). Código y nombre son obligatorios; el resto opcional (datasets reales de la ART no los reportan).
+2. Carga proyectos en `curated.pdet_proyectos` con linaje completo (`executemany` para volumen).
+3. Agrega la inversión por municipio/año y carga en `curated.serie_historica` con indicador `pdet_inversion` — solo si la fuente reporta inversión y año; si no, lo informa y no agrega serie.
 
 ## Limitaciones conocidas
 
