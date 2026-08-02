@@ -15,6 +15,7 @@ export function Inicio() {
         <KPIFuentes />
         <KPIIndicador codigo="homicidios" etiqueta="Homicidios (Policía Nacional)" unidad="delitos" />
         <KPIIndicador codigo="victimas_ruv" etiqueta="Personas incluidas en el RUV (UARIV)" unidad="personas" />
+        <KPIIndicador codigo="poblacion" etiqueta="Población proyectada (DANE)" unidad="personas" />
         {KPIS_PLANIFICADOS.map((etiqueta) => (
           <div className="kpi es-placeholder" key={etiqueta}>
             <div className="kpi-etiqueta">{etiqueta}</div>

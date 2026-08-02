@@ -23,6 +23,12 @@ Fuente oficial de estadísticas sociodemográficas de Colombia. Para el observat
 
 - Archivo: `DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx` (dane.gov.co, sección publicaciones — la URL exacta cambia con cada publicación)
 
+**URL verificada en vivo (2026-08-02)** — responde 200, 1,8 MB:
+
+```
+DANE_POBLACION_XLSX_URL=https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx
+```
+
 Variables de entorno requeridas:
 
 - `DANE_POBLACION_XLSX_URL` — URL directa del Excel de proyecciones por municipio
@@ -45,6 +51,14 @@ El pipeline `etl/dane/pipeline.py`:
 Como red de seguridad genérica, `insertar_raw()` sanea NaN/NaT a `None` antes de serializar a jsonb (Python escribe el token `NaN`, que Postgres jsonb rechaza: "Token NaN is invalid").
 
 > `DANE_POBLACION_HOJA` sin configurar usa la primera hoja del libro (en pandas, `sheet_name=None` significaría "todas las hojas" y rompería el pipeline; el conector usa `hoja or 0`).
+
+## Carga verificada (2026-08-02)
+
+Serie anual municipal 2020-2035 del indicador `poblacion` (proyecciones DANE
+post COVID-19): 17.952 filas (1.122 municipios × 16 años). Total nacional 2025
+= **53.110.609**, que coincide con la proyección oficial del DANE para 2025.
+La serie sirve de denominador para tasas (homicidios, victimización) por 100
+mil habitantes.
 
 ## Limitaciones conocidas
 

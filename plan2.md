@@ -232,6 +232,12 @@ el shape real encontrado (mismo patrón que
 
 ### Estado de implementación (verificado en vivo 2026-08-02)
 
+0. **DANE** ✅ — `etl/dane/pipeline.py` con URL real verificada en vivo:
+   `https://www.dane.gov.co/files/censo2018/proyecciones-de-poblacion/Municipal/DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx`
+   (200 OK, 1,8 MB). 17.952 filas municipio-año (1.122 municipios × 2020-2035);
+   total nacional 2025 = 53.110.609, coincide con la proyección oficial del
+   DANE. Indicador `poblacion` en `serie_historica` + KPI y capa municipal en
+   el dashboard. Sirve de denominador para tasas por 100 mil habitantes.
 1. **UNHCR** ✅ — `etl/internacional/unhcr.py`; probe real: 344 filas → 301
    (año-columna). Ficha `docs/fuentes/unhcr.md`.
 2. **CNMH SIEVCAC** ✅ — `etl/memoria/pipeline.py` reemplaza el esqueleto:

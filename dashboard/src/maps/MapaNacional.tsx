@@ -15,6 +15,7 @@ const RAMPAS = {
 const INDICADORES_MAPA: { codigo: string; etiqueta: string }[] = [
   { codigo: "homicidios", etiqueta: "Homicidios (Policía Nacional)" },
   { codigo: "victimas_ruv", etiqueta: "Personas incluidas en el RUV (UARIV)" },
+  { codigo: "poblacion", etiqueta: "Población proyectada (DANE)" },
   { codigo: "ideam_deforestacion", etiqueta: "Deforestación ha (IDEAM)" },
   { codigo: "hdx_conflicto_eventos", etiqueta: "Eventos de conflicto (HDX)" },
   { codigo: "cnmh_desaparicion_victimas", etiqueta: "Desaparición forzada (CNMH)" },
