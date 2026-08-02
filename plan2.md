@@ -259,9 +259,11 @@ el shape real encontrado (mismo patrón que
    `policia` → `vw_homicidios_reconciliado` (ver Fase C).
 6. **ACLED** ✅ — `etl/internacional/acled.py`; sin API key: agregados oficiales
    país-año descargados a `data/external/` (3 series, Colombia 2018–2026 →
-   27 indicador-año). Atribución obligatoria. Ficha `docs/fuentes/acled.md`.
-   Pendiente futuro: capa por departamento desde el agregado semanal admin1
-   (mapeo ADMIN1→DIVIPOLA).
+   27 indicador-año). Capa departamental ✅ (2026-08-02): el agregado semanal
+   admin1 se mapea ADMIN1→DIVIPOLA (33/33 departamentos) y se carga
+   departamento-año (acled_eventos_departamento: 38.747 eventos 2017–2026;
+   acled_fatalidades_departamento: 16.529). Atribución obligatoria. Ficha
+   `docs/fuentes/acled.md`.
 
 `etl/run_all.py` ejecuta: DANE, Víctimas, PDET, WB, UNHCR, HDX, ACLED, 6 CNMH,
 3 Policía + homicidios, IDEAM. Nota verificada en la corrida completa: la

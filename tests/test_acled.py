@@ -1,4 +1,4 @@
-"""Tests del conector ACLED (agregados país-año en archivos locales)."""
+"""Tests del conector ACLED (agregados país-año y departamento-año)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 
 from etl.common.config import settings
-from etl.internacional.acled import ARCHIVOS, Internacional_ACLED
+from etl.internacional.acled import ARCHIVO_ADMIN1, ARCHIVOS, Internacional_ACLED, _normalizar
 
 
 @pytest.fixture()
@@ -63,3 +63,66 @@ def test_directorio_relativo_a_repo(monkeypatch):
     monkeypatch.setattr(settings, "acled_data_dir", "data/external")
     pipeline = Internacional_ACLED()
     assert pipeline._directorio().name == "external"
+
+
+# ── Capa departamental (admin1 → DIVIPOLA) ────────────────────────────────
+
+def _df_admin1():
+    return pd.DataFrame(
+        {
+            "COUNTRY": ["Colombia", "Colombia", "Colombia", "Venezuela", "Colombia"],
+            "ADMIN1": ["Bogota, D.C.", "Antioquia", "Narino", "Caracas", "Bogota, D.C."],
+            "WEEK": ["2025-01-04", "2025-01-04", "2025-01-04", "2025-01-04", "2025-03-01"],
+            "EVENTS": [3, 1, 2, 99, 4],
+            "FATALITIES": [0, 5, 1, 999, 2],
+            "archivo": ARCHIVO_ADMIN1,
+        }
+    )
+
+
+def test_normalizar_empareja_tildes_y_puntos():
+    assert _normalizar("Nariño") == _normalizar("Narino")
+    assert _normalizar("Bogotá, D.C.") == _normalizar("Bogota, D.C.") == "bogota_d_c"
+    assert _normalizar("SAN ANDRÉS Y PROVIDENCIA") == "san_andres_y_providencia"
+
+
+def test_transformar_admin1_mapea_y_agrega(monkeypatch):
+    pipeline = Internacional_ACLED()
+    monkeypatch.setattr(
+        pipeline,
+        "_mapeo_admin1",
+        lambda: {"bogota_d_c": "11", "antioquia": "05", "narino": "52"},
+    )
+    out = pipeline.transformar_admin1(_df_admin1())
+    bogota_ev = out[(out["codigo_divipola"] == "11") & (out["indicador_codigo"] == "acled_eventos_departamento")]
+    assert bogota_ev["valor"].iloc[0] == 7  # 3 + 4 (dos semanas del mismo año)
+    assert bogota_ev["anio"].iloc[0] == 2025
+    assert out[out["codigo_divipola"] == "05"]["valor"].iloc[0] == 1
+    assert out[out["indicador_codigo"] == "acled_fatalidades_departamento"]["valor"].sum() == 8
+    # Venezuela y los admin1 sin mapeo no aparecen
+    assert not out[out["codigo_divipola"].isin(["caracas", "99"])].any(axis=None)
+
+
+def test_transformar_admin1_sin_archivo_devuelve_vacio():
+    pipeline = Internacional_ACLED()
+    df = pd.DataFrame({"COUNTRY": ["Colombia"], "archivo": ["otro.xlsx"]})
+    assert pipeline.transformar_admin1(df).empty
+
+
+def test_extraer_incluye_admin1_si_existe(tmp_path, monkeypatch):
+    for nombre in ARCHIVOS:
+        pd.DataFrame([{"COUNTRY": "Colombia", "YEAR": 2025, "EVENTS": 1}]).to_excel(
+            tmp_path / nombre, index=False
+        )
+    filas = [
+        {"COUNTRY": "Colombia", "ADMIN1": "Antioquia", "WEEK": "2025-01-04", "EVENTS": 1, "FATALITIES": 0},
+        {"COUNTRY": "Peru", "ADMIN1": "Lima", "WEEK": "2025-01-04", "EVENTS": 1, "FATALITIES": 0},
+    ]
+    pd.DataFrame(filas).to_excel(tmp_path / ARCHIVO_ADMIN1, index=False)
+    monkeypatch.setattr(settings, "acled_data_dir", str(tmp_path))
+    df, _ = Internacional_ACLED().extraer()
+    assert (df["archivo"] == ARCHIVO_ADMIN1).any()
+    # solo Colombia del admin1 llega a raw
+    admin1 = df[df["archivo"] == ARCHIVO_ADMIN1]
+    assert len(admin1) == 1
+    assert admin1.iloc[0]["ADMIN1"] == "Antioquia"

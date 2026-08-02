@@ -30,13 +30,20 @@ queda en `raw`).
 
 ## Pendiente / alternativas
 
-- **Granularidad departamental**: `Latin-America-the-Caribbean_aggregated_data_up_to_week_of-2026-07-18.xlsx`
-  trae agregados semanales por admin1 (EVENTS y FATALITIES) — requeriría mapear
-  ADMIN1 a DIVIPOLA de departamento. No se carga todavía; el archivo queda en
-  `data/external` para una futura capa (comparar siempre con registros
-  nacionales: ACLED es de origen internacional).
 - **HDX/HAPI**: expone ACLED con granularidad municipal (ver [hdx.md](hdx.md));
-  para nivel país este conector local es suficiente y no depende de la API.
+  para nivel país/departamento este conector local es suficiente y no depende
+  de la API.
+
+## Capa departamental (admin1 → DIVIPOLA)
+
+`Latin-America-the-Caribbean_aggregated_data_up_to_week_of-2026-07-18.xlsx`
+(agregado semanal por admin1, EVENTS y FATALITIES) se procesa si existe en
+`data/external`: se filtra Colombia, se mapea ADMIN1 → DIVIPOLA de
+departamento (normalización sin tildes; verificado 2026-08-02: 33/33) y se
+agrega a departamento-año en `curated.serie_historica`:
+`acled_eventos_departamento` (295 filas, 2017–2026, 38.747 eventos) y
+`acled_fatalidades_departamento` (16.529 fatalidades). Comparar siempre con
+registros nacionales: ACLED es de origen internacional.
 
 ## Notas de gobernanza
 

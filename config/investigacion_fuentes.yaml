@@ -106,8 +106,9 @@ fuentes:
       - "number_of_political_violence_events_by_country-month-year_as-of-24Jul2026.xlsx (Colombia: 103 meses)"
       - "Latin-America-the-Caribbean_aggregated_data_up_to_week_of-2026-07-18.xlsx (agregado semanal por admin1; no cargado aún)"
     bloqueo: "La API exige cuenta registrada (email + key). El pipeline usa los exports
-      oficiales descargados a data/external/ (ACLED_DATA_DIR); la capa por
-      departamento (admin1) queda pendiente de mapeo ADMIN1→DIVIPOLA."
+      oficiales descargados a data/external/ (ACLED_DATA_DIR). La capa por
+      departamento (admin1 → DIVIPOLA, 33/33) quedó implementada 2026-08-02:
+      acled_eventos_departamento (38.747 eventos) y acled_fatalidades_departamento."
 
   iom_dtm:
     estado: "resuelto: reportes PDF por ronda (no dataset estructurado)"
