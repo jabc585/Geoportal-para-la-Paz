@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import os
 
 import psycopg
@@ -10,6 +11,44 @@ import psycopg
 def conectar() -> psycopg.Connection:
     url = os.getenv("DATABASE_URL", "postgresql://observatorio:observatorio_dev@localhost:5432/observatorio")
     return psycopg.connect(url, autocommit=True)
+
+
+def sanear_json(valor):
+    """Convierte NaN/NaT/NA a None recursivamente (hallazgo de auditoría 2026-08-02).
+
+    Python serializa NaN como el token `NaN`, que Postgres jsonb rechaza
+    ("Token NaN is invalid"). El saneo en la frontera de serialización evita
+    que cualquier pipeline con celdas vacías legítimas rompa raw.*.
+    """
+    if valor is None:
+        return None
+    if isinstance(valor, dict):
+        return {k: sanear_json(v) for k, v in valor.items()}
+    if isinstance(valor, (list, tuple)):
+        return [sanear_json(v) for v in valor]
+    if isinstance(valor, float) and math.isnan(valor):
+        return None
+    if hasattr(valor, "item") and not isinstance(valor, (str, bytes)):
+        # numpy/pandas escalares: se evaluan con pd.isna y se devuelve el
+        # escalar Python nativo en vez del wrapper numpy (serializable JSON)
+        try:
+            import numpy as np
+
+            escalar = valor.item()
+            if isinstance(escalar, float) and math.isnan(escalar):
+                return None
+            return escalar
+        except (ValueError, ImportError):
+            pass
+    try:
+        import pandas as pd
+
+        resultado = pd.isna(valor)
+        if isinstance(resultado, bool) and resultado:
+            return None
+    except (TypeError, ValueError):
+        pass
+    return valor
 
 
 def insertar_raw(conn: psycopg.Connection, tabla: str, filas: list[dict]) -> int:
@@ -24,7 +63,7 @@ def insertar_raw(conn: psycopg.Connection, tabla: str, filas: list[dict]) -> int
             [
                 (
                     f["archivo"],
-                    psycopg.types.json.Jsonb(f["contenido"]),
+                    psycopg.types.json.Jsonb(sanear_json(f["contenido"])),
                     f["url_origen"],
                     f["fecha_extraccion"],
                     f["hash_fila"],

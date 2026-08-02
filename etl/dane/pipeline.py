@@ -73,6 +73,11 @@ def _leer_excel_dane(url: str, hoja: str | None) -> pd.DataFrame:
 
     sheet_name=None en pandas significa "todas las hojas" (devuelve un dict,
     no un DataFrame), por eso se usa `hoja or 0` para la primera hoja.
+
+    El archivo oficial de DANE trae filas de pie de página después de los datos
+    (nota sobre Barrancominas, cita de fuente, fecha de actualización — hallazgo
+    de auditoría 2026-08-02). Se recortan las filas donde todas las columnas de
+    datos (código/año/población) están vacías: ni la nota tiene valor de dato.
     """
     raw = pd.read_excel(url, sheet_name=hoja or 0, header=None, engine="openpyxl", dtype=str)
     indice = _detectar_fila_encabezado(raw)
@@ -84,6 +89,10 @@ def _leer_excel_dane(url: str, hoja: str | None) -> pd.DataFrame:
         )
     df = raw.iloc[indice + 1 :].copy()
     df.columns = [str(c) for c in raw.iloc[indice]]
+    columnas_datos = {
+        c for c in df.columns if _normalizar(c) in set(ALIASES["codigo"] + ALIASES["anio"] + ALIASES["valor"])
+    }
+    df = df.dropna(how="all", subset=list(columnas_datos)) if columnas_datos else df.dropna(how="all")
     return df.reset_index(drop=True)
 
 

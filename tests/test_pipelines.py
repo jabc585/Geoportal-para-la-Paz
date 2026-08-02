@@ -94,6 +94,59 @@ def test_dane_detecta_fila_encabezado_en_excel():
     assert _detectar_fila_encabezado(raw) == 8
 
 
+def test_dane_lector_excel_recorta_footer(tmp_path):
+    """El Excel real trae filas de pie de página totalmente vacías tras los
+    datos (nota de Barrancominas, cita, fecha): deben recortarse antes del crudo."""
+    import openpyxl
+    from etl.dane.pipeline import _leer_excel_dane
+
+    archivo = tmp_path / "proyecciones.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append(["PROYECCIONES DE POBLACIÓN 2020-2035"])
+    for _ in range(7):
+        ws.append(["Fuente: DANE"])
+    ws.append(["DP", "DPNOM", "MPIO", "DPMP", "AÑO", "ÁREA GEOGRÁFICA", "Población"])
+    ws.append(["05", "ANTIOQUIA", "05001", "MEDELLÍN", "2020", "Total", "2519592"])
+    ws.append(["05", "ANTIOQUIA", "05002", "ABEJORRAL", "2020", "Total", "23564"])
+    ws.append([None, None, None, None, None, None, None])
+    ws.append([None, None, None, None, None, None, None])
+    ws.append([None, None, None, None, None, None, None])
+    ws.append(["Nota: municipio de Barrancominas...", None, None, None, None, None, None])
+    wb.save(archivo)
+
+    df = _leer_excel_dane(str(archivo), None)
+    assert list(df.columns) == ["DP", "DPNOM", "MPIO", "DPMP", "AÑO", "ÁREA GEOGRÁFICA", "Población"]
+    assert len(df) == 2
+    assert df["MPIO"].tolist() == ["05001", "05002"]
+
+
+def test_dane_pipeline_completo_contra_excel_con_footer(tmp_path, monkeypatch):
+    """Ejecuta extraer+transformar con un Excel que replica el layout real
+    (metadata, encabezado fila 9, footer con NaN): 1 fila limpia."""
+    import openpyxl
+    from etl.dane.pipeline import DANE_Poblacion
+
+    archivo = tmp_path / "proyecciones.xlsx"
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append(["PROYECCIONES DE POBLACIÓN 2020-2035"])
+    for _ in range(7):
+        ws.append(["Fuente: DANE"])
+    ws.append(["DP", "DPNOM", "MPIO", "DPMP", "AÑO", "ÁREA GEOGRÁFICA", "Población"])
+    ws.append(["05", "ANTIOQUIA", "05001", "MEDELLÍN", "2020", "Total", "2519592"])
+    ws.append([None, None, None, None, None, None, None])
+    ws.append([None, None, None, None, None, None, None])
+    wb.save(archivo)
+
+    monkeypatch.setenv("DANE_POBLACION_XLSX_URL", str(archivo))
+    pipeline = DANE_Poblacion()
+    df, _ = pipeline.extraer()
+    resultado = pipeline.transformar(df)
+    assert len(resultado) == 1
+    assert float(resultado["valor"].iloc[0]) == 2519592.0
+
+
 def test_victimas_transformar_agrega_por_tipo():
     df = pd.DataFrame(
         {
