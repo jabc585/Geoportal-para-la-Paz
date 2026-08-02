@@ -84,9 +84,9 @@ fuentes:
     formato: "JSON"
     licencia: "Verificar en ficha (sección 3, punto 5)"
     variable: "UCDP_API_TOKEN"
-    ficha_doc: "docs/fuentes/ucdp.md"
+    ficha_doc: "docs/fuentes/ucdp.md (pendiente de escribir)"
     descripcion: "Eventos de conflicto armado (GED)"
-    estado: "pendiente (requiere registro)"
+    estado: "pendiente (requiere registro; ficha no escrita)"
 
   acled:
     nombre: "ACLED"

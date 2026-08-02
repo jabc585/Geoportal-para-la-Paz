@@ -14,7 +14,7 @@ Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
 - Memoria histórica (CNMH SIEVCAC, 6 datasets) y Policía Nacional (3 delitos) implementados y verificados en vivo; Fiscalía documentada como inviable por volumen (ficha y `config/investigacion_fuentes.yaml`)
 - API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8); `GET /api/v1/health` con estado por fuente
 - Frontend React + TypeScript + MapLibre inicializado con KPI contra `/api/v1/fuentes` (paso 5)
-- Tests: 88 pruebas pasando (linaje, validación, pipelines, API, internacional, configuración)
+- Tests: 124 pruebas pasando (linaje, validación, pipelines, API, internacional, configuración, BD, descargas, conexiones, IDEAM)
 - Documentación: gobernanza, checklist de privacidad ejecutado para víctimas, fichas de fuente (pasos 3 y 4)
 
 ## Requisitos
@@ -122,8 +122,11 @@ tests/         pruebas de ETL y API
 ```bash
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pytest tests/ -v
+pytest tests/ -v          # 124 tests (ETL + API), sin tocar BD real
 ```
+
+Los tests no requieren PostgreSQL: los pipelines se prueban con fakes de red y
+la API con TestClient y servicios monkeypatched.
 
 ## Próximos pasos (sección 21)
 

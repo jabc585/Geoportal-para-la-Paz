@@ -18,11 +18,11 @@ Archivos usados (variables por archivo en etl/common/config.py):
 
 from __future__ import annotations
 
-import unicodedata
 from pathlib import Path
 
 import pandas as pd
 
+from etl.common.cargar import insertar_indicador_internacional, slugificar, upsert_fuente
 from etl.common.config import settings
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
@@ -59,17 +59,13 @@ INDICADORES_DEPARTAMENTO = {
 NOMBRE_ARCHIVOS = ", ".join(ARCHIVOS)
 
 
-def _normalizar(texto: str) -> str:
-    """Sin tildes, minúsculas, no alfanumérico → '_' (para emparejar nombres)."""
-    texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode()
-    import re
-
-    return re.sub(r"[^a-z0-9]+", "_", texto.lower()).strip("_")
-
-
 class Internacional_ACLED(PipelineETL):
     pipeline_id = "internacional_acled"
     tabla_raw = "internacional_acled"
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._df_crudo: pd.DataFrame | None = None
 
     def _directorio(self) -> Path:
         directorio = Path(settings.acled_data_dir)
@@ -95,7 +91,7 @@ class Internacional_ACLED(PipelineETL):
         with self.conn.cursor() as cur:
             cur.execute("SELECT codigo_divipola, nombre FROM curated.departamento")
             filas = cur.fetchall()
-        return {_normalizar(nombre): codigo for codigo, nombre in filas}
+        return {slugificar(nombre): codigo for codigo, nombre in filas}
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
         rutas = self._rutas()
@@ -115,6 +111,7 @@ class Internacional_ACLED(PipelineETL):
             df["archivo"] = ruta_admin1.name
             filas.append(df)
         df = pd.concat(filas, ignore_index=True)
+        self._df_crudo = df
         lineage = Lineage.ahora(
             fuente="ACLED",
             url_origen=str(rutas[0][0].parent),
@@ -142,7 +139,7 @@ class Internacional_ACLED(PipelineETL):
         admin1 = admin1[admin1["COUNTRY"].astype(str).str.upper() == PAIS.upper()]
         mapeo = self._mapeo_admin1()
         admin1 = admin1.assign(
-            codigo_divipola=admin1["ADMIN1"].astype(str).map(_normalizar).map(mapeo)
+            codigo_divipola=admin1["ADMIN1"].astype(str).map(slugificar).map(mapeo)
         )
         sin_mapear = admin1["codigo_divipola"].isna().sum()
         if sin_mapear:
@@ -177,36 +174,25 @@ class Internacional_ACLED(PipelineETL):
         return pd.concat(salidas, ignore_index=True)
 
     def cargar_curated(self, df: pd.DataFrame) -> None:
-        if df.empty:
-            return
-        with transaccion(self.conn):
-            fuente_id = self._fuente_id()
-            insertadas = 0
-            with self.conn.cursor() as cur:
-                for fila in df.to_dict("records"):
-                    cur.execute(
-                        """
-                        INSERT INTO curated.indicador_internacional
-                            (fuente_id, pais, indicador, periodo, valor, unidad,
-                             url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (fuente_id, pais, indicador, periodo) DO NOTHING
-                        """,
-                        (
-                            fuente_id,
-                            PAIS,
-                            fila["indicador"],
-                            f"{int(fila['anio'])}-01-01",
-                            float(fila["valor"]),
-                            fila["unidad"],
-                            self.lineage.url_origen,
-                            self.lineage.fecha_extraccion,
-                            self.lineage.fecha_corte_dato,
-                            hash_registro(fila),
-                        ),
-                    )
-                    insertadas += cur.rowcount > 0
-            print(f"[acled] indicadores internacionales cargados: {insertadas}")
+        if not df.empty:
+            with transaccion(self.conn):
+                fuente_id = self._fuente_id()
+                insertadas = insertar_indicador_internacional(
+                    self.conn, df, fuente_id, PAIS,
+                    self.lineage.url_origen, self.lineage.fecha_extraccion,
+                    self.lineage.fecha_corte_dato, unidad="unidad",
+                )
+                print(f"[acled] indicadores internacionales cargados: {insertadas}")
+        # Capa departamental admin1 (Fase 0.4 plan3.md): se ejecuta dentro de la
+        # misma conexión que super().ejecutar() gestiona, evitando la fuga de
+        # conexión que ocurría al llamarlo después de cerrar la conexión.
+        if self._df_crudo is not None:
+            admin1 = self.transformar_admin1(self._df_crudo)
+            if not admin1.empty:
+                try:
+                    self.cargar_curated_admin1(admin1)
+                except Exception as exc:  # noqa: BLE001
+                    print(f"[acled] AVISO: capa departamental falló ({exc}) — no afecta los país-año")
 
     def cargar_curated_admin1(self, df: pd.DataFrame) -> None:
         """Capa departamental: departamento-año → curated.serie_historica."""
@@ -242,21 +228,9 @@ class Internacional_ACLED(PipelineETL):
                 print(f"[acled] departamento-año cargados a serie_historica ({codigo_ind}): {insertadas}")
 
     def ejecutar(self) -> None:
-        # Capa país-año (igual que el base) y luego la capa departamental opcional.
         super().ejecutar()
-        try:
-            df_crudo = None
-            if (self._directorio() / ARCHIVO_ADMIN1).exists():
-                df_crudo, _ = self.extraer()
-            if df_crudo is not None:
-                admin1 = self.transformar_admin1(df_crudo)
-                self.cargar_curated_admin1(admin1)
-        except Exception as exc:  # noqa: BLE001
-            print(f"[acled] AVISO: capa departamental falló ({exc}) — no afecta los país-año")
 
     def _fuente_id(self) -> int:
-        from etl.common.cargar import upsert_fuente
-
         return upsert_fuente(
             self.conn,
             nombre="ACLED",

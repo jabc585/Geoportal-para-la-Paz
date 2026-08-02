@@ -163,6 +163,12 @@ def test_extraer_guarda_zip_e_img_y_parsea_periodo(monkeypatch, tmp_path):
         def headers(self):
             return {"Location": "https://datos.gov.co/archivo.zip"}
 
+        def iter_content(self, chunk_size=1024 * 1024):
+            yield self._c
+
+        def close(self):
+            pass
+
     def fake_get(url, timeout=900, **kwargs):
         return _ZipResp(zip_bytes.getvalue())
 

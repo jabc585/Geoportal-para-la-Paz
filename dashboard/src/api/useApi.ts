@@ -24,8 +24,8 @@ export function useApi<T>(
       .then((d) => {
         if (activo) setDatos(d);
       })
-      .catch((e: Error) => {
-        if (activo) setError(e.message);
+      .catch((e: unknown) => {
+        if (activo) setError(e instanceof Error ? e.message : "Error desconocido");
       })
       .finally(() => {
         if (activo) setCargando(false);

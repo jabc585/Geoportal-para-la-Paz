@@ -10,4 +10,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Ejecutar como usuario sin privilegios (auditoría 2026-08-02, CIS Docker):
+# el ETL escribe en /app/data; el usuario tiene escritura ahí abajo.
+RUN useradd --create-home --uid 1000 observatorio \
+    && mkdir -p /app/data && chown -R observatorio:observatorio /app
+USER observatorio
+
 CMD ["python", "-m", "etl.run_all"]

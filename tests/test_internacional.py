@@ -21,11 +21,6 @@ def test_transformar_limpia_valores():
     assert int(resultado["anio"].iloc[0]) == 2020
 
 
-def test_esqueleto_ideam_pendiente():
-    from etl.ideam.pipeline import IDEAM_Ambiental
-
-    assert IDEAM_Ambiental().pipeline_id == "ideam_ambiental"
-
 
 UNHCR_ITEM_REAL = {
     "year": 2023,

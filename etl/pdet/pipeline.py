@@ -16,11 +16,24 @@ from etl.common.cargar import insertar_serie, periodo_anual, resolver_territorio
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
+import pandera as pa
+
 from etl.common.validation import (
     EsquemaSerieNormalizada,
     encontrar_columna,
     encontrar_columna_opcional,
     validar,
+)
+
+EsquemaProyectoPDET = pa.DataFrameSchema(
+    columns={
+        "codigo_divipola": pa.Column(str),
+        "nombre": pa.Column(str),
+        "estado": pa.Column(str),
+        "avance_pct": pa.Column(float, nullable=True),
+        "valor_inversion": pa.Column(float, nullable=True),
+        "anio": pa.Column(float, nullable=True),
+    }
 )
 
 ALIASES = {
@@ -107,6 +120,7 @@ class ART_PDET(PipelineETL):
             print(f"[pdet] filas cargadas: {insertadas} (proyectos + serie inversión)")
 
     def _cargar_proyectos(self, df: pd.DataFrame, fuente_id: int) -> int:
+        df = validar(df, EsquemaProyectoPDET)[0]
         insertadas = 0
         sin_territorio = 0
         filas = []

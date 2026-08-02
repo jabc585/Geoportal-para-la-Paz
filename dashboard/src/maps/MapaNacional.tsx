@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { MapaIndicador, descargarCSV, obtenerMapa } from "../api/client";
+import { useApi } from "../api/useApi";
 
 // Paleta secuencial viridis (verificada para daltonismo, sección 10 del plan):
 // menor valor = amarillo, mayor valor = púrpura oscuro. Sin dato = gris.
@@ -66,9 +67,20 @@ export function MapaNacional() {
   const contenedor = useRef<HTMLDivElement>(null);
   const mapaRef = useRef<maplibregl.Map | null>(null);
   const [indicador, setIndicador] = useState(INDICADORES_MAPA[0].codigo);
+  const { datos: datosApi, error } = useApi(() => obtenerMapa(indicador), [indicador]);
+
   const [datos, setDatos] = useState<MapaIndicador | null>(null);
   const [cortes, setCortes] = useState<number[]>([]);
-  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (datosApi) {
+      setDatos(datosApi);
+      const valores = datosApi.features
+        .map((f) => f.properties.valor)
+        .filter((v): v is number => v !== null);
+      setCortes(valores.length >= 5 ? quintiles(valores) : []);
+    }
+  }, [datosApi]);
 
   useEffect(() => {
     const mapa = new maplibregl.Map({
@@ -94,27 +106,6 @@ export function MapaNacional() {
       mapaRef.current = null;
     };
   }, []);
-
-  useEffect(() => {
-    let cancelado = false;
-    setError(null);
-    obtenerMapa(indicador)
-      .then((d) => {
-        if (cancelado) return;
-        setDatos(d);
-        const valores = d.features
-          .map((f) => f.properties.valor)
-          .filter((v): v is number => v !== null);
-        setCortes(valores.length >= 5 ? quintiles(valores) : []);
-      })
-      .catch((e: unknown) => {
-        if (cancelado) return;
-        setError(e instanceof Error ? e.message : "Error al cargar el mapa");
-      });
-    return () => {
-      cancelado = true;
-    };
-  }, [indicador]);
 
   useEffect(() => {
     const mapa = mapaRef.current;

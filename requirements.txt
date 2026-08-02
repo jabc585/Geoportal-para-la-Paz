@@ -1,20 +1,33 @@
+# Dependencias pineadas a las versiones instaladas y verificadas el 2026-08-02
+# (auditoría integral). Cambios de versión mayor (p. ej. pandas 2.x -> 3.x)
+# requieren revalidar los 13 pipelines antes de actualizar el pin.
+
 # Etl common
-psycopg[binary]>=3.1
-pydantic-settings>=2.3
+psycopg[binary]==3.3.4
+psycopg-pool==3.3.1
+pydantic-settings==2.14.2
 
 # Datos (pandas + esquema)
-pandas>=2.2
-pandera>=0.20
-openpyxl>=3.1
+pandas==3.0.5
+pandera==0.32.1
+openpyxl==3.1.5
 
 # Red
-requests>=2.31
+requests==2.34.2
 
 # API
-fastapi>=0.115
-uvicorn[standard]>=0.30
+fastapi==0.141.1
+uvicorn[standard]==0.52.1
+slowapi==0.1.9
 
 # Geoespacial: capa municipal DIVIPOLA + estadística zonal del raster IDEAM
-geopandas>=1.0
-rasterio>=1.4
-rasterstats>=0.19
+geopandas==1.1.4
+rasterio==1.5.0
+rasterstats==0.21.0
+
+# Tests (suite completa: pytest + TestClient de FastAPI)
+pytest==9.1.1
+httpx==0.28.1
+# Declarado explícitamente: uvicorn[standard] lo trae transitivamente,
+# pero tests/test_ci.py lo usa directamente (plan3.md, Fase 2.14).
+PyYAML==6.0.3

@@ -9,20 +9,18 @@ import os
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
-from slowapi import Limiter
+from fastapi.responses import JSONResponse, Response
 from slowapi.errors import RateLimitExceeded
-from slowapi.util import get_remote_address
+from slowapi.middleware import SlowAPIMiddleware
 
+from api.limiter import limiter
 from api.routes.v1 import router as v1_router
 
-# Rate limiting (auditoría 2026-08-02, OWASP API4:2023): la API es pública; los
-# límites por IP evitan agotamiento de recursos antes de exponerla fuera de
-# loopback. Umbrales conservadores y configurables con API_RATE_LIMIT.
-limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=[os.getenv("API_RATE_LIMIT", "120/minute")],
-)
+# Cache HTTP (auditoría 2026-08-02): la API expone ETag en CORS pero ningún
+# endpoint emitía Cache-Control ni ETag. Este middleware agrega Cache-Control
+# por defecto y ETag para las respuestas JSON de /api/v1/.
+_CACHE_DEFAULT = "public, max-age=300"
+_RUTAS_LARGA_DURACION = ("/api/v1/health", "/api/v1/fuentes", "/api/v1/pdet/proyectos")
 
 
 def os_env_list(nombre: str, default: str) -> list[str]:
@@ -42,6 +40,7 @@ app = FastAPI(
 )
 
 app.state.limiter = limiter
+app.add_middleware(SlowAPIMiddleware)
 
 
 @app.exception_handler(RateLimitExceeded)
@@ -58,10 +57,21 @@ app.add_middleware(
     allow_origins=os_env_list("CORS_ORIGINS", default="*"),
     allow_methods=["GET"],
     allow_headers=["*"],
-    expose_headers=["ETag"],
 )
 
 app.include_router(v1_router)
+
+
+@app.middleware("http")
+async def _cache_control(request: Request, call_next) -> Response:
+    cache = _CACHE_DEFAULT
+    if request.url.path in _RUTAS_LARGA_DURACION:
+        cache = "public, max-age=3600"
+    response = await call_next(request)
+    if request.method == "GET" and response.status_code < 400:
+        if "cache-control" not in response.headers:
+            response.headers["Cache-Control"] = cache
+    return response
 
 
 @app.get("/", include_in_schema=False)

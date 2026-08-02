@@ -14,6 +14,7 @@ import pandas as pd
 import psycopg
 import requests
 
+from etl.common.cargar import insertar_indicador_internacional, upsert_fuente
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.db import transaccion
 from etl.common.pipeline import PipelineETL
@@ -80,31 +81,12 @@ class Internacional_WorldBank(PipelineETL):
             return
         with transaccion(self.conn):
             fuente_id = self._fuente_id()
-            insertadas = 0
-            with self.conn.cursor() as cur:
-                for fila in df.to_dict("records"):
-                    cur.execute(
-                        """
-                        INSERT INTO curated.indicador_internacional
-                            (fuente_id, pais, indicador, periodo, valor, unidad,
-                             url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                        ON CONFLICT (fuente_id, pais, indicador, periodo) DO NOTHING
-                        """,
-                        (
-                            fuente_id,
-                            PAIS,
-                            fila["indicador_nombre"],
-                            f"{int(fila['anio'])}-01-01",
-                            float(fila["valor"]),
-                            None,
-                            self.lineage.url_origen,
-                            self.lineage.fecha_extraccion,
-                            self.lineage.fecha_corte_dato,
-                            hash_registro(fila),
-                        ),
-                    )
-                    insertadas += cur.rowcount > 0
+            insertadas = insertar_indicador_internacional(
+                self.conn, df, fuente_id, PAIS,
+                self.lineage.url_origen, self.lineage.fecha_extraccion,
+                self.lineage.fecha_corte_dato, unidad=None,
+                col_indicador="indicador_nombre",
+            )
             print(f"[worldbank] indicadores internacionales cargados: {insertadas}")
 
     def _fuente_id(self) -> int:

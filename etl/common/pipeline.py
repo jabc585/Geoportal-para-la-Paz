@@ -71,7 +71,7 @@ class PipelineETL(ABC):
         autocommit=False, cada fase es atómica: si falla, rollback completo.
         """
         inicio = time.monotonic()
-        estado, error, leidos, validos, rechazados = "exitoso", None, 0, 0, 0
+        estado, error, leidos, validos, rechazados, nulos = "exitoso", None, 0, 0, 0, {}
         conn: psycopg.Connection | None = None
         try:
             conn = conectar()

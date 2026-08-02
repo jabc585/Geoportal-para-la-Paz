@@ -19,7 +19,7 @@ from etl.common.lineage import hash_registro
 
 def slugificar(texto: str) -> str:
     """Normaliza un texto a código seguro: minúsculas, sin acentos, guiones bajos."""
-    texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode()
+    texto = unicodedata.normalize("NFKD", str(texto)).encode("ascii", "ignore").decode()
     texto = re.sub(r"[^a-z0-9]+", "_", texto.lower())
     return texto.strip("_")
 
@@ -167,6 +167,59 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
             f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "
             f"no resuelto (¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
         )
+    return insertadas
+
+
+def insertar_indicador_internacional(
+    conn: psycopg.Connection,
+    df: pd.DataFrame,
+    fuente_id: int,
+    pais: str,
+    url_origen: str,
+    fecha_extraccion: str,
+    fecha_corte_dato: str | None = None,
+    unidad: str | None = None,
+    *,
+    col_indicador: str = "indicador",
+) -> int:
+    """Inserta indicadores internacionales (país-año) en lote con executemany.
+
+    Reemplaza el loop fila-a-fila (N+1) que estaba triplicado en world_bank,
+    unhcr y acled (plan3.md, Fase 1.7). El DataFrame debe tener columnas
+    ``anio``, ``valor`` y ``col_indicador`` (default "indicador"). ``unidad``
+    puede ser un literal o el nombre de una columna del DataFrame.
+    """
+    if df.empty:
+        return 0
+    es_col_unidad = unidad is not None and unidad in df.columns
+    registros = []
+    for fila in df.to_dict("records"):
+        registros.append(
+            (
+                fuente_id,
+                pais,
+                str(fila[col_indicador]),
+                f"{int(fila['anio'])}-01-01",
+                float(fila["valor"]),
+                str(fila[unidad]) if es_col_unidad else unidad,
+                url_origen,
+                fecha_extraccion,
+                fecha_corte_dato,
+                hash_registro(fila),
+            )
+        )
+    with conn.cursor() as cur:
+        cur.executemany(
+            """
+            INSERT INTO curated.indicador_internacional
+                (fuente_id, pais, indicador, periodo, valor, unidad,
+                 url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (fuente_id, pais, indicador, periodo) DO NOTHING
+            """,
+            registros,
+        )
+        insertadas = cur.rowcount
     return insertadas
 
 

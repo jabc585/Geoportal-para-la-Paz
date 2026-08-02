@@ -6,10 +6,15 @@ Solo lectura: reporta por fuente si su variable está configurada y la fecha del
 
 from __future__ import annotations
 
+import logging
+
+import psycopg
 from psycopg.rows import dict_row
 
+from api.db import obtener_conexion
 from etl.common.config import FUENTES_ACTIVAS, settings
-from etl.common.db import conectar
+
+logger = logging.getLogger("api.health")
 
 # Variable de fuente → pipeline_id que la consume (para data_quality_metrics).
 _PIPELINE_POR_VARIABLE = {
@@ -45,7 +50,7 @@ def estado_fuentes() -> list[dict]:
     """Por fuente: variable configurada + último pipeline exitoso en la BD."""
     ultimos = {}
     try:
-        with conectar(autocommit=True) as conn, conn.cursor(row_factory=dict_row) as cur:
+        with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
             cur.execute(
                 """
                 SELECT pipeline_id, MAX(timestamp_ejecucion) AS ultima_corrida
@@ -55,8 +60,10 @@ def estado_fuentes() -> list[dict]:
                 """
             )
             ultimos = {fila["pipeline_id"]: fila["ultima_corrida"] for fila in cur.fetchall()}
-    except Exception:  # noqa: BLE001 — la BD puede no estar arriba: se reporta sin ultima_corrida
-        pass
+    except psycopg.OperationalError:
+        logger.info("Base de datos no disponible — healthcheck sin ultima_corrida")
+    except Exception:  # noqa: BLE001
+        logger.warning("Error inesperado en healthcheck", exc_info=True)
     resultado = []
     for variable, fuente, ayuda in FUENTES_ACTIVAS:
         pipeline_id = _PIPELINE_POR_VARIABLE.get(variable)

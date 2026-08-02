@@ -92,7 +92,7 @@ def test_extraer_paginacion_real(monkeypatch):
             batch = batch * limite  # primera página llena → fuerza segunda
         return _Resp(batch)
 
-    monkeypatch.setattr("etl.memoria.pipeline.requests.get", fake_get)
+    monkeypatch.setattr("etl.common.descargas.requests.get", fake_get)
     monkeypatch.setattr(
         "etl.memoria.pipeline.get_source_url", lambda variable, ayuda="": "https://datos.gov.co/resource/c59y-p4sz.json"
     )

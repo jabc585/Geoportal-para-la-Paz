@@ -13,11 +13,10 @@ de cargar a curated.
 from __future__ import annotations
 
 import os
-import unicodedata
 
 import pandas as pd
 
-from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
@@ -36,14 +35,8 @@ ALIASES = {
 VALOR_AREA_TOTAL = "total"
 
 
-def _normalizar(texto: str) -> str:
-    """Minúsculas, sin acentos y espacios a guion bajo (p. ej. 'ÁREA GEOGRÁFICA')."""
-    texto = unicodedata.normalize("NFKD", str(texto)).encode("ascii", "ignore").decode().lower()
-    return texto.strip().replace(" ", "_")
-
-
 def _normalizar_columnas(df: pd.DataFrame) -> pd.DataFrame:
-    return df.rename(columns=_normalizar)
+    return df.rename(columns=slugificar)
 
 
 def _detectar_fila_encabezado(raw: pd.DataFrame) -> int | None:
@@ -55,7 +48,7 @@ def _detectar_fila_encabezado(raw: pd.DataFrame) -> int | None:
     """
     aliases_esperados = set(ALIASES["codigo"] + ALIASES["anio"] + ALIASES["valor"])
     for i in range(min(20, len(raw))):
-        celdas = {_normalizar(c) for c in raw.iloc[i].tolist()}
+        celdas = {slugificar(c) for c in raw.iloc[i].tolist()}
         if celdas & aliases_esperados and "poblacion" in celdas:
             return i
     return None
@@ -83,7 +76,7 @@ def _leer_excel_dane(url: str, hoja: str | None) -> pd.DataFrame:
     df = raw.iloc[indice + 1 :].copy()
     df.columns = [str(c) for c in raw.iloc[indice]]
     columnas_datos = {
-        c for c in df.columns if _normalizar(c) in set(ALIASES["codigo"] + ALIASES["anio"] + ALIASES["valor"])
+        c for c in df.columns if slugificar(c) in set(ALIASES["codigo"] + ALIASES["anio"] + ALIASES["valor"])
     }
     df = df.dropna(how="all", subset=list(columnas_datos)) if columnas_datos else df.dropna(how="all")
     return df.reset_index(drop=True)
@@ -127,7 +120,7 @@ class DANE_Poblacion(PipelineETL):
         # trae la columna de área (legacy Socrata), se conservan todas las filas.
         col_area = next((a for a in ALIASES["area"] if a in df.columns), None)
         if col_area:
-            df = df[df[col_area].map(_normalizar) == VALOR_AREA_TOTAL]
+            df = df[df[col_area].map(slugificar) == VALOR_AREA_TOTAL]
 
         normalizado = pd.DataFrame(
             {

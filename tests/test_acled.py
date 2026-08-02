@@ -5,8 +5,9 @@ from __future__ import annotations
 import pandas as pd
 import pytest
 
+from etl.common.cargar import slugificar
 from etl.common.config import settings
-from etl.internacional.acled import ARCHIVO_ADMIN1, ARCHIVOS, Internacional_ACLED, _normalizar
+from etl.internacional.acled import ARCHIVO_ADMIN1, ARCHIVOS, Internacional_ACLED
 
 
 @pytest.fixture()
@@ -80,10 +81,10 @@ def _df_admin1():
     )
 
 
-def test_normalizar_empareja_tildes_y_puntos():
-    assert _normalizar("Nariño") == _normalizar("Narino")
-    assert _normalizar("Bogotá, D.C.") == _normalizar("Bogota, D.C.") == "bogota_d_c"
-    assert _normalizar("SAN ANDRÉS Y PROVIDENCIA") == "san_andres_y_providencia"
+def test_slugificar_empareja_tildes_y_puntos():
+    assert slugificar("Nariño") == slugificar("Narino")
+    assert slugificar("Bogotá, D.C.") == slugificar("Bogota, D.C.") == "bogota_d_c"
+    assert slugificar("SAN ANDRÉS Y PROVIDENCIA") == "san_andres_y_providencia"
 
 
 def test_transformar_admin1_mapea_y_agrega(monkeypatch):

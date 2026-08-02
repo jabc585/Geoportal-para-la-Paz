@@ -61,7 +61,7 @@ def test_transformar_vacio():
 def test_url_firmada_via_resource_show(monkeypatch):
     """Debe resolver la URL de descarga (S3 firmada) con resource_show."""
 
-    def fake_get(url, params=None, timeout=600):
+    def fake_get(url, params=None, timeout=600, **kwargs):
         if "resource_show" in url:
             assert params == {"id": "bbdfa1bf-0dd3-4235-b20c-1bd6c0de365e"}
             return _Resp({"result": {"url": "https://s3.example/conflict.csv"}}, "json")
@@ -96,3 +96,9 @@ class _Resp:
     @property
     def content(self):
         return self._datos
+
+    def iter_content(self, chunk_size=1024 * 1024):
+        yield self._datos
+
+    def close(self):
+        pass

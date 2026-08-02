@@ -7,11 +7,9 @@ import io
 
 from fastapi import APIRouter, HTTPException, Path, Query, Request
 from fastapi.responses import StreamingResponse
-from slowapi import Limiter
-from slowapi.util import get_remote_address
 
+from api.limiter import limiter
 from api.models.schemas import (
-    ErrorOut,
     FuenteEstadoOut,
     FuenteOut,
     HealthOut,
@@ -34,11 +32,6 @@ from api.services.consultas import (
 from api.services.health import estado_fuentes
 
 router = APIRouter(prefix="/api/v1", tags=["v1"])
-
-# Mismo limiter que api/main.py (auditoría 2026-08-02): el endpoint de exportación
-# CSV devuelve hasta 200.000 filas y es el más costoso, por eso tiene un límite
-# más estricto que el default de la API.
-limiter = Limiter(key_func=get_remote_address, default_limits=["120/minute"])
 
 
 @router.get(
@@ -70,7 +63,7 @@ def get_pdet_proyectos() -> PdetOut:
 
 @router.get(
     "/territorios/{codigo_divipola}",
-    response_model=MunicipioOut | ErrorOut,
+    response_model=MunicipioOut,
     summary="Municipio por código DIVIPOLA",
 )
 def get_territorio(codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> MunicipioOut | ErrorOut:
@@ -98,7 +91,10 @@ def get_indicador(
     limit: int = Query(default=100, ge=1, le=1000),
     cursor: str | None = Query(default=None, description="Cursor de paginación devuelto por la API"),
 ) -> Pagina[SerieOut]:
-    filas, next_cursor = consultar_serie(indicador, territorio, desde, hasta, limit, cursor)
+    try:
+        filas, next_cursor = consultar_serie(indicador, territorio, desde, hasta, limit, cursor)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
     return Pagina(items=[SerieOut(**f) for f in filas], next_cursor=next_cursor)
 
 
