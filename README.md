@@ -9,7 +9,7 @@ Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
 - Estructura de directorios (`data/`, `etl/`, `database/`, `api/`, `dashboard/`, `docs/`)
 - Esquema PostgreSQL con separación `raw/staging/curated` (sección 7.3), versionado SCD tipo 2 (7.2), `data_quality_metrics` (7.4) y vista de reconciliación (7.5)
 - Entorno Docker de desarrollo (PostgreSQL + PostGIS, ETL, API)
-- **ETL piloto completo end-to-end**: DANE, Unidad de Víctimas y ART/PDET con extracción → validación Pandera → carga a `curated` con linaje (sección 21, paso 1 cerrado)
+- **ETL piloto completo end-to-end**: DANE, Unidad de Víctimas y ART/PDET con extracción → validación Pandera → carga a `curated` con linaje (sección 21, paso 1 cerrado); catálogo DIVIPOLA con seed real desde datos.gov.co y logs de filas descartadas por territorio no resuelto
 - Conector internacional World Bank activo (sección 5.2); esqueletos de Fiscalía, Policía, IDEAM y memoria histórica (paso 11 en curso)
 - API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8)
 - Frontend React + TypeScript + MapLibre inicializado con KPI contra `/api/v1/fuentes` (paso 5)
@@ -26,10 +26,16 @@ Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
 
 ```bash
 cp .env.example .env
-docker compose -f docker/docker-compose.yml up -d postgres   # BD con esquema inicial
+docker compose -f docker/docker-compose.yml up -d postgres   # BD con esquema + semilla
+docker compose -f docker/docker-compose.yml exec postgres psql -U observatorio -d observatorio -c \
+  "SELECT count(*) FROM curated.departamento"                 # 33 departamentos sembrados
+# Siembra de municipios (catálogo DIVIPOLA, requiere red):
+.venv/bin/python -m etl.common.divipola
 docker compose -f docker/docker-compose.yml up api           # API en http://localhost:8000
 docker compose -f docker/docker-compose.yml up etl           # ejecuta pipelines piloto
 ```
+
+> **Seguridad (sección 13):** `POSTGRES_PASSWORD` usa `observatorio_dev` solo como fallback de desarrollo. **No usar ese valor en staging/producción** — definir una contraseña fuerte vía variable de entorno en todos los entornos expuestos.
 
 Documentación interactiva de la API: http://localhost:8000/docs
 
@@ -46,11 +52,12 @@ python -m etl.run_all
 
 ## Configuración de fuentes piloto
 
-Los conectores requieren variables de entorno (documentadas en `docs/fuentes/`):
+Los conectores requieren variables de entorno (documentadas en `docs/fuentes/`; método de acceso verificado en auditoría 2026-08-02):
 
-- `DANE_POBLACION_DATASET` — identificador del dataset en datos.gov.co
-- `VICTIMAS_URL` — endpoint de Datos Paz (por defecto https://datospaz.unidadvictimas.gov.co/api/v1/)
-- `PDET_URL` — endpoint de proyectos PDET de la ART
+- `DANE_POBLACION_XLSX_URL` — URL del Excel oficial de proyecciones de población (DANE distribuye esta serie en XLSX, no vía API; `DANE_POBLACION_DATASET` Socrata solo para datasets locales)
+- `VICTIMAS_URL` — endpoint de Datos Paz (obligatoria, sin default: el path anterior responde 404)
+- `PDET_URL` — endpoint de proyectos PDET (obligatoria: la ART no tiene API JSON pública documentada; gestionar con `mesa.go@renovacionterritorio.gov.co`)
+- `DIVIPOLA_DEPT_DATASET` / `DIVIPOLA_MUN_DATASET` — datasets DIVIPOLA en datos.gov.co (opcional; defaults: `vcjz-niiq`, `gdxc-w37w`)
 
 ## Estructura (sección 6 del plan)
 
@@ -81,9 +88,9 @@ pytest tests/ -v
 
 ## Próximos pasos (sección 21)
 
-1. Configurar los endpoints reales de los conectores piloto (`DANE_POBLACION_DATASET`, `PDET_URL`) y verificar la carga end-to-end contra una BD real
+1. Sembrar municipios con `python -m etl.common.divipola` y verificar carga end-to-end contra una BD real
 2. Confirmar umbral de supresión k ≥ 5 con el comité asesor (checklist de víctimas)
-3. Inicializar el frontend con `npm install` (requiere Node) y conectar más KPIs
+3. Inicializar el frontend con `npm install` y conectar más KPIs
 4. Validar catálogo de indicadores con organizaciones aliadas
-5. Completar conectores de Fiscalía, Policía, IDEAM y memoria al confirmarse sus endpoints
+5. Gestionar acceso real a la ART (PDET) y confirmar endpoint de Datos Paz
 6. Añadir paginación de teselas y capas coropléticas al mapa (fase 5)

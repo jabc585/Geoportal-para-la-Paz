@@ -10,6 +10,10 @@
 -- Permisos previstos: rol `etl` escribe en raw y staging; rol `api` solo lee curated.
 -- ============================================================
 
+-- PostGIS: requerido por capa_contexto_territorial (sección 5.1).
+-- Idempotente: en la imagen postgis/postgis ya está disponible, solo se activa.
+CREATE EXTENSION IF NOT EXISTS postgis;
+
 CREATE SCHEMA IF NOT EXISTS raw;
 CREATE SCHEMA IF NOT EXISTS staging;
 CREATE SCHEMA IF NOT EXISTS curated;
@@ -40,6 +44,7 @@ GRANT USAGE ON SCHEMA curated TO etl, api;
 -- ============================================================
 CREATE TABLE curated.fuentes (
     fuente_id          SERIAL PRIMARY KEY,
+    codigo             TEXT NOT NULL UNIQUE,   -- slug estable: 'dane', 'medicina_legal', 'policia', 'banco_mundial'
     nombre             TEXT NOT NULL UNIQUE,
     entidad            TEXT NOT NULL,
     tipo               TEXT NOT NULL CHECK (tipo IN ('nacional', 'internacional')),
@@ -191,9 +196,9 @@ SELECT
     d.nombre  AS departamento,
     date_trunc('year', s.periodo_inicio)::date AS anio,
     -- Valor de referencia según criterio metodológico público (p. ej. Medicina Legal)
-    MAX(s.valor) FILTER (WHERE f.codigo = 'medicina_legal_homicidios') AS homicidios_referencia,
-    MAX(s.valor) FILTER (WHERE f.codigo = 'policia_homicidios')        AS homicidios_policia,
-    MAX(s.valor) FILTER (WHERE f.codigo = 'medicina_legal_homicidios') AS homicidios_medicinalegal,
+    MAX(s.valor) FILTER (WHERE f.codigo = 'medicina_legal') AS homicidios_referencia,
+    MAX(s.valor) FILTER (WHERE f.codigo = 'policia')        AS homicidios_policia,
+    MAX(s.valor) FILTER (WHERE f.codigo = 'medicina_legal') AS homicidios_medicinalegal,
     STRING_AGG(DISTINCT f.nombre, ', ') AS fuentes
 FROM curated.serie_historica s
 JOIN curated.indicadores i  ON i.indicador_id = s.indicador_id

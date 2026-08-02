@@ -25,14 +25,18 @@ def slugificar(texto: str) -> str:
 
 
 def upsert_fuente(conn: psycopg.Connection, **datos) -> int:
-    """Inserta o recupera el fuente_id del catálogo curated.fuentes."""
+    """Inserta o recupera el fuente_id del catálogo curated.fuentes.
+
+    codigo (slug estable) se deriva del nombre si el pipeline no lo provee.
+    """
     datos.setdefault("nombre", "")
+    datos.setdefault("codigo", slugificar(datos["nombre"]))
     with conn.cursor() as cur:
         cur.execute(
             """
-            INSERT INTO curated.fuentes (nombre, entidad, tipo, descripcion, url_base,
+            INSERT INTO curated.fuentes (codigo, nombre, entidad, tipo, descripcion, url_base,
                                          metodo_acceso, periodicidad, formato, licencia, ficha_doc)
-            VALUES (%(nombre)s, %(entidad)s, %(tipo)s, %(descripcion)s, %(url_base)s,
+            VALUES (%(codigo)s, %(nombre)s, %(entidad)s, %(tipo)s, %(descripcion)s, %(url_base)s,
                     %(metodo_acceso)s, %(periodicidad)s, %(formato)s, %(licencia)s, %(ficha_doc)s)
             ON CONFLICT (nombre) DO UPDATE SET url_base = EXCLUDED.url_base
             RETURNING fuente_id
@@ -43,8 +47,15 @@ def upsert_fuente(conn: psycopg.Connection, **datos) -> int:
 
 
 def upsert_indicador(conn: psycopg.Connection, codigo: str, **datos) -> int:
-    """Inserta o recupera el indicador_id del catálogo curated.indicadores."""
+    """Inserta o recupera el indicador_id del catálogo curated.indicadores.
+
+    fuente_primaria_id y limites_conocidos son opcionales para los conectores;
+    se registran como NULL si el pipeline no los provee.
+    """
     datos["codigo"] = codigo
+    datos.setdefault("fuente_primaria_id", None)
+    datos.setdefault("limites_conocidos", None)
+    datos.setdefault("metodologia_doc", None)
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -89,13 +100,17 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
     """Inserta filas normalizadas en curated.serie_historica con deduplicación por hash.
 
     El DataFrame debe contener: codigo_divipola, periodo_inicio (date),
-    periodo_fin (date), valor, indicador_id.
+    periodo_fin (date), valor, indicador_id. Las filas cuyo territorio no se
+    resuelve contra el catálogo DIVIPOLA se descartan y se cuentan, para que
+    ningún descarte pase en silencio (hallazgo de auditoría).
     """
     insertadas = 0
+    sin_territorio = 0
     with conn.cursor() as cur:
         for fila in df.to_dict("records"):
             municipio_id, departamento_id = resolver_territorio(conn, fila["codigo_divipola"])
             if municipio_id is None and departamento_id is None:
+                sin_territorio += 1
                 continue
             registro = {
                 "indicador_id": fila["indicador_id"],
@@ -132,6 +147,11 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
                 registro,
             )
             insertadas += cur.rowcount > 0
+    if sin_territorio:
+        print(
+            f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "
+            f"no resuelto (¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
+        )
     return insertadas
 
 

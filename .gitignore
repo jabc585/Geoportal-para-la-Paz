@@ -19,6 +19,7 @@ __pycache__/
 # Variables de entorno / secretos
 .env
 .env.*
+.env.example
 !.env.example
 
 # Notebooks de exploración
@@ -35,6 +36,15 @@ reports/*.json
 .vscode/
 .DS_Store
 
+# Frontend (dashboard/) — generado al instalar/compilar, nunca versionar
+dashboard/node_modules/
+dashboard/dist/
+dashboard/*.tsbuildinfo
+
 # Docker
 postgres-data/
 *.sql.gz
+
+# Documentos de planificación y auditoría internos (no versionados)
+plan.md
+auditoria.md

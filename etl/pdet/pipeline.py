@@ -100,10 +100,12 @@ class ART_PDET(PipelineETL):
 
     def _cargar_proyectos(self, df: pd.DataFrame, fuente_id: int) -> int:
         insertadas = 0
+        sin_territorio = 0
         with self.conn.cursor() as cur:
             for fila in df.to_dict("records"):
                 municipio_id, departamento_id = resolver_territorio(self.conn, fila["codigo_divipola"])
                 if municipio_id is None and departamento_id is None:
+                    sin_territorio += 1
                     continue
                 cur.execute(
                     """
@@ -130,6 +132,11 @@ class ART_PDET(PipelineETL):
                     ),
                 )
                 insertadas += cur.rowcount > 0
+        if sin_territorio:
+            print(
+                f"[pdet] AVISO: {sin_territorio} proyectos descartados por territorio no resuelto "
+                f"(¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
+            )
         return insertadas
 
     def _cargar_inversion(self, df: pd.DataFrame, fuente_id: int) -> int:

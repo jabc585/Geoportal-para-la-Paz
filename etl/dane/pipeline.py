@@ -1,17 +1,22 @@
 """Conector piloto DANE (población) - fuente de la fase 2 del plan.
 
-Acceso: API Socrata de datos.gov.co (sección 5). El identificador del dataset
-se configura con DANE_POBLACION_DATASET. La transformación normaliza a la
-serie estándar y valida con Pandera antes de cargar a curated (secciones 7.4 y 12).
+Acceso real verificado (auditoría 2026-08-02): DANE distribuye la serie
+nacional de proyecciones de población como archivo Excel en dane.gov.co
+(DCD-area-proypoblacion-Mun-2020-2035-ActPostCOVID-19.xlsx); no existe un
+dataset Socrata nacional con ese shape. El conector lee el Excel con
+DANE_POBLACION_XLSX_URL (recomendado) o la API Socrata con
+DANE_POBLACION_DATASET (legacy, solo datasets locales). La transformación
+normaliza a la serie estándar y valida con Pandera antes de cargar a curated.
 """
 
 from __future__ import annotations
 
 import os
+import unicodedata
 
 import pandas as pd
 
-from etl.common.cargar import insertar_serie, periodo_anual, resolver_territorio, upsert_fuente, upsert_indicador
+from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar
@@ -19,10 +24,19 @@ from etl.common.validation import EsquemaSerieNormalizada, validar
 URL_SOCRATA = "https://www.datos.gov.co/resource"
 
 ALIASES = {
-    "codigo": ["codigo_municipio", "cod_municipio", "cod_divipola", "codigomunicipio", "codigo_mun", "codigo_dane"],
+    "codigo": ["codigo_municipio", "cod_municipio", "cod_divipola", "codigomunicipio", "codigo_mun", "codigo_dane", "codigo_municipio2"],
     "anio": ["anio", "ano", "año", "year", "año_1", "vigencia"],
     "valor": ["poblacion", "poblacion_total", "total_poblacion", "proyeccion_poblacion", "habitantes"],
 }
+
+
+def _normalizar_columnas(df: pd.DataFrame) -> pd.DataFrame:
+    """Minúsculas y sin acentos para que los aliases matcheen (p. ej. 'Código municipio')."""
+    def limpiar(texto: str) -> str:
+        texto = unicodedata.normalize("NFKD", texto).encode("ascii", "ignore").decode().lower()
+        return texto.replace(" ", "_")
+
+    return df.rename(columns={c: limpiar(str(c)) for c in df.columns})
 
 
 def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
@@ -37,15 +51,24 @@ class DANE_Poblacion(PipelineETL):
     tabla_raw = "dane_poblacion"
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
+        url_xlsx = os.getenv("DANE_POBLACION_XLSX_URL", "")
         dataset = os.getenv("DANE_POBLACION_DATASET", "")
-        if not dataset:
-            raise ValueError("Variable DANE_POBLACION_DATASET no configurada (ver docs/fuentes/dane.md)")
-        url = f"{URL_SOCRATA}/{dataset}.json"
-        import requests
+        if url_xlsx:
+            hoja = os.getenv("DANE_POBLACION_HOJA", None)
+            url = url_xlsx
+            df = pd.read_excel(url, sheet_name=hoja, engine="openpyxl", dtype=str)
+        elif dataset:
+            url = f"{URL_SOCRATA}/{dataset}.json"
+            import requests
 
-        resp = requests.get(url, params={"$limit": 50000}, timeout=60)
-        resp.raise_for_status()
-        df = pd.DataFrame(resp.json())
+            resp = requests.get(url, params={"$limit": 50000}, timeout=60)
+            resp.raise_for_status()
+            df = pd.DataFrame(resp.json())
+        else:
+            raise ValueError(
+                "Configurar DANE_POBLACION_XLSX_URL (Excel oficial de proyecciones, "
+                "ver docs/fuentes/dane.md) o DANE_POBLACION_DATASET (Socrata, legacy)"
+            )
         lineage = Lineage.ahora(
             fuente="DANE",
             url_origen=url,
@@ -57,7 +80,7 @@ class DANE_Poblacion(PipelineETL):
     def transformar(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
             return df
-        df = df.rename(columns={c: c.lower() for c in df.columns})
+        df = _normalizar_columnas(df)
         col_codigo = _columna(df, ALIASES["codigo"], "código DIVIPOLA")
         col_anio = _columna(df, ALIASES["anio"], "año")
         col_valor = _columna(df, ALIASES["valor"], "población")

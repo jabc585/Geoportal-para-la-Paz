@@ -19,6 +19,8 @@ Proyectos de los Programas de Desarrollo con Enfoque Territorial (PDET), con su 
 
 ## Método de acceso
 
+**Estado verificado (auditoría 2026-08-02): no se encontró ningún endpoint JSON público documentado.** La ART publica la información de proyectos PDET principalmente vía la "Central de Información PDET" (visor interactivo, no API REST documentada) y un portal de datos abiertos genérico. Antes de usar el conector se debe gestionar acceso con la entidad (contacto identificado en la búsqueda: `mesa.go@renovacionterritorio.gov.co`) y documentar el endpoint verificado aquí.
+
 Variable de entorno requerida: `PDET_URL` (endpoint del catálogo de proyectos PDET).
 
 ## Transformaciones aplicadas

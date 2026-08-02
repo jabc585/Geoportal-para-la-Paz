@@ -18,8 +18,6 @@ from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar
 
-URL_DATOSPAZ = os.getenv("VICTIMAS_URL", "https://datospaz.unidadvictimas.gov.co/api/v1/")
-
 ALIASES = {
     "codigo": ["codigo_municipio", "cod_municipio", "cod_divipola", "codigomunicipio", "codigo_mun"],
     "anio": ["anio", "ano", "año", "year", "periodo"],
@@ -40,7 +38,13 @@ class Victimas_Hechos(PipelineETL):
     tabla_raw = "victimas_hechos"
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
-        url = f"{URL_DATOSPAZ}hechos_victimizantes"
+        # Sin default hardcodeado: si el dominio cambiara de dueño, un valor
+        # por defecto podría consumir contenido no controlado (auditoría,
+        # sección 3, punto 3). La URL real de Datos Paz se configura explícitamente.
+        url_base = os.getenv("VICTIMAS_URL", "")
+        if not url_base:
+            raise ValueError("Variable VICTIMAS_URL no configurada (ver docs/fuentes/victimas.md)")
+        url = f"{url_base.rstrip('/')}/hechos_victimizantes"
         import requests
 
         resp = requests.get(url, timeout=60)

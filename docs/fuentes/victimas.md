@@ -19,13 +19,13 @@ Fuente oficial de hechos victimizantes del conflicto armado: desplazamiento forz
 
 ## Método de acceso
 
-API de Datos Paz:
+**Estado verificado (auditoría 2026-08-02): el endpoint por defecto que usaba el conector (`/api/v1/hechos_victimizantes` sobre datospaz.unidadvictimas.gov.co) responde 404 con el HTML del sitio institucional — no existe hoy con ese path.** No se usa ningún default hardcodeado (riesgo de dominio no controlado); `VICTIMAS_URL` es obligatoria y debe apuntar al endpoint verificado de Datos Paz:
 
 ```
-GET https://datospaz.unidadvictimas.gov.co/api/v1/hechos_victimizantes
+export VICTIMAS_URL="https://datospaz.unidadvictimas.gov.co/api/v1/"
 ```
 
-Variable de entorno opcional: `VICTIMAS_URL` (default: URL anterior).
+La URL exacta del endpoint de hechos victimizantes se confirma contra la documentación vigente de Datos Paz antes del primer uso productivo.
 
 ## Transformaciones aplicadas
 
