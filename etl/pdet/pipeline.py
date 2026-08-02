@@ -153,7 +153,7 @@ class ART_PDET(PipelineETL):
                          valor_inversion, anio, fuente_id, url_origen, fecha_extraccion,
                          fecha_corte_dato, hash_registro)
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                    ON CONFLICT DO NOTHING
+                    ON CONFLICT (hash_registro) DO NOTHING
                     """,
                     filas,
                 )
