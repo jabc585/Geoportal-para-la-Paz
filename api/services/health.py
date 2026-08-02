@@ -30,6 +30,7 @@ _PIPELINE_POR_VARIABLE = {
     "POLICIA_HURTO_URL": "policia_hurto",
     "POLICIA_VIOLENCIA_URL": "policia_violencia",
     "POLICIA_SEXUALES_URL": "policia_sexuales",
+    "POLICIA_HOMICIDIOS_URL": "policia_homicidios",
     "DIVIPOLA_DEPT_DATASET": "divipola",
     "DIVIPOLA_MUN_DATASET": "divipola",
     "UCDP_API_TOKEN": "internacional_ucdp",

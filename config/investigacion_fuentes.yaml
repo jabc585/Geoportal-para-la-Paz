@@ -5,16 +5,21 @@
 
 fuentes:
   policia:
-    estado: "parcialmente accesible"
+    estado: "accesible"
     categoria: "nacional"
     datasets_socrata:
       fpe5-yrmw: "delitos sexuales"
-      ha6j-pa2r: "homicidios en accidente de tránsito (NO es el homicidio intencional que necesita vw_homicidios_reconciliado)"
+      ha6j-pa2r: "homicidios en accidente de tránsito (NO es el homicidio intencional)"
       vuyt-mqpw: "violencia intrafamiliar"
       d4fr-sbn2: "hurto"
     columnas_observadas: ["CODIGO DANE", "MUNICIPIO", "FECHA HECHO", "CANTIDAD"]
-    bloqueo:
-      "No apareció un dataset general de homicidios en la búsqueda; falta una ronda más específica antes de alimentar la vista de reconciliación."
+    homicidios_excel_siedco:
+      "Resuelto 2026-08-02: la Policía publica el Excel SIEDCO por año en policia.gov.co/estadistica-delictiva/homicidios
+       (Homicidio Intencional2025.xlsx: 507 KB, 13.727 filas, header variable por año → se detecta buscando 'CODIGO DANE').
+       Cargado como indicador 'homicidios' bajo fuente 'policia' (815 municipios, 13.722 homicidios 2025)."
+    hallazgo_archivo_2024:
+      "Homicidio Intencional2024.xlsx es PARCIAL: solo 2024-12 (41 filas) + ene-abr 2025 (3.948 filas);
+       mal rotulado, no usar como serie anual (contamina con doble conteo)."
 
   fiscalia:
     estado: "accesible pero inviable a escala (hallazgo 2026-08-02)"
@@ -105,6 +110,11 @@ fuentes:
       departamento (admin1) queda pendiente de mapeo ADMIN1→DIVIPOLA."
 
   iom_dtm:
-    estado: "sin resolver"
+    estado: "resuelto: reportes PDF por ronda (no dataset estructurado)"
     categoria: "internacional"
-    bloqueo: "dtm.iom.int/api devuelve el HTML del sitio (protección anti-bot); probablemente sea un portal de descarga por país, no una API REST."
+    url: "https://dtm.iom.int/es/colombia"
+    nota: "El tab 'Conjunto de datos' lista descargas por reporte vía dtm_download_track (verificado
+      2026-08-02: 17207/18585/33356 → application/pdf, no XLSX/JSON). No hay series consolidadas
+      municipio-año; cada ronda es un reporte distinto (monitoreo de flujos mensual, encuestas).
+      /api devuelve HTML con antibot. No apto para pipeline automático sin scraping frágil por reporte."
+    bloqueo: null

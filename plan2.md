@@ -254,8 +254,9 @@ el shape real encontrado (mismo patrón que
 5. **Policía** ✅ — `etl/policia/pipeline.py` reemplaza el esqueleto: hurto
    (`d4fr-sbn2`), violencia intrafamiliar (`vuyt-mqpw`), sexuales (`fpe5-yrmw`);
    `codigo_dane` DIVIPOLA+"000" → recorte, fechas `dd/mm/aaaa`. Probe real
-   hurto: 44.169 → 11.016 municipio-año-tipo. Homicidios sigue pendiente de
-   localizar dataset (necesario para `vw_homicidios_reconciliado`).
+   hurto: 44.169 → 11.016 municipio-año-tipo. Homicidios ✅ resuelto con el
+   Excel oficial SIEDCO (2026-08-02): indicador `homicidios` bajo fuente
+   `policia` → `vw_homicidios_reconciliado` (ver Fase C).
 6. **ACLED** ✅ — `etl/internacional/acled.py`; sin API key: agregados oficiales
    país-año descargados a `data/external/` (3 series, Colombia 2018–2026 →
    27 indicador-año). Atribución obligatoria. Ficha `docs/fuentes/acled.md`.
@@ -263,11 +264,11 @@ el shape real encontrado (mismo patrón que
    (mapeo ADMIN1→DIVIPOLA).
 
 `etl/run_all.py` ejecuta: DANE, Víctimas, PDET, WB, UNHCR, HDX, ACLED, 6 CNMH,
-3 Policía, IDEAM. Nota verificada en la corrida completa: la siembra del catálogo
-DIVIPOLA (`python -m etl.common.divipola`, 1.123 municipios) es prerrequisito
-de los cargadores municipales; sin ella las filas se descartan con aviso. La
-estadística zonal del raster IDEAM requiere además la capa geo municipal
-(`python -m etl.common.capas_geo`).
+3 Policía + homicidios, IDEAM. Nota verificada en la corrida completa: la
+siembra del catálogo DIVIPOLA (`python -m etl.common.divipola`, 1.123
+municipios) es prerrequisito de los cargadores municipales; sin ella las filas
+se descartan con aviso. La estadística zonal del raster IDEAM requiere además
+la capa geo municipal (`python -m etl.common.capas_geo`).
 
 ## Fase C — implementada (IDEAM); resto documentado
 
@@ -289,8 +290,17 @@ estadística zonal del raster IDEAM requiere además la capa geo municipal
   agregados o con una corrida programada de horas.
 - **IOM DTM**: sin endpoint identificado todavía; queda fuera de este plan.
 - **Defensoría**: sin dato abierto encontrado; el esqueleto se queda igual.
-- **Policía homicidios**: sin dataset general localizado en el catálogo (el
-  `ha6j-pa2r` es homicidios en accidentes de tránsito); pendiente de búsqueda.
+- **Policía homicidios** ✅ — resuelto (2026-08-02): no hay dataset Socrata,
+  pero la Policía publica el Excel oficial SIEDCO por año en
+  `policia.gov.co/estadistica-delictiva/homicidios` ("Homicidio Intencional2025.xlsx",
+  13.727 filas; cabecera variable por año → detección automática). `Policia_Homicidios`
+  lo descarga y carga el indicador `homicidios` bajo la fuente `policia`, que
+  alimenta `vw_homicidios_reconciliado` (815 municipios, 13.722 homicidios 2025).
+  Ojo: "Homicidio Intencional2024.xlsx" es parcial (2024-12 + ene-abr 2025),
+  no usar como serie anual.
+- **IOM DTM**: resuelto como reportes PDF por ronda (`dtm_download_track`,
+  verificado 2026-08-02) — no hay series consolidadas ni API JSON; queda
+  documentado sin pipeline (scraping frágil por reporte).
 
 Todas quedan registradas en `config/investigacion_fuentes.yaml` (Fase A, punto 6)
 para no repetir el rastreo cuando alguien retome cada una.

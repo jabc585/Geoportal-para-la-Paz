@@ -18,7 +18,7 @@ from etl.internacional.unhcr import Internacional_UNHCR
 from etl.internacional.world_bank import Internacional_WorldBank
 from etl.memoria.pipeline import CNMH_Memoria, HECHOS
 from etl.pdet.pipeline import ART_PDET
-from etl.policia.pipeline import DELITOS, Policia_Delitos
+from etl.policia.pipeline import DELITOS, Policia_Delitos, Policia_Homicidios
 from etl.victimas.pipeline import Victimas_Hechos
 
 # Cada entrada es un callable sin argumentos que devuelve un PipelineETL
@@ -33,6 +33,7 @@ PIPELINES = [
     Internacional_ACLED,
     *[partial(CNMH_Memoria, hecho) for hecho in HECHOS],
     *[partial(Policia_Delitos, delito) for delito in DELITOS],
+    Policia_Homicidios,
     IDEAM_Ambiental,
 ]
 

@@ -2,13 +2,22 @@
 
 Replica los shapes reales verificados en vivo (2026-08-02): columnas
 codigo_dane (DIVIPOLA 5 + "000"), fecha_hecho (dd/mm/aaaa) y cantidad por
-segmento demográfico.
+segmento demográfico. Para homicidios: el Excel oficial SIEDCO con cabecera
+en la fila 10 (metadatos arriba) y columnas en mayúsculas.
 """
+
+import io
 
 import pandas as pd
 import pytest
 
-from etl.policia.pipeline import DELITOS, Policia_Delitos
+from etl.policia.pipeline import (
+    HOMICIDIOS_ANIOS_DEFAULT,
+    HOMICIDIOS_URL_PATRON,
+    DELITOS,
+    Policia_Delitos,
+    Policia_Homicidios,
+)
 
 
 def _df_hurto():
@@ -84,3 +93,94 @@ def test_transformar_fechas_invalidas_se_descartan():
 
 def test_transformar_vacio():
     assert Policia_Delitos("hurto").transformar(pd.DataFrame()).empty
+
+
+# ── Homicidios (Excel oficial SIEDCO, verificado en vivo 2026-08-02) ──────
+
+HEADER_HOMICIDIOS = [
+    "ARMAS MEDIOS", "DEPARTAMENTO", "MUNICIPIO", "FECHA HECHO",
+    "GENERO", "*AGRUPA EDAD PERSONA*", "CODIGO DANE", "CANTIDAD",
+]
+
+
+def _df_homicidios():
+    return pd.DataFrame(
+        [
+            ["ARMA BLANCA", "CUNDINAMARCA", "Bogotá D.C. (CT)", "01/01/2025", "MASCULINO", "ADULTOS", "11001000", "1"],
+            ["ARMA BLANCA", "CUNDINAMARCA", "Bogotá D.C. (CT)", "01/01/2025", "FEMENINO", "ADULTOS", 11001000, "1"],
+            ["ARMA DE FUEGO", "ANTIOQUIA", "Envigado", "15/03/2025", "MASCULINO", "ADULTOS", "05266000", "1"],
+            ["ARMA BLANCA", "CESAR", "Chimichagua", "02/01/2025", "MASCULINO", "ADULTOS", "20175000", "2"],
+        ],
+        columns=HEADER_HOMICIDIOS,
+    )
+
+
+def _excel_homicidios_bytes():
+    """Excel con metadatos en filas 0-9, cabecera en la fila 10 y 2 filas de datos."""
+    buf = io.BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as w:
+        pd.DataFrame([[f"METADATO {i}"] for i in range(10)]).to_excel(w, header=False, index=False)
+        _df_homicidios().to_excel(w, startrow=10, index=False, header=True)
+    buf.seek(0)
+    return buf
+
+
+def test_homicidios_urls_patron_por_anio():
+    p = Policia_Homicidios()
+    urls = p._urls_a_descargar()
+    assert urls == [HOMICIDIOS_URL_PATRON.format(anio=a) for a in HOMICIDIOS_ANIOS_DEFAULT]
+    assert "Homicidio%20Intencional2025.xlsx" in urls[0]
+
+
+def test_homicidios_urls_variable_configurada(monkeypatch):
+    monkeypatch.setattr("etl.policia.pipeline.settings.policia_homicidios_url",
+                        "https://a.test/2025.xlsx, https://b.test/2024.xlsx")
+    urls = Policia_Homicidios()._urls_a_descargar()
+    assert urls == ["https://a.test/2025.xlsx", "https://b.test/2024.xlsx"]
+
+
+def test_homicidios_descarga_404_devuelve_none(monkeypatch):
+    class _Resp404:
+        status_code = 404
+
+        def raise_for_status(self):
+            raise RuntimeError("404")
+
+    monkeypatch.setattr("etl.policia.pipeline.requests.get", lambda *a, **k: _Resp404())
+    assert Policia_Homicidios()._descargar_excel("https://x.test/nada.xlsx") is None
+
+
+def test_homicidios_transformar_suma_y_recorta_codigo():
+    resultado = Policia_Homicidios().transformar(_df_homicidios())
+    filas = resultado.to_dict("records")
+    bogota = [f for f in filas if f["codigo_divipola"] == "11001"]
+    assert bogota[0]["valor"] == 2  # las dos filas de Bogotá (str y float) se suman
+    assert bogota[0]["periodo_inicio"].year == 2025
+    envigado = [f for f in filas if f["codigo_divipola"] == "05266"]
+    assert envigado[0]["valor"] == 1
+    assert all(f["dimension"] == "homicidio" for f in filas)
+
+
+def test_homicidios_extraer_une_anios_y_guarda_metadatos(monkeypatch):
+    class _RespExcel:
+        def __init__(self, contenido):
+            self._c = contenido
+            self.status_code = 200
+
+        def raise_for_status(self):
+            pass
+
+        @property
+        def content(self):
+            return self._c
+
+    def fake_get(url, timeout=120):
+        return _RespExcel(_excel_homicidios_bytes().getvalue())
+
+    monkeypatch.setattr("etl.policia.pipeline.requests.get", fake_get)
+    p = Policia_Homicidios()
+    monkeypatch.setattr(p, "_urls_a_descargar", lambda: ["https://a.test/2025.xlsx"])
+    df, lineage = p.extraer()
+    assert df.iloc[0]["filas"] == 4
+    assert "2025.xlsx" in df.iloc[0]["url"]
+    assert lineage.fuente == "Policía Nacional"

@@ -40,7 +40,7 @@ FUENTES_ACTIVAS = [
     ("POLICIA_HURTO_URL", "Policía", "Dataset Socrata de hurto"),
     ("POLICIA_VIOLENCIA_URL", "Policía", "Dataset Socrata de violencia intrafamiliar"),
     ("POLICIA_SEXUALES_URL", "Policía", "Dataset Socrata de delitos sexuales"),
-    ("POLICIA_HOMICIDIOS_URL", "Policía", "Dataset Socrata de homicidios (pendiente de localizar)"),
+    ("POLICIA_HOMICIDIOS_URL", "Policía", "Excel oficial de homicidios intencionales (vacío → patrón policia.gov.co por año, 2020-2025)"),
     ("DIVIPOLA_DEPT_DATASET", "DIVIPOLA", "Dataset Socrata de departamentos (default vcjz-niiq)"),
     ("DIVIPOLA_MUN_DATASET", "DIVIPOLA", "Dataset Socrata de municipios (default gdxc-w37w)"),
     ("UCDP_API_TOKEN", "UCDP", "Token de la API UCDP (registro previo)"),
@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     policia_hurto_url: str | None = None
     policia_violencia_url: str | None = None
     policia_sexuales_url: str | None = None
-    policia_homicidios_url: str | None = None  # pendiente de localizar dataset
+    policia_homicidios_url: str | None = None  # vacío → patrón oficial por año (2020-2025)
     fiscalia_procesos_url: str | None = None
     fiscalia_victimas_url: str | None = None
     cnmh_minas_url: str | None = None

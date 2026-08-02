@@ -65,13 +65,13 @@ fuentes:
     entidad: "Policía Nacional de Colombia"
     tipo: "nacional"
     url_base: "https://www.policia.gov.co/"
-    metodo_acceso: "api"
+    metodo_acceso: "api + descarga (Excel SIEDCO de homicidios)"
     periodicidad: "mensual"
-    formato: "JSON"
+    formato: "JSON, Excel"
     licencia: "Verificar en ficha (sección 3, punto 5)"
-    variable: "POLICIA_<DELITO>_URL"
+    variable: "POLICIA_<DELITO>_URL, POLICIA_HOMICIDIOS_URL"
     ficha_doc: "docs/fuentes/policia.md"
-    descripcion: "Delitos por municipio: hurto, violencia intrafamiliar, delitos sexuales (homicidios pendiente)"
+    descripcion: "Delitos por municipio: hurto, violencia intrafamiliar, delitos sexuales, homicidios (Excel SIEDCO 2025, 13.727 filas)"
     estado: "implementado"
 
   ucdp:
