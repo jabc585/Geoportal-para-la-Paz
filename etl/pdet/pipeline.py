@@ -13,9 +13,15 @@ import os
 import pandas as pd
 
 from etl.common.cargar import insertar_serie, periodo_anual, resolver_territorio, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
-from etl.common.validation import EsquemaSerieNormalizada, validar
+from etl.common.validation import (
+    EsquemaSerieNormalizada,
+    encontrar_columna,
+    encontrar_columna_opcional,
+    validar,
+)
 
 ALIASES = {
     "codigo": [
@@ -30,20 +36,6 @@ ALIASES = {
     "inversion": ["valor_inversion", "valor", "inversion", "valor_total", "presupuesto", "valor_contrato"],
     "anio": ["anio", "vigencia", "ano", "año", "year"],
 }
-
-
-def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
-    for alias in aliases:
-        if alias in df.columns:
-            return alias
-    raise ValueError(f"No se encontró columna para {etiqueta} (buscadas: {aliases}). Revisar ficha docs/fuentes/art.md")
-
-
-def _columna_opcional(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str | None:
-    for alias in aliases:
-        if alias in df.columns:
-            return alias
-    return None
 
 
 class ART_PDET(PipelineETL):
@@ -71,12 +63,12 @@ class ART_PDET(PipelineETL):
         if df.empty:
             return df
         df = df.rename(columns={c: c.lower() for c in df.columns})
-        col_codigo = _columna(df, ALIASES["codigo"], "código DIVIPOLA")
-        col_nombre = _columna(df, ALIASES["nombre"], "nombre del proyecto")
-        col_estado = _columna_opcional(df, ALIASES["estado"], "estado")
-        col_avance = _columna_opcional(df, ALIASES["avance"], "avance")
-        col_inversion = _columna_opcional(df, ALIASES["inversion"], "inversión")
-        col_anio = _columna_opcional(df, ALIASES["anio"], "año")
+        col_codigo = encontrar_columna(df, ALIASES["codigo"], "código DIVIPOLA", "docs/fuentes/art.md")
+        col_nombre = encontrar_columna(df, ALIASES["nombre"], "nombre del proyecto", "docs/fuentes/art.md")
+        col_estado = encontrar_columna_opcional(df, ALIASES["estado"])
+        col_avance = encontrar_columna_opcional(df, ALIASES["avance"])
+        col_inversion = encontrar_columna_opcional(df, ALIASES["inversion"])
+        col_anio = encontrar_columna_opcional(df, ALIASES["anio"])
 
         # Las columnas financieras y el año son opcionales: datasets reales de
         # la ART (p. ej. Iniciativas PDET) no los reportan (auditoría
@@ -96,7 +88,7 @@ class ART_PDET(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="Agencia de Renovación del Territorio",

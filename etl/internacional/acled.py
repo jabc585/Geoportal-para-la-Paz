@@ -24,6 +24,7 @@ from pathlib import Path
 import pandas as pd
 
 from etl.common.config import settings
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
 
@@ -178,7 +179,7 @@ class Internacional_ACLED(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = self._fuente_id()
             insertadas = 0
             with self.conn.cursor() as cur:
@@ -216,7 +217,7 @@ class Internacional_ACLED(PipelineETL):
         from etl.common.cargar import insertar_serie, periodo_anual, upsert_indicador
         from etl.common.validation import EsquemaSerieNormalizada, validar
 
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = self._fuente_id()
             for codigo_ind, grupo in df.groupby("indicador_codigo"):
                 indicador_id = upsert_indicador(

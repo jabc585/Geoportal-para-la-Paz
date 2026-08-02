@@ -16,7 +16,9 @@ import pandas as pd
 import requests
 
 from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
 from etl.common.config import get_source_url
+from etl.common.descargas import descargar_a_buffer
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar
@@ -64,9 +66,9 @@ class Internacional_HDX(PipelineETL):
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
         url = self._url_recurso()
-        resp = requests.get(url, timeout=600)
-        resp.raise_for_status()
-        df = pd.read_csv(io.BytesIO(resp.content))
+        # Límite de tamaño de descarga (auditoría 2026-08-02): el CSV de HDX
+        # trae ~346K filas; un archivo anómalo no debe agotar la memoria.
+        df = pd.read_csv(descargar_a_buffer(url, timeout=600))
         columnas = [
             "admin2_code",
             "admin2_name",
@@ -111,7 +113,7 @@ class Internacional_HDX(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="HDX",

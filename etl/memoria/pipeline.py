@@ -15,9 +15,10 @@ controlado); a curated/API solo suben conteos agregados por municipio/año.
 from __future__ import annotations
 
 import pandas as pd
-import requests
 
 from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
+from etl.common.descargas import descargar_socrata_paginado
 from etl.common.config import get_source_url
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
@@ -86,22 +87,6 @@ HECHOS = {
 }
 
 
-def _descargar(url: str) -> list[dict]:
-    """Descarga paginada de Socrata ($limit/$offset, sin token)."""
-    filas: list[dict] = []
-    offset = 0
-    while True:
-        resp = requests.get(
-            url, params={"$limit": TAMANO_PAGINA, "$offset": offset}, timeout=120
-        )
-        resp.raise_for_status()
-        batch = resp.json()
-        filas.extend(batch)
-        if len(batch) < TAMANO_PAGINA:
-            return filas
-        offset += len(batch)
-
-
 class CNMH_Memoria(PipelineETL):
     pipeline_id = "cnmh_memoria"
     tabla_raw = "cnmh_memoria"
@@ -121,7 +106,7 @@ class CNMH_Memoria(PipelineETL):
             self._cfg["variable"],
             ayuda=f"Dataset SIEVCAC de {self._cfg['nombre'].lower()} (datos.gov.co, resource {self._cfg['resource_id']})",
         )
-        df = pd.DataFrame(_descargar(url))
+        df = pd.DataFrame(descargar_socrata_paginado(url, tamano_pagina=TAMANO_PAGINA, timeout=120))
         lineage = Lineage.ahora(
             fuente="CNMH",
             url_origen=url,
@@ -165,7 +150,7 @@ class CNMH_Memoria(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="CNMH",

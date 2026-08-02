@@ -7,7 +7,9 @@
 -- staging : datos normalizados, validables, limpiables sin afectar lo publicado
 -- curated : datos listos para consumo de API y dashboard (solo lectura para API)
 --
--- Permisos previstos: rol `etl` escribe en raw y staging; rol `api` solo lee curated.
+-- Permisos: rol `etl` escribe en raw/staging/curated; rol `api` solo lee curated.
+-- Los GRANT reales a nivel de tabla y el LOGIN se aplican en la migración
+-- 0013_privilegios_reales.sql (auditoría 2026-08-02).
 -- ============================================================
 
 -- PostGIS: requerido por capa_contexto_territorial (sección 5.1).

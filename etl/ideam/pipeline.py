@@ -32,6 +32,8 @@ import requests
 from rasterstats import zonal_stats
 
 from etl.common.cargar import insertar_serie, upsert_fuente, upsert_indicador
+from etl.common.descargas import descargar_con_limite
+from etl.common.db import transaccion
 from etl.common.config import settings
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
@@ -78,9 +80,9 @@ class IDEAM_Ambiental(PipelineETL):
         destino = RUTA_REPO / "data" / "raw" / "ideam"
         destino.mkdir(parents=True, exist_ok=True)
         ruta = destino / f"{self.pipeline_id}_{self.lineage.fecha_extraccion:%Y%m%d_%H%M%S}.zip"
-        resp = requests.get(url, timeout=900)
-        resp.raise_for_status()
-        ruta.write_bytes(resp.content)
+        # Límite de tamaño de descarga (auditoría 2026-08-02): stream + tope,
+        # para que un archivo anómalo no agote la memoria del proceso.
+        ruta.write_bytes(descargar_con_limite(url, timeout=900))
         return ruta
 
     def extraer(self) -> tuple[pd.DataFrame, Lineage]:
@@ -188,7 +190,7 @@ class IDEAM_Ambiental(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="IDEAM",

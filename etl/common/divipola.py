@@ -14,9 +14,9 @@ from __future__ import annotations
 import os
 
 import psycopg
-import requests
 
-from etl.common.db import conectar
+from etl.common.db import conectar, transaccion
+from etl.common.descargas import descargar_socrata_paginado
 
 DEFAULT_DEPT_DATASET = "vcjz-niiq"
 DEFAULT_MUN_DATASET = "gdxc-w37w"
@@ -31,11 +31,9 @@ ANMS_FALTANTES = [
 ]
 
 
-def _descargar(dataset_id: str, limite: int = 50000) -> list[dict]:
+def _descargar(dataset_id: str) -> list[dict]:
     url = f"{URL_SOCRATA}/{dataset_id}.json"
-    resp = requests.get(url, params={"$limit": limite}, timeout=120)
-    resp.raise_for_status()
-    return resp.json()
+    return descargar_socrata_paginado(url, tamano_pagina=50000, timeout=120)
 
 
 def sembrar_departamentos(conn: psycopg.Connection) -> int:
@@ -91,7 +89,7 @@ def sembrar_municipios(conn: psycopg.Connection) -> int:
 
 
 if __name__ == "__main__":
-    with conectar() as conn:
+    with transaccion(conectar()) as conn:
         n_dept = sembrar_departamentos(conn)
         n_mun = sembrar_municipios(conn)
     print(f"[divipola] departamentos sembrados: {n_dept}, municipios sembrados: {n_mun}")

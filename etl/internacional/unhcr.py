@@ -12,6 +12,7 @@ import pandas as pd
 import requests
 
 from etl.common.config import get_source_url
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
 
@@ -76,7 +77,7 @@ class Internacional_UNHCR(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = self._fuente_id()
             insertadas = 0
             with self.conn.cursor() as cur:

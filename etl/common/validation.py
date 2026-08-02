@@ -63,3 +63,29 @@ def validar(df: pd.DataFrame, contrato: type[pa.DataFrameModel]) -> tuple[pd.Dat
         rechazados = df.loc[df.index.isin(indices)]
         validos = df.drop(rechazados.index)
         return validos, rechazados_incoherentes + len(rechazados)
+
+
+def encontrar_columna(
+    df: pd.DataFrame, aliases: list[str], etiqueta: str, ficha: str
+) -> str:
+    """Devuelve la primera columna que existe entre los aliases; falla si ninguna.
+
+    Los datasets oficiales cambian nombres de columna entre cortes; los
+    pipelines pasan aliases conocidos y esta utilidad da el error con la ficha
+    de referencia para la revisión (auditoría 2026-08-02, hallazgo 10).
+    """
+    for alias in aliases:
+        if alias in df.columns:
+            return alias
+    raise ValueError(
+        f"No se encontró columna para {etiqueta} (buscadas: {aliases}). "
+        f"Revisar ficha {ficha}"
+    )
+
+
+def encontrar_columna_opcional(df: pd.DataFrame, aliases: list[str]) -> str | None:
+    """Como encontrar_columna pero devuelve None si no hay coincidencia."""
+    for alias in aliases:
+        if alias in df.columns:
+            return alias
+    return None

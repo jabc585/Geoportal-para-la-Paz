@@ -15,6 +15,7 @@ import psycopg
 import requests
 
 from etl.common.lineage import Lineage, hash_registro
+from etl.common.db import transaccion
 from etl.common.pipeline import PipelineETL
 
 URL_WB = "https://api.worldbank.org/v2/country/CO/indicator"
@@ -77,7 +78,7 @@ class Internacional_WorldBank(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = self._fuente_id()
             insertadas = 0
             with self.conn.cursor() as cur:

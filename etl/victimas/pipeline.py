@@ -22,10 +22,11 @@ from datetime import datetime
 import pandas as pd
 import requests
 
-from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
+from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
-from etl.common.validation import EsquemaSerieNormalizada, validar
+from etl.common.validation import EsquemaSerieNormalizada, encontrar_columna, validar
 
 # Resource Socrata oficial de la UARIV (datos.gov.co), verificado en vivo:
 # corte 31/12/2025 -> sum(per_sa) = 9.572.942, que coincide con la cifra
@@ -44,13 +45,6 @@ ALIASES = {
     "hecho": ["hecho", "tipo_hecho", "hecho_victimizante", "tipo", "modalidad"],
     "valor": ["casos", "victimas", "personas", "numero_casos", "cantidad"],
 }
-
-
-def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
-    for alias in aliases:
-        if alias in df.columns:
-            return alias
-    raise ValueError(f"No se encontró columna para {etiqueta} (buscadas: {aliases}). Revisar ficha docs/fuentes/victimas.md")
 
 
 def _parsear_corte(valor) -> datetime:
@@ -172,10 +166,10 @@ class Victimas_Hechos(PipelineETL):
                 .sum()
             )
         else:
-            col_codigo = _columna(df, ALIASES["codigo"], "código DIVIPOLA")
-            col_anio = _columna(df, ALIASES["anio"], "año")
-            col_hecho = _columna(df, ALIASES["hecho"], "tipo de hecho")
-            col_valor = _columna(df, ALIASES["valor"], "casos")
+            col_codigo = encontrar_columna(df, ALIASES["codigo"], "código DIVIPOLA", "docs/fuentes/victimas.md")
+            col_anio = encontrar_columna(df, ALIASES["anio"], "año", "docs/fuentes/victimas.md")
+            col_hecho = encontrar_columna(df, ALIASES["hecho"], "tipo de hecho", "docs/fuentes/victimas.md")
+            col_valor = encontrar_columna(df, ALIASES["valor"], "casos", "docs/fuentes/victimas.md")
             agregado = (
                 df.assign(
                     codigo_divipola=df[col_codigo].astype(str).str.zfill(5),
@@ -196,7 +190,7 @@ class Victimas_Hechos(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="Unidad para las Víctimas",

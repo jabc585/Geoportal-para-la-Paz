@@ -4,13 +4,40 @@ from __future__ import annotations
 
 import math
 import os
+from contextlib import contextmanager
 
 import psycopg
 
+URL_DEFAULT = "postgresql://observatorio:observatorio_dev@localhost:5432/observatorio"
 
-def conectar() -> psycopg.Connection:
-    url = os.getenv("DATABASE_URL", "postgresql://observatorio:observatorio_dev@localhost:5432/observatorio")
-    return psycopg.connect(url, autocommit=True)
+
+def conectar(autocommit: bool = False) -> psycopg.Connection:
+    """Abre una conexión con semántica transaccional real (auditoría 2026-08-02).
+
+    autocommit=False por defecto: cada `executemany`/`execute` se acumula en una
+    transacción que solo se confirma con commit() explícito (rollback en error).
+    La API (solo lectura) pasa autocommit=True para evitar transacciones ociosas.
+    """
+    url = os.getenv("DATABASE_URL", URL_DEFAULT)
+    return psycopg.connect(url, autocommit=autocommit)
+
+
+@contextmanager
+def transaccion(conn: psycopg.Connection):
+    """Contexto transaccional: commit al salir sin error, rollback con error.
+
+    A diferencia de `with conn:` (psycopg3), NO cierra la conexión al salir:
+    la conexión la gestiona PipelineETL.ejecutar() para toda la corrida
+    (hallazgo de auditoría 2026-08-02: el contexto nativo cerraba la conexión
+    y registrar_metricas reabría una huérfana).
+    """
+    try:
+        yield conn
+    except BaseException:
+        conn.rollback()
+        raise
+    else:
+        conn.commit()
 
 
 def sanear_json(valor):

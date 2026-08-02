@@ -103,50 +103,65 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
     periodo_fin (date), valor, indicador_id. Las filas cuyo territorio no se
     resuelve contra el catálogo DIVIPOLA se descartan y se cuentan, para que
     ningún descarte pase en silencio (hallazgo de auditoría).
+
+    Batch (auditoría 2026-08-02): el territorio se resuelve UNA vez por código
+    DIVIPOLA único (no una vez por fila) y el INSERT se hace con executemany en
+    una sola llamada — antes eran 2 round-trips por fila (N+1 en el hot path).
     """
-    insertadas = 0
+    if df.empty:
+        return 0
+    codigos_unicos = pd.unique(df["codigo_divipola"].astype(str))
+    mapa_territorio = {c: resolver_territorio(conn, c) for c in codigos_unicos}
+    registros = []
     sin_territorio = 0
-    with conn.cursor() as cur:
-        for fila in df.to_dict("records"):
-            municipio_id, departamento_id = resolver_territorio(conn, fila["codigo_divipola"])
-            if municipio_id is None and departamento_id is None:
-                sin_territorio += 1
-                continue
-            registro = {
-                "indicador_id": fila["indicador_id"],
-                "municipio_id": municipio_id,
-                "departamento_id": departamento_id,
-                "periodo_inicio": fila["periodo_inicio"],
-                "periodo_fin": fila["periodo_fin"],
-                "valor": fila["valor"],
-                "fuente_id": fuente_id,
-                "url_origen": url_origen,
-                "fecha_extraccion": fecha_extraccion,
-                "fecha_corte_dato": fila.get("fecha_corte_dato"),
-                "hash_registro": hash_registro(
+    for fila in df.to_dict("records"):
+        municipio_id, departamento_id = mapa_territorio[str(fila["codigo_divipola"])]
+        if municipio_id is None and departamento_id is None:
+            sin_territorio += 1
+            continue
+        registros.append(
+            (
+                fila["indicador_id"],
+                municipio_id,
+                departamento_id,
+                fila["periodo_inicio"],
+                fila["periodo_fin"],
+                fila["valor"],
+                fuente_id,
+                url_origen,
+                fecha_extraccion,
+                fila.get("fecha_corte_dato"),
+                hash_registro(
                     {
                         "indicador_id": fila["indicador_id"],
-                        "codigo_divipola": fila["codigo_divipola"],
+                        "codigo_divipola": str(fila["codigo_divipola"]),
                         "periodo_inicio": str(fila["periodo_inicio"]),
                         "periodo_fin": str(fila["periodo_fin"]),
                         "valor": str(fila["valor"]),
                     }
                 ),
-            }
-            cur.execute(
-                """
-                INSERT INTO curated.serie_historica
-                    (indicador_id, municipio_id, departamento_id, periodo_inicio, periodo_fin,
-                     valor, fuente_id, url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
-                VALUES (%(indicador_id)s, %(municipio_id)s, %(departamento_id)s, %(periodo_inicio)s,
-                        %(periodo_fin)s, %(valor)s, %(fuente_id)s, %(url_origen)s,
-                        %(fecha_extraccion)s, %(fecha_corte_dato)s, %(hash_registro)s)
-                ON CONFLICT (indicador_id, municipio_id, departamento_id, periodo_inicio, periodo_fin, fuente_id)
-                DO NOTHING
-                """,
-                registro,
             )
-            insertadas += cur.rowcount > 0
+        )
+    if not registros:
+        if sin_territorio:
+            print(
+                f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "
+                f"no resuelto (¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
+            )
+        return 0
+    with conn.cursor() as cur:
+        cur.executemany(
+            """
+            INSERT INTO curated.serie_historica
+                (indicador_id, municipio_id, departamento_id, periodo_inicio, periodo_fin,
+                 valor, fuente_id, url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (indicador_id, municipio_id, departamento_id, periodo_inicio, periodo_fin, fuente_id)
+            DO NOTHING
+            """,
+            registros,
+        )
+        insertadas = cur.rowcount
     if sin_territorio:
         print(
             f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "

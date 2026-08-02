@@ -25,6 +25,8 @@ import pandas as pd
 import requests
 
 from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
+from etl.common.descargas import descargar_socrata_paginado
 from etl.common.config import get_source_url, settings
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
@@ -73,22 +75,6 @@ DELITOS = {
 }
 
 
-def _descargar(url: str) -> list[dict]:
-    """Descarga paginada de Socrata ($limit/$offset, sin token)."""
-    filas: list[dict] = []
-    offset = 0
-    while True:
-        resp = requests.get(
-            url, params={"$limit": TAMANO_PAGINA, "$offset": offset}, timeout=300
-        )
-        resp.raise_for_status()
-        batch = resp.json()
-        filas.extend(batch)
-        if len(batch) < TAMANO_PAGINA:
-            return filas
-        offset += len(batch)
-
-
 class Policia_Delitos(PipelineETL):
     pipeline_id = "policia_delitos"
     tabla_raw = "policia_delitos"
@@ -107,7 +93,7 @@ class Policia_Delitos(PipelineETL):
             self._cfg["variable"],
             ayuda=f"Dataset Socrata de {self._cfg['prefijo_indicador'].lower()} (resource {self._cfg['resource_id']})",
         )
-        df = pd.DataFrame(_descargar(url))
+        df = pd.DataFrame(descargar_socrata_paginado(url, tamano_pagina=TAMANO_PAGINA, timeout=300))
         lineage = Lineage.ahora(
             fuente="Policía Nacional",
             url_origen=url,
@@ -145,7 +131,7 @@ class Policia_Delitos(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="Policía Nacional",
@@ -277,7 +263,7 @@ class Policia_Homicidios(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="Policía Nacional",

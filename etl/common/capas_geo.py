@@ -22,7 +22,8 @@ import requests
 
 from etl.common.cargar import upsert_fuente
 from etl.common.config import settings
-from etl.common.db import conectar
+from etl.common.db import conectar, transaccion
+from etl.common.descargas import descargar_con_limite
 
 # Recurso fijo de https://data.humdata.org/dataset/cod-ab-col
 RECURSO_COD_AB = "32fba556-0109-4d1c-84cb-c8abddf7775b"
@@ -40,14 +41,14 @@ def _url_firmada() -> str:
 
 def _leer_municipios(url: str) -> gpd.GeoDataFrame:
     print(f"[capas_geo] descargando límites COD-AB (admin2)…")
-    resp = requests.get(url, timeout=900)
-    resp.raise_for_status()
+    # Límite de tamaño de descarga (auditoría 2026-08-02)
+    contenido = descargar_con_limite(url, timeout=900)
     # El .shp necesita sus sidecars (.dbf/.shx): se extrae a disco temporal.
     import tempfile
 
     with tempfile.TemporaryDirectory() as tmp:
         zip_ruta = Path(tmp) / "codab.zip"
-        zip_ruta.write_bytes(resp.content)
+        zip_ruta.write_bytes(contenido)
         with zipfile.ZipFile(zip_ruta) as z:
             z.extractall(tmp)
         nombre = next(Path(tmp).glob("*adm2*.shp"))
@@ -59,43 +60,42 @@ def _leer_municipios(url: str) -> gpd.GeoDataFrame:
 def sembrar() -> None:
     url = _url_firmada()
     gdf = _leer_municipios(url)
-    with conectar() as conn:
-        with conn:
-            fuente_id = upsert_fuente(
-                conn,
-                nombre="IGAC-DANE (COD-AB)",
-                entidad="Instituto Geográfico Agustín Codazzi / DANE (vía OCHA COD-AB)",
-                tipo="nacional",
-                descripcion="Límites municipales oficiales admin2 (MGN), fuente del catálogo geo",
-                url_base="https://data.humdata.org/dataset/cod-ab-col",
-                metodo_acceso="descarga",
-                periodicidad="variable",
-                formato="SHP",
-                licencia="COD-AB (OCHA) — revisar ficha (sección 3, punto 5)",
-                ficha_doc="docs/fuentes/ideam.md",
-            )
-            with conn.cursor() as cur:
-                cur.execute("DELETE FROM curated.capa_contexto_territorial WHERE tipo = 'divipola'")
-                for _, fila in gdf.iterrows():
-                    codigo = str(fila["ADM2_PCODE"])
-                    if codigo.startswith("CO"):
-                        codigo = codigo[2:]
-                    cur.execute(
-                        """
-                        INSERT INTO curated.capa_contexto_territorial
-                            (tipo, nombre, geometria, codigo_divipola, fuente_id, url_origen)
-                        VALUES ('divipola', %s, ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326), %s, %s, %s)
-                        """,
-                        (
-                            fila["ADM2_ES"],
-                            json.dumps(fila["geometry"].__geo_interface__),
-                            codigo,
-                            fuente_id,
-                            url,
-                        ),
-                    )
-            print(f"[capas_geo] {len(gdf)} municipios sembrados (tipo 'divipola').")
-            _reportar_cobertura(conn)
+    with transaccion(conectar()) as conn:
+        fuente_id = upsert_fuente(
+            conn,
+            nombre="IGAC-DANE (COD-AB)",
+            entidad="Instituto Geográfico Agustín Codazzi / DANE (vía OCHA COD-AB)",
+            tipo="nacional",
+            descripcion="Límites municipales oficiales admin2 (MGN), fuente del catálogo geo",
+            url_base="https://data.humdata.org/dataset/cod-ab-col",
+            metodo_acceso="descarga",
+            periodicidad="variable",
+            formato="SHP",
+            licencia="COD-AB (OCHA) — revisar ficha (sección 3, punto 5)",
+            ficha_doc="docs/fuentes/ideam.md",
+        )
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM curated.capa_contexto_territorial WHERE tipo = 'divipola'")
+            for _, fila in gdf.iterrows():
+                codigo = str(fila["ADM2_PCODE"])
+                if codigo.startswith("CO"):
+                    codigo = codigo[2:]
+                cur.execute(
+                    """
+                    INSERT INTO curated.capa_contexto_territorial
+                        (tipo, nombre, geometria, codigo_divipola, fuente_id, url_origen)
+                    VALUES ('divipola', %s, ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326), %s, %s, %s)
+                    """,
+                    (
+                        fila["ADM2_ES"],
+                        json.dumps(fila["geometry"].__geo_interface__),
+                        codigo,
+                        fuente_id,
+                        url,
+                    ),
+                )
+        print(f"[capas_geo] {len(gdf)} municipios sembrados (tipo 'divipola').")
+        _reportar_cobertura(conn)
 
 
 def _reportar_cobertura(conn: psycopg.Connection) -> None:

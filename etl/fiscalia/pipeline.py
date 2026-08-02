@@ -22,6 +22,7 @@ import pandas as pd
 import requests
 
 from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
 from etl.common.config import get_source_url
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
@@ -130,7 +131,7 @@ class Fiscalia_Estadisticas(PipelineETL):
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
             return
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="Fiscalía",

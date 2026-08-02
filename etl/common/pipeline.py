@@ -17,6 +17,20 @@ from etl.common.db import conectar, insertar_raw, registrar_metricas
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.config import settings  # noqa: F401 — dispara la carga de .env al importar
 
+COLUMNAS_CRITICAS = ["codigo_divipola", "periodo_inicio", "periodo_fin", "valor", "indicador_id"]
+
+
+def _nulos_columnas_criticas(df: pd.DataFrame) -> dict:
+    """Conteo de nulos por columna crítica del staging (hallazgo 14 auditoría 2026-08-02).
+
+    Alimenta data_quality_metrics.nulos_por_columna_critica con números reales
+    en vez de {}; solo cuenta columnas presentes (los pipelines que no cargan
+    serie_historica, como PDET, no tienen las mismas columnas).
+    """
+    if df is None or df.empty:
+        return {}
+    return {col: int(df[col].isna().sum()) for col in COLUMNAS_CRITICAS if col in df.columns}
+
 
 class PipelineETL(ABC):
     """Pipeline base: extrae, carga crudo con linaje y reporta métricas de calidad."""
@@ -48,9 +62,20 @@ class PipelineETL(ABC):
         """Promueve datos validados a curated.serie_historica."""
 
     def ejecutar(self) -> None:
+        """Corre la corrida completa con UNA conexión gestionada (auditoría 2026-08-02).
+
+        La conexión se abre una sola vez, se commitea por fase y se cierra
+        explícitamente en finally — incluidas las métricas (antes, el contexto
+        `with self.conn` de cargar_curated cerraba la conexión y
+        registrar_metricas reabría una huérfana por corrida). Con
+        autocommit=False, cada fase es atómica: si falla, rollback completo.
+        """
         inicio = time.monotonic()
         estado, error, leidos, validos, rechazados = "exitoso", None, 0, 0, 0
+        conn: psycopg.Connection | None = None
         try:
+            conn = conectar()
+            self._conn = conn
             df, self.lineage = self.extraer()
             leidos = len(df)
 
@@ -64,25 +89,36 @@ class PipelineETL(ABC):
                 }
                 for _, fila in df.iterrows()
             ]
-            insertar_raw(self.conn, self.tabla_raw, filas_raw)
+            insertar_raw(conn, self.tabla_raw, filas_raw)
+            conn.commit()
 
             df_staging = self.transformar(df)
             validos = len(df_staging)
             rechazados = leidos - validos
+            nulos = _nulos_columnas_criticas(df_staging)
             self.cargar_curated(df_staging)
+            conn.commit()
         except Exception as exc:  # noqa: BLE001
             estado, error = "fallido", str(exc)
+            if conn is not None:
+                conn.rollback()
         finally:
-            registrar_metricas(
-                self.conn,
-                self.pipeline_id,
-                leidos,
-                validos,
-                rechazados,
-                nulos={},
-                duracion_segundos=round(time.monotonic() - inicio, 2),
-                estado=estado,
-                mensaje_error=error,
-            )
+            if conn is not None:
+                try:
+                    registrar_metricas(
+                        conn,
+                        self.pipeline_id,
+                        leidos,
+                        validos,
+                        rechazados,
+                        nulos=nulos,
+                        duracion_segundos=round(time.monotonic() - inicio, 2),
+                        estado=estado,
+                        mensaje_error=error,
+                    )
+                    conn.commit()
+                finally:
+                    conn.close()
+                    self._conn = None
             if estado == "fallido":
                 raise RuntimeError(f"Pipeline {self.pipeline_id} falló: {error}")

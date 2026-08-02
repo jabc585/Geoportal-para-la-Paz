@@ -23,6 +23,11 @@ services:
       - ../database/migrations/0006_fix_fuentes_codigo.sql:/docker-entrypoint-initdb.d/07_fix_fuentes_codigo.sql:ro
       - ../database/migrations/0007_seed_departamentos.sql:/docker-entrypoint-initdb.d/08_seed_departamentos.sql:ro
       - ../database/migrations/0008_pdet_anio_opcional.sql:/docker-entrypoint-initdb.d/09_pdet_anio_opcional.sql:ro
+      - ../database/migrations/0009_fase_b_raw.sql:/docker-entrypoint-initdb.d/10_fase_b_raw.sql:ro
+      - ../database/migrations/0010_geo_ideam.sql:/docker-entrypoint-initdb.d/11_geo_ideam.sql:ro
+      - ../database/migrations/0011_policia_homicidios.sql:/docker-entrypoint-initdb.d/12_policia_homicidios.sql:ro
+      - ../database/migrations/0012_pdet_dedup_hash.sql:/docker-entrypoint-initdb.d/13_pdet_dedup_hash.sql:ro
+      - ../database/migrations/0013_privilegios_reales.sql:/docker-entrypoint-initdb.d/14_privilegios_reales.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U observatorio -d observatorio"]
       interval: 5s
@@ -39,7 +44,8 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://observatorio:${POSTGRES_PASSWORD:-observatorio_dev}@postgres:5432/observatorio
+      # Rol `etl` (migración 0013): escribe en raw/staging/curated
+      DATABASE_URL: postgresql://etl:${ETL_PASSWORD:-etl_dev}@postgres:5432/observatorio
     volumes:
       - ../data:/app/data
     command: ["python", "-m", "etl.run_all"]
@@ -54,7 +60,8 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://observatorio:${POSTGRES_PASSWORD:-observatorio_dev}@postgres:5432/observatorio
+      # Rol `api` (migración 0013): solo SELECT en curated
+      DATABASE_URL: postgresql://api:${API_PASSWORD:-api_dev}@postgres:5432/observatorio
     ports:
       # Solo loopback (auditoría 2026-08-02)
       - "127.0.0.1:8000:8000"

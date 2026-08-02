@@ -18,9 +18,10 @@ import unicodedata
 import pandas as pd
 
 from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
-from etl.common.validation import EsquemaSerieNormalizada, validar
+from etl.common.validation import EsquemaSerieNormalizada, encontrar_columna, validar
 
 ALIASES = {
     "codigo": [
@@ -43,13 +44,6 @@ def _normalizar(texto: str) -> str:
 
 def _normalizar_columnas(df: pd.DataFrame) -> pd.DataFrame:
     return df.rename(columns=_normalizar)
-
-
-def _columna(df: pd.DataFrame, aliases: list[str], etiqueta: str) -> str:
-    for alias in aliases:
-        if alias in df.columns:
-            return alias
-    raise ValueError(f"No se encontró columna para {etiqueta} (buscadas: {aliases}). Revisar ficha docs/fuentes/dane.md")
 
 
 def _detectar_fila_encabezado(raw: pd.DataFrame) -> int | None:
@@ -123,9 +117,9 @@ class DANE_Poblacion(PipelineETL):
         if df.empty:
             return df
         df = _normalizar_columnas(df)
-        col_codigo = _columna(df, ALIASES["codigo"], "código DIVIPOLA")
-        col_anio = _columna(df, ALIASES["anio"], "año")
-        col_valor = _columna(df, ALIASES["valor"], "población")
+        col_codigo = encontrar_columna(df, ALIASES["codigo"], "código DIVIPOLA", "docs/fuentes/dane.md")
+        col_anio = encontrar_columna(df, ALIASES["anio"], "año", "docs/fuentes/dane.md")
+        col_valor = encontrar_columna(df, ALIASES["valor"], "población", "docs/fuentes/dane.md")
 
         # El Excel de DANE repite cada municipio/año 3 veces (Cabecera /
         # Centros Poblados y Rural Disperso / Total): solo se conserva el Total
@@ -153,7 +147,7 @@ class DANE_Poblacion(PipelineETL):
         if df.empty:
             return
         df = validar(df, EsquemaSerieNormalizada)[0]
-        with self.conn:
+        with transaccion(self.conn):
             fuente_id = upsert_fuente(
                 self.conn,
                 nombre="DANE",
