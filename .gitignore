@@ -58,6 +58,8 @@ plan4.md
 plandash.md
 plandash2.md
 auditoria_completa.md
+auditoria_ronda5.md
+observador.md
 
 # Cobertura de pytest (artefacto binario, se regenera en cada corrida)
 .coverage
