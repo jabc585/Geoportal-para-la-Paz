@@ -9,7 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 from dataclasses import dataclass
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 
 @dataclass(frozen=True)
@@ -21,11 +21,11 @@ class Lineage:
     licencia: str
 
     @classmethod
-    def ahora(cls, fuente: str, url_origen: str, fecha_corte_dato: date | None, licencia: str) -> "Lineage":
+    def ahora(cls, fuente: str, url_origen: str, fecha_corte_dato: date | None, licencia: str) -> Lineage:
         return cls(
             fuente=fuente,
             url_origen=url_origen,
-            fecha_extraccion=datetime.now(timezone.utc),
+            fecha_extraccion=datetime.now(UTC),
             fecha_corte_dato=fecha_corte_dato,
             licencia=licencia,
         )

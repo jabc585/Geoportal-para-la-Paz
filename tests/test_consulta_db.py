@@ -17,7 +17,7 @@ que se escapaba. Se salta entero si no hay base disponible.
 
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 import pytest
 
@@ -43,7 +43,7 @@ def bd():
     try:
         with _conectar() as conn, conn.cursor() as cur:
             cur.execute("SELECT 1 FROM curated.municipio LIMIT 1")
-    except Exception as exc:  # noqa: BLE001 — cualquier fallo de conexión o esquema
+    except Exception as exc:
         pytest.skip(f"sin PostgreSQL con esquema curated: {exc}")
     return True
 
@@ -103,7 +103,7 @@ def territorio_sembrado(bd):
                     date(2025, 1, 1),
                     date(2025, 12, 31),
                     fuente_id,
-                    datetime.now(timezone.utc),
+                    datetime.now(UTC),
                     "hash_test_integracion",
                 ),
             )
@@ -157,7 +157,7 @@ def test_indicador_existe(territorio_sembrado):
 
 
 def test_consultar_serie_con_y_sin_filtros(territorio_sembrado):
-    filas, cursor = consultas.consultar_serie(INDICADOR_TEST)
+    filas, _cursor = consultas.consultar_serie(INDICADOR_TEST)
     assert filas and filas[0]["valor"] == 7
 
     filtradas, _ = consultas.consultar_serie(
@@ -259,7 +259,7 @@ def test_serie_departamental_no_se_duplica_entre_corridas(territorio_sembrado):
                 "valor": [42.0],
             }
         )
-        ahora = datetime.now(timezone.utc)
+        ahora = datetime.now(UTC)
         insertar_serie(conn, df, fuente_id=fuente_id, url_origen="test", fecha_extraccion=ahora)
         insertar_serie(conn, df, fuente_id=fuente_id, url_origen="test", fecha_extraccion=ahora)
 

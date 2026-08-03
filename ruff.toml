@@ -1,0 +1,49 @@
+# Configuración de ruff fijada explícitamente.
+#
+# Antes de este archivo el proyecto no declaraba reglas, así que lintaba con el
+# default de ruff y su superficie cambiaba sola en cada bump: el salto 0.13.2 ->
+# 0.16.1 amplió ese default y tumbó CI con 46 errores sin que cambiara una línea
+# de código. Con `select` explícito, actualizar ruff ya no altera qué se exige.
+
+target-version = "py314"
+
+[lint]
+select = [
+    "E4",   # pycodestyle: imports
+    "E7",   # pycodestyle: sentencias
+    "E9",   # pycodestyle: errores de sintaxis/runtime
+    "F",    # pyflakes
+    "I",    # isort: imports ordenados
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+    "PIE",  # flake8-pie
+    "PERF", # perflint
+    "FURB", # refurb
+    "RUF",  # reglas propias de ruff
+]
+
+ignore = [
+    # Marcan como "ambiguos" los caracteres no ASCII del castellano (tildes,
+    # «×», comillas tipográficas). El proyecto documenta y loguea en español:
+    # aquí no hay homoglifos maliciosos, solo ortografía.
+    "RUF001",
+    "RUF002",
+    "RUF003",
+]
+
+# Familias excluidas a propósito (no son deuda técnica, son falsos positivos
+# de dominio; ver la evaluación caso por caso antes de reactivarlas):
+#
+#   DTZ  - `etl/victimas/pipeline.py` parsea fechas de fuentes colombianas que
+#          no traen zona horaria, y `etl/common/pipeline.py` solo usa la hora
+#          local para componer un nombre de archivo. Exigir tz-aware ahí
+#          cambiaría comportamiento sin corregir ningún error real.
+#   S110 - el `try/except/pass` de `etl/run_all.py` es deliberado y está
+#   BLE001 comentado: si la BD de métricas no responde, el pipeline no debe
+#          fallar ni ensuciar la salida.
+
+[lint.per-file-ignores]
+# Los tests instancian esquemas de pandera cuyos atributos de clase son
+# contenedores por diseño; ClassVar no aplica a ese estilo declarativo.
+"tests/*" = ["RUF012"]

@@ -14,8 +14,8 @@ import pandas as pd
 import requests
 
 from etl.common.cargar import insertar_indicador_internacional, upsert_fuente
-from etl.common.lineage import Lineage
 from etl.common.db import transaccion
+from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 
 URL_WB = "https://api.worldbank.org/v2/country/CO/indicator"
@@ -48,15 +48,15 @@ class Internacional_WorldBank(PipelineETL):
             cuerpo = resp.json()
             if not isinstance(cuerpo, list) or len(cuerpo) < 2:
                 continue
-            for dato in cuerpo[1]:
-                filas.append(
-                    {
-                        "indicador_codigo": codigo,
-                        "indicador_nombre": nombre,
-                        "anio": dato.get("date"),
-                        "valor": dato.get("value"),
-                    }
-                )
+            filas.extend(
+                {
+                    "indicador_codigo": codigo,
+                    "indicador_nombre": nombre,
+                    "anio": dato.get("date"),
+                    "valor": dato.get("value"),
+                }
+                for dato in cuerpo[1]
+            )
         df = pd.DataFrame(filas)
         url_origen = f"{URL_WB}/{next(iter(self._indicadores()), '')}"
         lineage = Lineage.ahora(

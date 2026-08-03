@@ -6,7 +6,7 @@ No tocan la BD: verifican la lógica pura de clasificación y resumen, y que
 
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 import pandas as pd
 import pytest
@@ -59,7 +59,7 @@ def test_periodo_maximo_sin_columna_o_vacio_devuelve_none():
 
 def test_marcar_fuente_actualizada_emite_update_con_greatest():
     conn = _ConexionFalsa()
-    ahora = datetime(2026, 8, 3, tzinfo=timezone.utc)
+    ahora = datetime(2026, 8, 3, tzinfo=UTC)
     marcar_fuente_actualizada(conn, fuente_id=7, fecha_extraccion=ahora,
                               fecha_corte_dato=date(2025, 12, 31))
 
@@ -74,7 +74,7 @@ def test_marcar_fuente_actualizada_emite_update_con_greatest():
 
 def test_marcar_fuente_actualizada_acepta_corte_nulo():
     conn = _ConexionFalsa()
-    marcar_fuente_actualizada(conn, 1, datetime(2026, 1, 1, tzinfo=timezone.utc))
+    marcar_fuente_actualizada(conn, 1, datetime(2026, 1, 1, tzinfo=UTC))
     _, params = conn.cur.ejecutados[0]
     assert params["corte"] is None
 

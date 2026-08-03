@@ -11,12 +11,11 @@ Idempotente: reemplaza la capa tipo='divipola' en cada corrida.
 
 from __future__ import annotations
 
+import json
 import tempfile
 import zipfile
-import json
+from datetime import UTC, datetime
 from pathlib import Path
-
-from datetime import datetime, timezone
 
 import geopandas as gpd
 import psycopg
@@ -79,8 +78,7 @@ def sembrar() -> None:
             cur.execute("DELETE FROM curated.capa_contexto_territorial WHERE tipo = 'divipola'")
             for _, fila in gdf.iterrows():
                 codigo = str(fila["ADM2_PCODE"])
-                if codigo.startswith("CO"):
-                    codigo = codigo[2:]
+                codigo = codigo.removeprefix("CO")
                 cur.execute(
                     """
                     INSERT INTO curated.capa_contexto_territorial
@@ -98,7 +96,7 @@ def sembrar() -> None:
         # Esta capa no pasa por insertar_serie, así que sella su fuente aquí
         # (migración 0015). Sin esto figuraba permanentemente como 'sin_datos'
         # en la vista de frescura pese a tener 1122 municipios cargados.
-        marcar_fuente_actualizada(conn, fuente_id, datetime.now(timezone.utc))
+        marcar_fuente_actualizada(conn, fuente_id, datetime.now(UTC))
         print(f"[capas_geo] {len(gdf)} municipios sembrados (tipo 'divipola').")
         _reportar_cobertura(conn)
 

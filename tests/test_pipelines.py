@@ -98,6 +98,7 @@ def test_dane_lector_excel_recorta_footer(tmp_path):
     """El Excel real trae filas de pie de página totalmente vacías tras los
     datos (nota de Barrancominas, cita, fecha): deben recortarse antes del crudo."""
     import openpyxl
+
     from etl.dane.pipeline import _leer_excel_dane
 
     archivo = tmp_path / "proyecciones.xlsx"
@@ -125,6 +126,7 @@ def test_dane_pipeline_completo_contra_excel_con_footer(tmp_path, monkeypatch):
     """Ejecuta extraer+transformar con un Excel que replica el layout real
     (metadata, encabezado fila 9, footer con NaN): 1 fila limpia."""
     import openpyxl
+
     from etl.dane.pipeline import DANE_Poblacion
 
     archivo = tmp_path / "proyecciones.xlsx"

@@ -2,7 +2,11 @@
 
 from __future__ import annotations
 
-from etl.common.divipola import ANMS_FALTANTES, DEFAULT_DEPT_DATASET, DEFAULT_MUN_DATASET
+from etl.common.divipola import (
+    ANMS_FALTANTES,
+    DEFAULT_DEPT_DATASET,
+    DEFAULT_MUN_DATASET,
+)
 
 
 def test_anms_faltantes_bien_formadas():
@@ -22,7 +26,7 @@ def test_datasets_default_son_ids_socrata_validos():
 
 def test_descargar_usa_url_socrata_correcta(monkeypatch):
     """Verifica que _descargar construye la URL correcta."""
-    from etl.common.divipola import _descargar, URL_SOCRATA
+    from etl.common.divipola import URL_SOCRATA, _descargar
 
     llamadas = []
 

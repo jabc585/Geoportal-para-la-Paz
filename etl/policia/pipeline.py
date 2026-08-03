@@ -24,10 +24,16 @@ import io
 import pandas as pd
 import requests
 
-from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
+from etl.common.cargar import (
+    insertar_serie,
+    periodo_anual,
+    slugificar,
+    upsert_fuente,
+    upsert_indicador,
+)
+from etl.common.config import get_source_url, settings
 from etl.common.db import transaccion
 from etl.common.descargas import descargar_socrata_paginado
-from etl.common.config import get_source_url, settings
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar

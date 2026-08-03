@@ -84,9 +84,8 @@ def test_transaccion_commitea_y_no_cierra_la_conexion():
 
 def test_transaccion_hace_rollback_con_error():
     conn = ConexionFake()
-    with pytest.raises(RuntimeError):
-        with transaccion(conn):
-            raise RuntimeError("boom")
+    with pytest.raises(RuntimeError), transaccion(conn):
+        raise RuntimeError("boom")
     assert conn.rollbacks == 1
     assert conn.commits == 0
     assert conn.cerrada is False

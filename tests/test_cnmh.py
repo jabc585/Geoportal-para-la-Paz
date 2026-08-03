@@ -8,7 +8,7 @@ DataFrames que replican los shapes reales verificados en vivo (2026-08-02):
 import pandas as pd
 import pytest
 
-from etl.memoria.pipeline import CNMH_Memoria, HECHOS
+from etl.memoria.pipeline import HECHOS, CNMH_Memoria
 
 
 def _df_casos():
@@ -43,7 +43,7 @@ def test_hechos_registrados_cubren_los_6_datasets_reales():
         "reclutamiento",
         "acciones",
     }
-    for hecho, cfg in HECHOS.items():
+    for cfg in HECHOS.values():
         assert cfg["variable"].startswith("CNMH_")
         assert "-" in cfg["resource_id"]  # formato Socrata real (p. ej. 52eu-ic7d)
         assert cfg["tipo"] in ("casos", "victimas")

@@ -11,6 +11,7 @@ from __future__ import annotations
 import os
 
 import pandas as pd
+import pandera as pa
 
 from etl.common.cargar import (
     insertar_serie,
@@ -24,8 +25,6 @@ from etl.common.db import transaccion
 from etl.common.descargas import descargar_socrata_paginado
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
-import pandera as pa
-
 from etl.common.validation import (
     EsquemaSerieNormalizada,
     encontrar_columna,

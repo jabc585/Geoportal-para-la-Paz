@@ -13,9 +13,11 @@ from datetime import datetime
 import pandas as pd
 import psycopg
 
+from etl.common.config import (
+    settings,  # noqa: F401 — dispara la carga de .env al importar
+)
 from etl.common.db import conectar, insertar_raw, registrar_metricas
 from etl.common.lineage import Lineage, hash_registro
-from etl.common.config import settings  # noqa: F401 — dispara la carga de .env al importar
 from etl.common.logs import obtener_logger_etl
 
 COLUMNAS_CRITICAS = ["codigo_divipola", "periodo_inicio", "periodo_fin", "valor", "indicador_id"]
@@ -148,7 +150,7 @@ class PipelineETL(ABC):
             if leidos and rechazados / leidos > umbral:
                 estado = "parcial"
             conn.commit()
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             estado, error = "fallido", str(exc)
             if conn is not None:
                 conn.rollback()
@@ -175,7 +177,7 @@ class PipelineETL(ABC):
                         mensaje_error=error,
                     )
                     conn.commit()
-                except Exception as exc:  # noqa: BLE001 — F0.2+F0.3: métricas/validación no invalidan carga
+                except Exception as exc:
                     conn.rollback()
                     log.warning("no se registraron métricas: %s", exc)
                 finally:

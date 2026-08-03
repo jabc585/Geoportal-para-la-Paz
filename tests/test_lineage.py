@@ -1,6 +1,6 @@
 """Pruebas del módulo de linaje (sección 3, punto 4)."""
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 from etl.common.lineage import Lineage, hash_registro
 
@@ -25,4 +25,4 @@ def test_lineage_completo():
     assert linaje.fuente == "DANE"
     assert linaje.fecha_corte_dato == date(2023, 12, 31)
     assert isinstance(linaje.fecha_extraccion, datetime)
-    assert linaje.fecha_extraccion.tzinfo == timezone.utc
+    assert linaje.fecha_extraccion.tzinfo == UTC

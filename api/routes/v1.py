@@ -12,8 +12,8 @@ from pydantic import BaseModel
 
 from api.limiter import limiter
 from api.models.schemas import (
-    FuenteEstadoOut,
     FrescuraOut,
+    FuenteEstadoOut,
     FuenteOut,
     HealthOut,
     IndicadorTotalOut,
