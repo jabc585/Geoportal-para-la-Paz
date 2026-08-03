@@ -40,11 +40,10 @@ def _url_firmada() -> str:
 
 
 def _leer_municipios(url: str) -> gpd.GeoDataFrame:
-    print(f"[capas_geo] descargando límites COD-AB (admin2)…")
+    print("[capas_geo] descargando límites COD-AB (admin2)…")
     # Límite de tamaño de descarga (auditoría 2026-08-02)
     contenido = descargar_con_limite(url, timeout=900)
     # El .shp necesita sus sidecars (.dbf/.shx): se extrae a disco temporal.
-    import tempfile
 
     with tempfile.TemporaryDirectory() as tmp:
         zip_ruta = Path(tmp) / "codab.zip"

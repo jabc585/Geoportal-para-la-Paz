@@ -19,6 +19,7 @@ export function useApi<T>(
   useEffect(() => {
     let activo = true;
     setCargando(true);
+    setError(null);
     llamadaRef
       .current()
       .then((d) => {

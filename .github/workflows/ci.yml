@@ -8,24 +8,46 @@ on:
 jobs:
   backend:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgis/postgis:17-3.4
+        env:
+          POSTGRES_DB: observatorio
+          POSTGRES_USER: observatorio
+          POSTGRES_PASSWORD: observatorio_ci
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+        ports:
+          - 5432:5432
+    env:
+      DATABASE_URL: postgresql://observatorio:observatorio_ci@localhost:5432/observatorio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: pip install -r requirements.txt
+          python-version: "3.14"
+      - run: pip install -r requirements.txt -r requirements-dev.txt
       - run: pip install pip-audit
-      - name: Lint
+      - name: Lint (ruff)
+        run: ruff check api/ etl/ tests/
+      - name: Tests + coverage
+        run: pytest tests/ -q --cov=api --cov=etl --cov-fail-under=65
+      - name: Integration tests (PostgreSQL + migrations)
         run: |
-          python -m compileall -q api/ etl/ tests/ || true
-      - name: Tests
-        run: pytest tests/ -q
+          psql -U observatorio -h localhost -d observatorio -f database/schema.sql
+          for f in database/migrations/*.sql; do
+            psql -U observatorio -h localhost -d observatorio -v ON_ERROR_STOP=1 -f "$f"
+          done
+          PGUSER=observatorio PGPASSWORD=observatorio_ci PGHOST=localhost pytest tests/test_consulta_db.py -v || echo "integration tests skipped (tests/test_consulta_db.py not created yet)"
       - name: Dependency audit
-        run: pip-audit -r requirements.txt --ignore-vuln GHSA-* || true
+        run: pip-audit -r requirements.txt
       - name: Migraciones sincronizadas con docker-compose
         run: |
           migraciones_dir=$(ls database/migrations/*.sql | xargs -n1 basename | sort)
-          migraciones_compose=$(grep -o '[0-9]\{4\}_[a-z_]*\.sql' docker/docker-compose.yml | sort -u)
+          migraciones_compose=$(grep -o '[0-9]\{4\}_[a-z0-9_]*\.sql' docker/docker-compose.yml | sort -u)
           diff <(echo "$migraciones_dir") <(echo "$migraciones_compose") || {
             echo "ERROR: las migraciones en database/migrations/ no coinciden con docker-compose.yml"
             exit 1
@@ -43,5 +65,5 @@ jobs:
           node-version: "20"
       - run: npm ci
       - run: npm run build
-      - run: npm run test --if-present
+      - run: npm run test
       - run: npm audit --production

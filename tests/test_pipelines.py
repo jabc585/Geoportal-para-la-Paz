@@ -204,23 +204,16 @@ def test_pdet_transformar_con_shape_real_de_iniciativas():
 
 def test_pdet_pipeline_completo_con_respuesta_real(monkeypatch):
     """extraer() contra la forma de respuesta real del dataset Iniciativas PDET:
-    las filas se normalizan con las columnas opcionales ausentes."""
-    import etl.pdet.pipeline as pdet
-
-    class Respuesta:
-        def raise_for_status(self):
-            pass
-
-        def json(self):
-            return [
-                {"codigodane": "18610", "t_tulo_iniciativa": "CREAR LA EPS INDÍGENA"},
-                {"codigodane": "18592", "t_tulo_iniciativa": "CREAR IPS INDÍGENA"},
-            ]
-
+    las filas se normalizan con las columnas opcionales ausentes.
+    Tras plan4.md (Bug 3), extraer() usa descargar_socrata_paginado()"""
     monkeypatch.setenv("PDET_URL", "https://www.datos.gov.co/resource/gmvf-t63e.json")
-    import requests
-
-    monkeypatch.setattr(requests, "get", lambda url, timeout: Respuesta())
+    monkeypatch.setattr(
+        "etl.pdet.pipeline.descargar_socrata_paginado",
+        lambda url, **kwargs: [
+            {"codigodane": "18610", "t_tulo_iniciativa": "CREAR LA EPS INDÍGENA"},
+            {"codigodane": "18592", "t_tulo_iniciativa": "CREAR IPS INDÍGENA"},
+        ],
+    )
     pipeline = ART_PDET()
     df, _ = pipeline.extraer()
     resultado = pipeline.transformar(df)

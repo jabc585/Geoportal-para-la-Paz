@@ -122,6 +122,7 @@ class DANE_Poblacion(PipelineETL):
         if col_area:
             df = df[df[col_area].map(slugificar) == VALOR_AREA_TOTAL]
 
+        filas_antes = len(df)
         normalizado = pd.DataFrame(
             {
                 "codigo_divipola": df[col_codigo].astype(str).str.zfill(5),
@@ -129,6 +130,7 @@ class DANE_Poblacion(PipelineETL):
                 "valor": pd.to_numeric(df[col_valor], errors="coerce"),
             }
         ).dropna(subset=["anio", "valor"])
+        self._rechazados = filas_antes - len(normalizado)
 
         periodo = normalizado["anio"].apply(periodo_anual)
         normalizado["periodo_inicio"] = periodo.apply(lambda p: p[0])

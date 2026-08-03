@@ -84,7 +84,7 @@ def test_extraer_paginacion_real(monkeypatch):
     """La paginación $limit/$offset debe cubrir datasets > 50.000 filas
     (desaparición tiene 82.486)."""
 
-    def fake_get(url, params=None, timeout=120):
+    def fake_get(url, params=None, headers=None, timeout=120):
         offset = params["$offset"]
         limite = params["$limit"]
         batch = [{"a_o": str(2020 + offset), "c_digo_dane_de_municipio": "05001"}]

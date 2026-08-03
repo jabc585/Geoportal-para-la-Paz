@@ -4,7 +4,6 @@ import math
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from etl.common.db import sanear_json
 

@@ -72,17 +72,24 @@ def descargar_socrata_paginado(
     tamano_pagina: int = 50_000,
     timeout: int = 300,
 ) -> list[dict]:
-    """Descarga paginada de Socrata ($limit/$offset, sin token).
+    """Descarga paginada de Socrata ($limit/$offset) con app token opcional.
 
-    Usada por Policía (hurto/violencia/sexuales) y CNMH; evita duplicar el
+    Usada por Policía (hurto/violencia/sexuales), CNMH y PDET; evita duplicar el
     patrón de paginación en cada pipeline (auditoría 2026-08-02, hallazgo 10).
+    Si la variable SOCRATA_APP_TOKEN está configurada, se envía como
+    X-App-Token para superar el límite público de ~1000 req/hora.
     """
+    from etl.common.config import settings
+
+    token = settings.socrata_app_token
     filas: list[dict] = []
     offset = 0
     while True:
+        cabeceras = {"X-App-Token": token} if token else {}
         resp = requests.get(
             url,
             params={"$limit": tamano_pagina, "$offset": offset},
+            headers=cabeceras,
             timeout=timeout,
         )
         resp.raise_for_status()

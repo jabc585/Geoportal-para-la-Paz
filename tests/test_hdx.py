@@ -5,10 +5,8 @@ en vivo (2026-08-02): filas mensuales por municipio con admin2_code estilo
 "CO76890" (DIVIPOLA con prefijo CO), event_type, events y fatalities.
 """
 
-import io
 
 import pandas as pd
-import pytest
 
 from etl.internacional.hdx import INDICADORES, Internacional_HDX
 

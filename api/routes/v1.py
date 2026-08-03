@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import csv
 import io
+import os
 
 from fastapi import APIRouter, HTTPException, Path, Query, Request
 from fastapi.responses import StreamingResponse
@@ -27,6 +28,7 @@ from api.services.consultas import (
     consultar_total,
     contar_proyectos_pdet,
     exportar_serie_csv,
+    indicador_existe,
     listar_fuentes,
 )
 from api.services.health import estado_fuentes
@@ -44,7 +46,8 @@ router = APIRouter(prefix="/api/v1", tags=["v1"])
         "No expone valores de variables, solo su presencia (plan2.md, Fase A)."
     ),
 )
-def get_health() -> HealthOut:
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_health(request: Request) -> HealthOut:
     return HealthOut(estado="ok", fuentes=[FuenteEstadoOut(**f) for f in estado_fuentes()])
 
 
@@ -57,7 +60,8 @@ def get_health() -> HealthOut:
         "de la ART (sección 11 del plan)."
     ),
 )
-def get_pdet_proyectos() -> PdetOut:
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_pdet_proyectos(request: Request) -> PdetOut:
     return PdetOut(**contar_proyectos_pdet())
 
 
@@ -66,7 +70,8 @@ def get_pdet_proyectos() -> PdetOut:
     response_model=MunicipioOut,
     summary="Municipio por código DIVIPOLA",
 )
-def get_territorio(codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> MunicipioOut | ErrorOut:
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_territorio(request: Request, codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> MunicipioOut:
     resultado = consultar_territorio(codigo_divipola)
     if not resultado:
         raise HTTPException(status_code=404, detail="Territorio no encontrado")
@@ -83,7 +88,9 @@ def get_territorio(codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> Municip
         "Tamaño máximo de página: 1000 (sección 8)."
     ),
 )
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
 def get_indicador(
+    request: Request,
     indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     territorio: str | None = Query(default=None, description="Código DIVIPOLA (5 dígitos municipio o 2 departamento)"),
     desde: str | None = Query(default=None, description="Fecha inicio del periodo (YYYY-MM-DD)"),
@@ -95,6 +102,8 @@ def get_indicador(
         filas, next_cursor = consultar_serie(indicador, territorio, desde, hasta, limit, cursor)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if not filas and not indicador_existe(indicador):
+        raise HTTPException(status_code=404, detail="Indicador no encontrado")
     return Pagina(items=[SerieOut(**f) for f in filas], next_cursor=next_cursor)
 
 
@@ -103,7 +112,9 @@ def get_indicador(
     response_model=IndicadorTotalOut,
     summary="Total nacional por año de un indicador (KPIs del dashboard)",
 )
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
 def get_indicador_total(
+    request: Request,
     indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
 ) -> IndicadorTotalOut:
     resultado = consultar_total(indicador)
@@ -117,7 +128,8 @@ def get_indicador_total(
     response_model=list[FuenteOut],
     summary="Catálogo de fuentes con metadatos de linaje",
 )
-def get_fuentes() -> list[FuenteOut]:
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_fuentes(request: Request) -> list[FuenteOut]:
     return [FuenteOut(**f) for f in listar_fuentes()]
 
 
@@ -131,7 +143,9 @@ def get_fuentes() -> list[FuenteOut]:
         "(sección 5.1). Los municipios sin dato salen con valor null."
     ),
 )
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
 def get_mapa(
+    request: Request,
     indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     anio: int | None = Query(default=None, ge=1900, le=2100, description="Año del agregado; por defecto el más reciente"),
 ) -> MapaOut:

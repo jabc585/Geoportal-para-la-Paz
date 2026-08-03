@@ -10,7 +10,6 @@ prefijo "CO": se descarta el prefijo y se resuelve contra el catálogo
 
 from __future__ import annotations
 
-import io
 
 import pandas as pd
 import requests
@@ -94,7 +93,9 @@ class Internacional_HDX(PipelineETL):
             codigo_divipola=df["admin2_code"].astype(str).str.replace(r"^CO", "", regex=True).str.zfill(5),
             anio=pd.to_numeric(df["reference_period_start"].astype(str).str[:4], errors="coerce"),
         )
+        filas_antes = len(df)
         df = df[df["anio"].between(ANIO_MINIMO, ANIO_MAXIMO)]
+        self._rechazados = filas_antes - len(df)
 
         piezas = []
         for config in INDICADORES:

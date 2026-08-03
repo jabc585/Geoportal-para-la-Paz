@@ -11,11 +11,10 @@ from __future__ import annotations
 import os
 
 import pandas as pd
-import psycopg
 import requests
 
 from etl.common.cargar import insertar_indicador_internacional, upsert_fuente
-from etl.common.lineage import Lineage, hash_registro
+from etl.common.lineage import Lineage
 from etl.common.db import transaccion
 from etl.common.pipeline import PipelineETL
 
@@ -71,10 +70,13 @@ class Internacional_WorldBank(PipelineETL):
     def transformar(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
             return df
+        filas_antes = len(df)
         df = df.dropna(subset=["valor"])
         df["anio"] = pd.to_numeric(df["anio"], errors="coerce")
         df["valor"] = pd.to_numeric(df["valor"], errors="coerce")
-        return df.dropna(subset=["anio"])
+        df = df.dropna(subset=["anio"])
+        self._rechazados = filas_antes - len(df)
+        return df
 
     def cargar_curated(self, df: pd.DataFrame) -> None:
         if df.empty:
@@ -90,7 +92,6 @@ class Internacional_WorldBank(PipelineETL):
             print(f"[worldbank] indicadores internacionales cargados: {insertadas}")
 
     def _fuente_id(self) -> int:
-        from etl.common.cargar import upsert_fuente
 
         return upsert_fuente(
             self.conn,

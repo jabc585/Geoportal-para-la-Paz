@@ -124,7 +124,9 @@ class CNMH_Memoria(PipelineETL):
             anio=anio,
         )
         # a_o="0" y filas sin año o con año fuera de rango: no son datos
+        filas_antes = len(df)
         df = df[df["anio"].between(ANIO_MINIMO, ANIO_MAXIMO)]
+        self._rechazados = filas_antes - len(df)
 
         if self._cfg["tipo"] == "casos":
             agregado = (

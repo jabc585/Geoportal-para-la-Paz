@@ -1,0 +1,5 @@
+# Herramientas de desarrollo: linting, cobertura y auditoría de dependencias.
+# Separadas de requirements.txt para no inflar la imagen de producción.
+
+ruff==0.13.2
+pytest-cov==7.0.0

@@ -14,7 +14,7 @@ import requests
 from etl.common.cargar import insertar_indicador_internacional
 from etl.common.config import get_source_url
 from etl.common.db import transaccion
-from etl.common.lineage import Lineage, hash_registro
+from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 
 PAIS = "Colombia"

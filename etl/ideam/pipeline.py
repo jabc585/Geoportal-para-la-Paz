@@ -18,7 +18,6 @@ producto IDEAM, no una medición independiente.
 
 from __future__ import annotations
 
-import io
 import json
 import re
 import zipfile
@@ -26,7 +25,6 @@ from datetime import date
 from pathlib import Path
 
 import pandas as pd
-import psycopg
 import rasterio
 import requests
 from rasterstats import zonal_stats
@@ -35,7 +33,7 @@ from etl.common.cargar import insertar_serie, upsert_fuente, upsert_indicador
 from etl.common.descargas import descargar_con_limite
 from etl.common.db import transaccion
 from etl.common.config import settings
-from etl.common.lineage import Lineage, hash_registro
+from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 
 RUTA_REPO = Path(__file__).resolve().parents[2]
@@ -170,7 +168,14 @@ class IDEAM_Ambiental(PipelineETL):
                             "unidad": "ha",
                         }
                     )
-        return pd.DataFrame(filas)
+        df_resultado = pd.DataFrame(filas)
+        # Canal lateral: extraer() devuelve 1 fila de metadatos del raster,
+        # transformar() produce las filas reales desde self._ruta_img.
+        # Ambos atributos evitan que ejecutar() calcule métricas incoherentes
+        # (plan.md F0.1, auditoría §7.1).
+        self._leidos = len(df_resultado)
+        self._rechazados = 0
+        return df_resultado
 
     def _geometria(self, codigo: str):
         with self.conn.cursor() as cur:

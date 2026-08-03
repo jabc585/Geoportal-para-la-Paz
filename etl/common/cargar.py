@@ -15,6 +15,7 @@ import pandas as pd
 import psycopg
 
 from etl.common.lineage import hash_registro
+from etl.common.logs import obtener_logger_etl
 
 
 def slugificar(texto: str) -> str:
@@ -144,9 +145,11 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
         )
     if not registros:
         if sin_territorio:
-            print(
-                f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "
-                f"no resuelto (¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
+            log = obtener_logger_etl("cargar")
+            log.warning(
+                "%d filas descartadas por territorio no resuelto "
+                "(¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)",
+                sin_territorio,
             )
         return 0
     with conn.cursor() as cur:
@@ -163,9 +166,11 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
         )
         insertadas = cur.rowcount
     if sin_territorio:
-        print(
-            f"[cargar] AVISO: {sin_territorio} filas descartadas por territorio "
-            f"no resuelto (¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)"
+        log = obtener_logger_etl("cargar")
+        log.warning(
+            "%d filas descartadas por territorio no resuelto "
+            "(¿catálogo DIVIPOLA sembrado? python -m etl.common.divipola)",
+            sin_territorio,
         )
     return insertadas
 

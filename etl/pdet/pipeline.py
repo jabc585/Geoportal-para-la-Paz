@@ -14,6 +14,7 @@ import pandas as pd
 
 from etl.common.cargar import insertar_serie, periodo_anual, resolver_territorio, upsert_fuente, upsert_indicador
 from etl.common.db import transaccion
+from etl.common.descargas import descargar_socrata_paginado
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL
 import pandera as pa
@@ -29,7 +30,7 @@ EsquemaProyectoPDET = pa.DataFrameSchema(
     columns={
         "codigo_divipola": pa.Column(str),
         "nombre": pa.Column(str),
-        "estado": pa.Column(str),
+        "estado": pa.Column(str, nullable=True),
         "avance_pct": pa.Column(float, nullable=True),
         "valor_inversion": pa.Column(float, nullable=True),
         "anio": pa.Column(float, nullable=True),
@@ -59,11 +60,13 @@ class ART_PDET(PipelineETL):
         url = os.getenv("PDET_URL", "")
         if not url:
             raise ValueError("Variable PDET_URL no configurada (ver docs/fuentes/art.md)")
-        import requests
 
-        resp = requests.get(url, timeout=60)
-        resp.raise_for_status()
-        df = pd.DataFrame(resp.json())
+        # Paginación Socrata: sin $limit la API devuelve solo 1000 filas
+        # por defecto. Usamos el mismo helper que policía y CNMH.
+        # Nota: algunos datasets de la ART no son Socrata (JSON plano de
+        # una sola página); en ese caso descargar_socrata_paginado
+        # devuelve todas las filas de la primera (y única) página.
+        df = pd.DataFrame(descargar_socrata_paginado(url, timeout=60))
         lineage = Lineage.ahora(
             fuente="Agencia de Renovación del Territorio",
             url_origen=url,

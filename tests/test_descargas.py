@@ -1,6 +1,5 @@
 """Pruebas del límite de tamaño de descargas (auditoría 2026-08-02, hallazgo 9)."""
 
-import io
 
 import pytest
 

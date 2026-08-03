@@ -49,6 +49,11 @@ export interface PdetProyectos {
 
 const BASE = "/api/v1";
 
+// Nunca hardcodear http://localhost:8000: en dev el proxy de Vite sirve /docs
+// desde la API; en producción se resuelve tras el mismo reverse proxy o se
+// define VITE_DOCS_URL.
+export const DOCS_URL: string = import.meta.env.VITE_DOCS_URL ?? "/docs";
+
 async function obtener<T>(ruta: string): Promise<T> {
   const resp = await fetch(`${BASE}${ruta}`);
   if (!resp.ok) {
@@ -65,20 +70,25 @@ export function obtenerTotalIndicador(indicador: string): Promise<IndicadorTotal
   return obtener<IndicadorTotal>(`/indicadores/${indicador}/total`);
 }
 
-export function obtenerMapa(indicador: string): Promise<MapaIndicador> {
-  return obtener<MapaIndicador>(`/mapas/${indicador}`);
+export function obtenerMapa(indicador: string, anio?: number): Promise<MapaIndicador> {
+  const params = anio ? `?anio=${anio}` : "";
+  return obtener<MapaIndicador>(`/mapas/${indicador}${params}`);
 }
 
 export function obtenerProyectosPdet(): Promise<PdetProyectos> {
   return obtener<PdetProyectos>("/pdet/proyectos");
 }
 
-export function descargarCSV(indicador: string): void {
-  const url = `${BASE}/indicadores/${indicador}/exportar.csv`;
-  const enlace = document.createElement("a");
-  enlace.href = url;
-  enlace.download = `${indicador}.csv`;
-  document.body.appendChild(enlace);
-  enlace.click();
-  enlace.remove();
+export function urlExportarCSV(indicador: string, territorio?: string): string {
+  const params = territorio ? `?territorio=${territorio}` : "";
+  return `${BASE}/indicadores/${indicador}/exportar.csv${params}`;
+}
+
+export async function healthcheck(): Promise<boolean> {
+  try {
+    const resp = await fetch(`${BASE}/health`);
+    return resp.ok;
+  } catch {
+    return false;
+  }
 }

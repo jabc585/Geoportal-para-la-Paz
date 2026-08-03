@@ -105,6 +105,7 @@ class Policia_Delitos(PipelineETL):
     def transformar(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:
             return df
+        filas_antes = len(df)
         anio = pd.to_datetime(df["fecha_hecho"], dayfirst=True, errors="coerce").dt.year
         df = df.assign(
             # codigo_dane llega como DIVIPOLA de 5 dígitos + "000" (p. ej. 44420000)
@@ -113,6 +114,7 @@ class Policia_Delitos(PipelineETL):
             valor=pd.to_numeric(df["cantidad"], errors="coerce"),
         )
         df = df[df["anio"].between(ANIO_MINIMO, ANIO_MAXIMO)].dropna(subset=["valor"])
+        self._rechazados = filas_antes - len(df)
 
         if self._cfg["col_dim"]:
             df = df.assign(dimension=df[self._cfg["col_dim"]].fillna("Sin información").astype(str).str.strip())
@@ -221,6 +223,7 @@ class Policia_Homicidios(PipelineETL):
                 "Ningún Excel de homicidios disponible (¿cambió el patrón de policia.gov.co?)"
             )
         self._datos = pd.concat(frames, ignore_index=True)
+        self._leidos = len(self._datos)
         self.lineage = Lineage.ahora(
             fuente="Policía Nacional",
             url_origen=", ".join(self._urls),
@@ -246,9 +249,11 @@ class Policia_Homicidios(PipelineETL):
                 "valor": pd.to_numeric(datos["CANTIDAD"], errors="coerce"),
             }
         )
+        filas_antes = len(normalizado)
         normalizado = normalizado[
             normalizado["anio"].between(ANIO_MINIMO, ANIO_MAXIMO)
         ].dropna(subset=["valor"])
+        self._rechazados = filas_antes - len(normalizado)
         if normalizado.empty:
             return normalizado
         agrupado = normalizado.groupby(["codigo_divipola", "anio"], as_index=False)["valor"].sum()

@@ -59,7 +59,7 @@ def sanear_json(valor):
         # numpy/pandas escalares: se evaluan con pd.isna y se devuelve el
         # escalar Python nativo en vez del wrapper numpy (serializable JSON)
         try:
-            import numpy as np
+            import numpy as np  # noqa: F401 — detecta tipos numpy para .item()
 
             escalar = valor.item()
             if isinstance(escalar, float) and math.isnan(escalar):

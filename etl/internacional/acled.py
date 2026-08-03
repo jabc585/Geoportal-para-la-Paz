@@ -25,7 +25,7 @@ import pandas as pd
 from etl.common.cargar import insertar_indicador_internacional, slugificar, upsert_fuente
 from etl.common.config import settings
 from etl.common.db import transaccion
-from etl.common.lineage import Lineage, hash_registro
+from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 
 PAIS = "Colombia"
@@ -126,8 +126,11 @@ class Internacional_ACLED(PipelineETL):
         es_colombia = df["COUNTRY"].astype(str).str.upper() == PAIS.upper()
         out_pais = df.loc[es_colombia & (df["archivo"] != ARCHIVO_ADMIN1), ["YEAR", "EVENTS", "indicador", "unidad"]].copy()
         out_pais = out_pais.rename(columns={"YEAR": "anio", "EVENTS": "valor"})
+        nulos_antes = out_pais["anio"].isna().sum() + out_pais["valor"].isna().sum()
         out_pais["anio"] = pd.to_numeric(out_pais["anio"], errors="coerce")
         out_pais["valor"] = pd.to_numeric(out_pais["valor"], errors="coerce")
+        nulos_despues = out_pais["anio"].isna().sum() + out_pais["valor"].isna().sum()
+        self._rechazados = nulos_despues - nulos_antes
         out_pais = out_pais.dropna(subset=["anio", "valor"])
         return out_pais
 

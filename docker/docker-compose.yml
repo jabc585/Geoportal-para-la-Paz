@@ -28,6 +28,7 @@ services:
       - ../database/migrations/0011_policia_homicidios.sql:/docker-entrypoint-initdb.d/12_policia_homicidios.sql:ro
       - ../database/migrations/0012_pdet_dedup_hash.sql:/docker-entrypoint-initdb.d/13_pdet_dedup_hash.sql:ro
       - ../database/migrations/0013_privilegios_reales.sql:/docker-entrypoint-initdb.d/14_privilegios_reales.sql:ro
+      - ../database/migrations/0014_rechazados_no_negativo.sql:/docker-entrypoint-initdb.d/15_rechazados_no_negativo.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U observatorio -d observatorio"]
       interval: 5s

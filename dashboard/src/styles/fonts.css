@@ -1,0 +1,5 @@
+/* Tipografías autoalojadas (plandash2.md C0.5): la CSP declara `font-src 'self'`
+   y no incluye dominios de Google, así que un @import a la CDN quedaría
+   bloqueado. @fontsource sirve los woff2 desde el propio bundle. */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";

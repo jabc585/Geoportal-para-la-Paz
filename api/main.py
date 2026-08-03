@@ -59,7 +59,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# F4.1 (plan.md): CORS explícito en producción. El default "*" es aceptable
+# solo en desarrollo; producción debe definir CORS_ORIGINS explícitamente.
+if os.getenv("ENV", "").lower() == "production" and os.getenv("CORS_ORIGINS", "*") == "*":
+    raise RuntimeError(
+        "CORS_ORIGINS debe definirse explícitamente en producción "
+        "(no usar el default '*'). Ver .env.example."
+    )
+
 app.include_router(v1_router)
+
+
+@app.middleware("http")
+async def _cabeceras_seguridad(request: Request, call_next) -> Response:
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
+    response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    return response
 
 
 @app.middleware("http")

@@ -14,6 +14,13 @@ def _cursor_payload(serie_id: int) -> str:
     return base64.urlsafe_b64encode(json.dumps({"serie_id": serie_id}).encode()).decode()
 
 
+def indicador_existe(indicador: str) -> bool:
+    """True si el indicador está en el catálogo curated.indicadores."""
+    with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute("SELECT 1 FROM curated.indicadores WHERE codigo = %s", (indicador,))
+        return cur.fetchone() is not None
+
+
 def consultar_serie(
     indicador: str,
     territorio: str | None = None,
