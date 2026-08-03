@@ -18,6 +18,7 @@ Archivos usados (variables por archivo en etl/common/config.py):
 
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 import pandas as pd
@@ -115,10 +116,28 @@ class Internacional_ACLED(PipelineETL):
         lineage = Lineage.ahora(
             fuente="ACLED",
             url_origen=str(rutas[0][0].parent),
-            fecha_corte_dato="2026-07-24",
+            fecha_corte_dato=self._fecha_corte(df),
             licencia="ACLED Aggregated Data (uso con atribución)",
         )
         return df, lineage
+
+    @staticmethod
+    def _fecha_corte(df: pd.DataFrame):
+        """Corte real de los agregados, derivado de los datos que trae el export.
+
+        Antes era el literal "2026-07-24" en el código: envejecía en silencio
+        cada vez que se descargaba un export nuevo. Se toma la semana más
+        reciente del agregado admin1 y, si no está, el 31-dic del año máximo.
+        """
+        if "WEEK" in df.columns:
+            semanas = pd.to_datetime(df["WEEK"], errors="coerce").dropna()
+            if not semanas.empty:
+                return semanas.max().date()
+        if "YEAR" in df.columns:
+            anios = pd.to_numeric(df["YEAR"], errors="coerce").dropna()
+            if not anios.empty:
+                return date(int(anios.max()), 12, 31)
+        return None
 
     def transformar(self, df: pd.DataFrame) -> pd.DataFrame:
         if df.empty:

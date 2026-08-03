@@ -76,6 +76,11 @@ async def _cabeceras_seguridad(request: Request, call_next) -> Response:
     response.headers.setdefault("X-Content-Type-Options", "nosniff")
     response.headers.setdefault("Referrer-Policy", "no-referrer")
     response.headers.setdefault("Permissions-Policy", "camera=(), microphone=(), geolocation=()")
+    # Anti-clickjacking: la CSP del dashboard declaraba `frame-ancestors 'none'`
+    # en un <meta>, donde el navegador la ignora (solo vale como cabecera HTTP).
+    # /docs de FastAPI es superficie real de enmarcado, así que va aquí.
+    response.headers.setdefault("Content-Security-Policy", "frame-ancestors 'none'")
+    response.headers.setdefault("X-Frame-Options", "DENY")
     return response
 
 

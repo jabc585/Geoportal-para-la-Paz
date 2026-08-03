@@ -12,7 +12,14 @@ import os
 
 import pandas as pd
 
-from etl.common.cargar import insertar_serie, periodo_anual, resolver_territorio, upsert_fuente, upsert_indicador
+from etl.common.cargar import (
+    insertar_serie,
+    marcar_fuente_actualizada,
+    periodo_anual,
+    resolver_territorio,
+    upsert_fuente,
+    upsert_indicador,
+)
 from etl.common.db import transaccion
 from etl.common.descargas import descargar_socrata_paginado
 from etl.common.lineage import Lineage, hash_registro
@@ -167,6 +174,11 @@ class ART_PDET(PipelineETL):
                     filas,
                 )
                 insertadas = cur.rowcount
+        # Sella la fuente aunque no haya filas nuevas: la extracción ocurrió y
+        # eso es lo que mide la frescura (migración 0015).
+        marcar_fuente_actualizada(
+            self.conn, fuente_id, self.lineage.fecha_extraccion, self.lineage.fecha_corte_dato
+        )
         if sin_territorio:
             print(
                 f"[pdet] AVISO: {sin_territorio} proyectos descartados por territorio no resuelto "

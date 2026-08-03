@@ -61,3 +61,26 @@ export function asignarColoresViridis(
     return { ...d, color: VIRIDIS[qi] };
   });
 }
+
+/**
+ * Elige el año que se muestra en un KPI: el más reciente **que ya ocurrió**.
+ *
+ * Sin esto, `totales[0]` daba el año máximo de la serie y la portada anunciaba
+ * "Población · 2035 · 56,0 M" —una proyección del DANE a nueve años vista—
+ * junto a "Homicidios · 2025", invitando a leer la primera como la cifra
+ * actual. La población de 2026 son 53,5 M: la diferencia es de 2,5 millones
+ * de personas que todavía no existen.
+ *
+ * Si toda la serie es futura se devuelve el año más cercano marcado como
+ * proyección, en vez de ocultar el dato.
+ */
+export function totalVigente<T extends { anio: number }>(
+  totales: T[] | undefined | null,
+  anioActual: number = new Date().getFullYear(),
+): { dato: T; proyeccion: boolean } | null {
+  if (!totales || totales.length === 0) return null;
+  const ordenados = [...totales].sort((a, b) => b.anio - a.anio);
+  const ocurrido = ordenados.find((t) => t.anio <= anioActual);
+  if (ocurrido) return { dato: ocurrido, proyeccion: false };
+  return { dato: ordenados[ordenados.length - 1], proyeccion: true };
+}

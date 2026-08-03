@@ -32,6 +32,7 @@ import {
   obtenerProyectosPdet,
   obtenerTotalIndicador,
   urlExportarCSV,
+  type Frescura,
 } from "../api/client";
 import { useApi } from "../api/useApi";
 import { MapaNacional } from "./components/MapaNacional";
@@ -42,6 +43,7 @@ import {
   fmt,
   fmtCompact,
   fmtKPI,
+  totalVigente,
 } from "./utils";
 
 // ─── Indicadores ─────────────────────────────────────────────────────────────
@@ -207,13 +209,20 @@ function KPIIndicador({
 }) {
   const llamada = useCallback(() => obtenerTotalIndicador(codigo), [codigo]);
   const { datos, error, cargando } = useApi(llamada, [codigo]);
-  const ultimo = datos?.totales?.[0];
+  // El año más reciente ya ocurrido, no el máximo de la serie: para población
+  // el máximo es 2035, una proyección del DANE (ver totalVigente).
+  const vigente = totalVigente(datos?.totales);
+  const ultimo = vigente?.dato;
 
   return (
     <KPICard
       label={label}
       value={ultimo ? fmtKPI(ultimo.valor) : "Sin datos"}
-      sub={ultimo ? `${ultimo.anio} · ${datos?.unidad ?? unidad}` : undefined}
+      sub={
+        ultimo
+          ? `${ultimo.anio}${vigente?.proyeccion ? " · proyección" : ""} · ${datos?.unidad ?? unidad}`
+          : undefined
+      }
       Icon={Icon}
       cargando={cargando}
       error={!!error}
@@ -289,6 +298,39 @@ function Metodologia() {
 }
 
 // ─── Tabla de fuentes ─────────────────────────────────────────────────────────
+/** Semáforo de vigencia: el usuario debe poder ver si una cifra sigue vigente. */
+export function SemaforoFrescura({ estado }: { estado: Frescura | null }) {
+  const config: Record<Frescura, { color: string; texto: string; titulo: string }> = {
+    al_dia: {
+      color: "bg-green-400",
+      texto: "Al día",
+      titulo: "Actualizada dentro del periodo esperado",
+    },
+    retrasada: {
+      color: "bg-accent",
+      texto: "Retrasada",
+      titulo: "Lleva más de un periodo sin actualizarse",
+    },
+    obsoleta: {
+      color: "bg-destructive",
+      texto: "Obsoleta",
+      titulo: "Lleva más del doble del periodo esperado sin actualizarse",
+    },
+    sin_datos: {
+      color: "bg-muted-foreground",
+      texto: "Sin datos",
+      titulo: "Nunca se ha extraído",
+    },
+  };
+  const c = estado ? config[estado] : config.sin_datos;
+  return (
+    <span className="inline-flex items-center gap-1.5 whitespace-nowrap" title={c.titulo}>
+      <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${c.color}`} aria-hidden />
+      {c.texto}
+    </span>
+  );
+}
+
 function TablaFuentes() {
   const { datos, error, cargando } = useApi(obtenerFuentes);
 
@@ -303,14 +345,17 @@ function TablaFuentes() {
     <div className="bg-card border border-border rounded-xl overflow-hidden overflow-x-auto">
       <table className="w-full text-xs">
         <caption className="sr-only">
-          Fuentes oficiales integradas, con entidad, licencia y última actualización
+          Fuentes oficiales integradas, con entidad, licencia, vigencia, fecha de
+          extracción y periodo cubierto por los datos
         </caption>
         <thead>
           <tr className="border-b border-border text-muted-foreground">
             <th scope="col" className="text-left font-medium px-4 py-2.5">Fuente</th>
             <th scope="col" className="text-left font-medium px-4 py-2.5">Entidad</th>
             <th scope="col" className="text-left font-medium px-4 py-2.5">Licencia</th>
-            <th scope="col" className="text-left font-medium px-4 py-2.5">Actualizada</th>
+            <th scope="col" className="text-left font-medium px-4 py-2.5">Vigencia</th>
+            <th scope="col" className="text-left font-medium px-4 py-2.5">Extraída</th>
+            <th scope="col" className="text-left font-medium px-4 py-2.5">Datos hasta</th>
           </tr>
         </thead>
         <tbody>
@@ -332,8 +377,14 @@ function TablaFuentes() {
               </td>
               <td className="px-4 py-2.5 text-muted-foreground">{f.entidad}</td>
               <td className="px-4 py-2.5 text-muted-foreground">{f.licencia}</td>
+              <td className="px-4 py-2.5 text-muted-foreground">
+                <SemaforoFrescura estado={f.frescura} />
+              </td>
               <td className="px-4 py-2.5 font-mono text-muted-foreground">
                 {f.ultima_actualizacion ? f.ultima_actualizacion.slice(0, 10) : "—"}
+              </td>
+              <td className="px-4 py-2.5 font-mono text-muted-foreground">
+                {f.fecha_corte_dato ?? "—"}
               </td>
             </tr>
           ))}

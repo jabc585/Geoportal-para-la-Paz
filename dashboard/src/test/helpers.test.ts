@@ -5,6 +5,7 @@ import {
   fmt,
   fmtCompact,
   fmtKPI,
+  totalVigente,
 } from "../app/utils";
 import type { MapaIndicador } from "../api/client";
 
@@ -110,5 +111,37 @@ describe("asignarColoresViridis", () => {
 
   it("no falla con un solo elemento", () => {
     expect(asignarColoresViridis([{ nombre: "Solo", valor: 1 }])).toHaveLength(1);
+  });
+});
+
+describe("totalVigente", () => {
+  // La serie de población del DANE llega a 2035: son proyecciones.
+  const poblacion = [
+    { anio: 2035, valor: 55990158 },
+    { anio: 2030, valor: 54800000 },
+    { anio: 2026, valor: 53474637 },
+    { anio: 2025, valor: 53100000 },
+  ];
+
+  it("elige el año más reciente que ya ocurrió, no el máximo de la serie", () => {
+    const r = totalVigente(poblacion, 2026);
+    expect(r?.dato.anio).toBe(2026);
+    expect(r?.dato.valor).toBe(53474637);
+    expect(r?.proyeccion).toBe(false);
+  });
+
+  it("no adelanta el futuro aunque la serie lo tenga", () => {
+    expect(totalVigente(poblacion, 2025)?.dato.anio).toBe(2025);
+  });
+
+  it("marca como proyección la serie enteramente futura en vez de ocultarla", () => {
+    const r = totalVigente(poblacion, 2020);
+    expect(r?.dato.anio).toBe(2025);
+    expect(r?.proyeccion).toBe(true);
+  });
+
+  it("devuelve null sin datos", () => {
+    expect(totalVigente([], 2026)).toBeNull();
+    expect(totalVigente(undefined, 2026)).toBeNull();
   });
 });

@@ -16,11 +16,13 @@ import zipfile
 import json
 from pathlib import Path
 
+from datetime import datetime, timezone
+
 import geopandas as gpd
 import psycopg
 import requests
 
-from etl.common.cargar import upsert_fuente
+from etl.common.cargar import marcar_fuente_actualizada, upsert_fuente
 from etl.common.config import settings
 from etl.common.db import conectar, transaccion
 from etl.common.descargas import descargar_con_limite
@@ -93,6 +95,10 @@ def sembrar() -> None:
                         url,
                     ),
                 )
+        # Esta capa no pasa por insertar_serie, así que sella su fuente aquí
+        # (migración 0015). Sin esto figuraba permanentemente como 'sin_datos'
+        # en la vista de frescura pese a tener 1122 municipios cargados.
+        marcar_fuente_actualizada(conn, fuente_id, datetime.now(timezone.utc))
         print(f"[capas_geo] {len(gdf)} municipios sembrados (tipo 'divipola').")
         _reportar_cobertura(conn)
 

@@ -8,10 +8,12 @@ import os
 
 from fastapi import APIRouter, HTTPException, Path, Query, Request
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from api.limiter import limiter
 from api.models.schemas import (
     FuenteEstadoOut,
+    FrescuraOut,
     FuenteOut,
     HealthOut,
     IndicadorTotalOut,
@@ -22,13 +24,17 @@ from api.models.schemas import (
     SerieOut,
 )
 from api.services.consultas import (
+    _aplicar_tasa,
+    _poblacion_municipio_anio,
     consultar_mapa,
     consultar_serie,
     consultar_territorio,
     consultar_total,
     contar_proyectos_pdet,
     exportar_serie_csv,
+    ficha_territorio,
     indicador_existe,
+    listar_frescura,
     listar_fuentes,
 )
 from api.services.health import estado_fuentes
@@ -78,6 +84,38 @@ def get_territorio(request: Request, codigo_divipola: str = Path(pattern=r"^\d{2
     return MunicipioOut(**resultado)
 
 
+class TerritorioIndicadorOut(BaseModel):
+    codigo: str
+    nombre: str
+    unidad: str
+    anio: int | None
+    valor: float | None
+
+
+class FichaTerritorioOut(BaseModel):
+    municipio: str
+    codigo_divipola: str
+    departamento: str | None
+    indicadores: list[TerritorioIndicadorOut]
+
+
+@router.get(
+    "/territorios/{codigo_divipola}/indicadores",
+    response_model=FichaTerritorioOut,
+    summary="Ficha de territorio: todos los indicadores para un municipio",
+    description=(
+        "Devuelve el valor más reciente de cada indicador disponible para el "
+        "municipio. Útil para búsqueda por territorio (auditoría integral §3)."
+    ),
+)
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_ficha_territorio(request: Request, codigo_divipola: str = Path(pattern=r"^\d{2,5}$")) -> FichaTerritorioOut:
+    resultado = ficha_territorio(codigo_divipola)
+    if not resultado:
+        raise HTTPException(status_code=404, detail="Territorio no encontrado o sin datos")
+    return FichaTerritorioOut(**resultado)
+
+
 @router.get(
     "/indicadores/{indicador}",
     response_model=Pagina[SerieOut],
@@ -97,11 +135,15 @@ def get_indicador(
     hasta: str | None = Query(default=None, description="Fecha fin del periodo (YYYY-MM-DD)"),
     limit: int = Query(default=100, ge=1, le=1000),
     cursor: str | None = Query(default=None, description="Cursor de paginación devuelto por la API"),
+    modo: str | None = Query(default=None, pattern=r"^(tasa|absoluto)$", description="Modo de presentación: 'tasa' (×100.000 hab.) o 'absoluto'"),
 ) -> Pagina[SerieOut]:
     try:
         filas, next_cursor = consultar_serie(indicador, territorio, desde, hasta, limit, cursor)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+    if modo == "tasa":
+        pob = _poblacion_municipio_anio()
+        filas = _aplicar_tasa(filas, pob)
     if not filas and not indicador_existe(indicador):
         raise HTTPException(status_code=404, detail="Indicador no encontrado")
     return Pagina(items=[SerieOut(**f) for f in filas], next_cursor=next_cursor)
@@ -134,6 +176,22 @@ def get_fuentes(request: Request) -> list[FuenteOut]:
 
 
 @router.get(
+    "/frescura",
+    response_model=list[FrescuraOut],
+    summary="Vigencia de los datos por fuente",
+    description=(
+        "Compara la última extracción de cada fuente contra la periodicidad que "
+        "ella misma declara y clasifica el resultado: al_dia, retrasada, "
+        "obsoleta o sin_datos. Ordenado por lo que necesita atención primero. "
+        "Permite verificar que las cifras publicadas siguen vigentes."
+    ),
+)
+@limiter.limit(os.getenv("API_RATE_LIMIT", "120/minute"))
+def get_frescura(request: Request) -> list[FrescuraOut]:
+    return [FrescuraOut(**f) for f in listar_frescura()]
+
+
+@router.get(
     "/mapas/{indicador}",
     response_model=MapaOut,
     summary="Capa coroplética municipal de un indicador (fase 5)",
@@ -148,10 +206,21 @@ def get_mapa(
     request: Request,
     indicador: str = Path(pattern=r"^[a-z0-9_]+$"),
     anio: int | None = Query(default=None, ge=1900, le=2100, description="Año del agregado; por defecto el más reciente"),
+    modo: str | None = Query(default=None, pattern=r"^(tasa|absoluto)$", description="Modo: 'tasa' (×100.000 hab.) o 'absoluto'"),
 ) -> MapaOut:
     resultado = consultar_mapa(indicador, anio)
     if not resultado:
         raise HTTPException(status_code=404, detail="Indicador no encontrado")
+    if modo == "tasa":
+        pob = _poblacion_municipio_anio()
+        for f in resultado["features"]:
+            cod = f["properties"].get("codigo_divipola", "")
+            anio_f = resultado.get("anio")
+            if cod and anio_f:
+                pob_val = pob.get((str(cod).zfill(5), anio_f))
+                if pob_val and pob_val >= 5 and f["properties"].get("valor") is not None:
+                    f["properties"]["valor"] = (float(f["properties"]["valor"]) / pob_val) * 100_000
+                    f["properties"]["unidad"] = "tasa × 100.000 hab."
     return MapaOut(**resultado)
 
 

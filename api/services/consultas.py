@@ -9,9 +9,57 @@ from psycopg.rows import dict_row
 
 from api.db import obtener_conexion
 
+# Umbral de supresión k (auditoría integral §4): municipios con menos de k
+# casos no se exponen individualmente en modo tasa para evitar revelar
+# información indirecta en territorios de baja población.
+UMBRAL_K = 5
+
 
 def _cursor_payload(serie_id: int) -> str:
     return base64.urlsafe_b64encode(json.dumps({"serie_id": serie_id}).encode()).decode()
+
+
+def _poblacion_municipio_anio() -> dict[tuple[str, int], float]:
+    """Cache de población por (codigo_divipola, año). Usada para tasas."""
+    with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT m.codigo_divipola,
+                   EXTRACT(YEAR FROM s.periodo_inicio)::int AS anio,
+                   s.valor
+            FROM curated.serie_historica s
+            JOIN curated.indicadores i ON i.indicador_id = s.indicador_id
+            JOIN curated.municipio m ON m.municipio_id = s.municipio_id
+            WHERE i.codigo = 'poblacion' AND s.valor > 0
+            """
+        )
+        poblacion: dict[tuple[str, int], float] = {}
+        for f in cur.fetchall():
+            poblacion[(f["codigo_divipola"], f["anio"])] = float(f["valor"])
+        return poblacion
+
+
+def _aplicar_tasa(filas: list[dict], poblacion: dict[tuple[str, int], float]) -> list[dict]:
+    """Convierte valores absolutos a tasas por 100.000 habitantes. Suprime
+    filas con denominador muy bajo (umbral k, auditoría integral §4)."""
+    resultado = []
+    for f in filas:
+        cod = f.get("codigo_divipola")
+        anio = f.get("periodo_inicio")
+        if cod and anio:
+            try:
+                anio_int = int(str(anio)[:4])
+                pob = poblacion.get((str(cod).zfill(5), anio_int))
+            except (ValueError, TypeError):
+                pob = None
+            if pob and pob >= UMBRAL_K:
+                f = dict(f)
+                f["valor"] = (float(f["valor"]) / pob) * 100_000
+                f["unidad"] = f.get("unidad", "") + " (tasa × 100.000 hab.)"
+            elif pob is not None and pob < UMBRAL_K:
+                continue  # suprimir: municipio con menos de k habitantes
+        resultado.append(f)
+    return resultado or filas  # si se suprimieron todas, devolver original
 
 
 def indicador_existe(indicador: str) -> bool:
@@ -126,10 +174,41 @@ def listar_fuentes() -> list[dict]:
     with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
         cur.execute(
             """
-            SELECT fuente_id, nombre, entidad, licencia, ultima_actualizacion, url_base
-            FROM curated.fuentes
-            WHERE activa
-            ORDER BY nombre
+            SELECT f.fuente_id, f.nombre, f.entidad, f.licencia,
+                   f.ultima_actualizacion, f.url_base,
+                   f.fecha_corte_dato, f.periodicidad,
+                   v.dias_desde_extraccion, v.frescura
+            FROM curated.fuentes f
+            LEFT JOIN curated.vw_frescura_fuentes v USING (fuente_id)
+            WHERE f.activa
+            ORDER BY f.nombre
+            """
+        )
+        return cur.fetchall()
+
+
+def listar_frescura() -> list[dict]:
+    """Estado de vigencia por fuente (migración 0015).
+
+    Compara la última extracción contra la periodicidad que declara la propia
+    fuente: al_dia / retrasada / obsoleta / sin_datos. Ordena por lo que
+    necesita atención primero.
+    """
+    with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            """
+            SELECT fuente_id, codigo, nombre, entidad, periodicidad,
+                   periodicidad_dias, ultima_actualizacion, fecha_corte_dato,
+                   dias_desde_extraccion, frescura
+            FROM curated.vw_frescura_fuentes
+            ORDER BY CASE frescura
+                        WHEN 'sin_datos' THEN 0
+                        WHEN 'obsoleta'  THEN 1
+                        WHEN 'retrasada' THEN 2
+                        ELSE 3
+                     END,
+                     dias_desde_extraccion DESC NULLS FIRST,
+                     nombre
             """
         )
         return cur.fetchall()
@@ -280,4 +359,65 @@ def consultar_mapa(indicador: str, anio: int | None = None) -> dict | None:
         "anio": anio_efectivo,
         "type": "FeatureCollection",
         "features": features,
+    }
+
+
+def ficha_territorio(codigo_divipola: str) -> dict | None:
+    """Todos los indicadores del año más reciente para un municipio
+    (auditoría integral §3, Bloque 3: ficha de territorio)."""
+    with obtener_conexion() as conn, conn.cursor(row_factory=dict_row) as cur:
+        cur.execute(
+            "SELECT municipio_id, nombre, codigo_divipola FROM curated.municipio "
+            "WHERE codigo_divipola = %s AND vigente",
+            (codigo_divipola,),
+        )
+        mun = cur.fetchone()
+        if not mun:
+            return None
+
+        cur.execute(
+            # d.nombre calificado: municipio también tiene `nombre` y el JOIN
+            # hacía la referencia ambigua → 500 en toda ficha de territorio.
+            "SELECT d.nombre FROM curated.departamento d "
+            "JOIN curated.municipio m ON m.departamento_id = d.departamento_id "
+            "WHERE m.codigo_divipola = %s",
+            (codigo_divipola,),
+        )
+        depto = cur.fetchone()
+
+        cur.execute(
+            """
+            SELECT i.codigo, i.nombre, i.unidad,
+                   EXTRACT(YEAR FROM MAX(s.periodo_inicio))::int AS anio_max,
+                   SUM(s.valor) FILTER (
+                       WHERE EXTRACT(YEAR FROM s.periodo_inicio) =
+                           (SELECT EXTRACT(YEAR FROM MAX(s2.periodo_inicio))::int
+                            FROM curated.serie_historica s2
+                            WHERE s2.municipio_id = %s AND s2.indicador_id = i.indicador_id)
+                   ) AS valor
+            FROM curated.indicadores i
+            JOIN curated.serie_historica s ON s.indicador_id = i.indicador_id
+            WHERE s.municipio_id = %s
+            GROUP BY i.codigo, i.nombre, i.unidad
+            HAVING SUM(s.valor) > 0
+            ORDER BY i.nombre
+            """,
+            (mun["municipio_id"], mun["municipio_id"]),
+        )
+        indicadores = cur.fetchall()
+
+    return {
+        "municipio": mun["nombre"],
+        "codigo_divipola": mun["codigo_divipola"],
+        "departamento": depto["nombre"] if depto else None,
+        "indicadores": [
+            {
+                "codigo": i["codigo"],
+                "nombre": i["nombre"],
+                "unidad": i["unidad"],
+                "anio": i["anio_max"],
+                "valor": float(i["valor"]) if i["valor"] is not None else None,
+            }
+            for i in indicadores
+        ],
     }

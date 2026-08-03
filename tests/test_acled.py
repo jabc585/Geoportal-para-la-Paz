@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from datetime import date
+
 import pandas as pd
 import pytest
 
@@ -32,7 +34,9 @@ def test_extraer_todos_los_archivos(archivos_acled):
     assert df["archivo"].nunique() == len(ARCHIVOS)
     assert lineage.fuente == "ACLED"
     assert lineage.licencia.startswith("ACLED")
-    assert lineage.fecha_corte_dato == "2026-07-24"
+    # La fecha de corte se deriva de los datos, no es un literal: el año máximo
+    # del fixture es 2025 (antes estaba escrita a mano y envejecía sola).
+    assert lineage.fecha_corte_dato == date(2025, 12, 31)
 
 
 def test_transformar_solo_colombia(archivos_acled):

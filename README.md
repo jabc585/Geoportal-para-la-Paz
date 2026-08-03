@@ -1,27 +1,58 @@
 # Observatorio para la Paz en Colombia
 
-Plataforma de datos sobre paz, conflicto y desarrollo territorial en Colombia, basada en fuentes oficiales con trazabilidad completa. Ver `plan.md` para el plan de desarrollo completo.
+Plataforma de datos abiertos sobre paz, conflicto y desarrollo territorial en
+Colombia. 18 pipelines ETL ingieren datos de fuentes oficiales (DANE, UARIV,
+Policía Nacional, CNMH, ART/PDET, IDEAM, HDX, ACLED, UNHCR, Banco Mundial) con
+trazabilidad completa por registro: cada cifra conserva su fuente, URL de origen,
+fecha de extracción y licencia.
+
+**Stack**: Python (FastAPI + Pandera + psycopg), PostgreSQL/PostGIS, React +
+TypeScript + MapLibre GL + Tailwind.
+
+**Estado**: 1494 nodos en grafo de arquitectura (Graphify), 165 tests backend,
+API con 10 rutas GET de solo lectura, rate limiting verificado, mapa coroplético
+de 1122 municipios, 157K filas en `serie_historica`, 31K proyectos PDET.
+
+**Uso previsto**: consulta pública por ciudadanos, periodistas, ONGs, academia y
+organismos de derechos humanos. Los datos agregados (sin PII) permiten análisis
+territorial de indicadores de violencia, desplazamiento y construcción de paz,
+con distinción explícita entre fuentes oficiales y de memoria histórica.
+
+---
 
 ## Estado actual
 
-Esqueleto técnico en construcción (auditoría: sección 6.1 del plan):
+- **18 pipelines ETL** contra fuentes oficiales reales: DANE (población),
+  UARIV (víctimas RUV), Policía Nacional (homicidios, hurto, violencia
+  intrafamiliar, delitos sexuales), CNMH SIEVCAC (6 hechos: minas, atentados,
+  desaparición, reclutamiento, bienes, acciones), ART/PDET, IDEAM
+  (deforestación), HDX (eventos de conflicto), ACLED (violencia política),
+  UNHCR (población desplazada), Banco Mundial.
+- **Esquema PostgreSQL/PostGIS** con separación `raw`/`staging`/`curated`,
+  versionado SCD tipo 2, 16 migraciones, vista de reconciliación multi-fuente.
+- **API FastAPI v1**: 10 rutas GET de solo lectura, paginación por cursor,
+  exportación CSV/GeoJSON, `?modo=tasa` (×100.000 hab.), ficha de territorio,
+  healthcheck de frescura de fuentes. Rate limiting verificado (120/min global,
+  10/min CSV).
+- **Dashboard React + TypeScript + MapLibre GL**: mapa coroplético por
+  quintiles (paleta viridis, apta para daltonismo), 6 indicadores en selector,
+  KPIs con datos reales, exportación CSV/GeoJSON, diseño oscuro con Tailwind 4.
+- **165 tests backend** (pytest, deterministas, <2s), **22 tests frontend**
+  (vitest + testing-library), 68% cobertura, ruff limpio, 0 CVEs producción.
+- **CI honesto**: ruff + pip-audit + pytest + npm build + npm test + migraciones
+  sincronizadas. Gobernanza mensual automática (schedule).
+- **Seguridad**: CSP estricta, cabeceras de hardening, CORS explícito en
+  producción, Docker no-root + imagen por digest, 0 endpoints de escritura,
+  0 datos personales, umbral-k (k ≥ 5) en capa de consulta.
 
-- Estructura de directorios (`data/`, `etl/`, `database/`, `api/`, `dashboard/`, `docs/`)
-- Esquema PostgreSQL con separación `raw/staging/curated` (sección 7.3), versionado SCD tipo 2 (7.2), `data_quality_metrics` (7.4) y vista de reconciliación (7.5)
-- Entorno Docker de desarrollo (PostgreSQL + PostGIS, ETL, API)
-- **ETL piloto completo end-to-end**: DANE, Unidad de Víctimas y ART/PDET con extracción → validación Pandera → carga a `curated` con linaje (sección 21, paso 1 cerrado); catálogo DIVIPOLA con seed real desde datos.gov.co y logs de filas descartadas por territorio no resuelto
-- Conectores internacionales activos: World Bank, UNHCR, HDX (eventos de conflicto por municipio) y ACLED (agregados país-año desde archivos locales) — ver `docs/fuentes/`
-- Memoria histórica (CNMH SIEVCAC, 6 datasets) y Policía Nacional (3 delitos) implementados y verificados en vivo; Fiscalía documentada como inviable por volumen (ficha y `config/investigacion_fuentes.yaml`)
-- API FastAPI v1 con paginación por cursor, CORS y OpenAPI en `/docs` (sección 8); `GET /api/v1/health` con estado por fuente
-- Frontend React + TypeScript + MapLibre inicializado con KPI contra `/api/v1/fuentes` (paso 5)
-- Tests: 124 pruebas pasando (linaje, validación, pipelines, API, internacional, configuración, BD, descargas, conexiones, IDEAM)
-- Documentación: gobernanza, checklist de privacidad ejecutado para víctimas, fichas de fuente (pasos 3 y 4)
+Ver `auditoria_ronda5.md` para la auditoría integral más reciente (8.1/10).
 
 ## Requisitos
 
 - Docker + Docker Compose (recomendado)
 - Python 3.12+
-- PostgreSQL 16 con PostGIS (o el contenedor incluido)
+- PostgreSQL 17 con PostGIS (o el contenedor incluido)
+- Node.js 20+ (para el dashboard)
 
 ## Arranque rápido (Docker)
 
@@ -47,130 +78,66 @@ python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 # BD PostgreSQL+PostGIS disponible en DATABASE_URL (ver .env.example)
 psql -d observatorio -f database/schema.sql
+for f in database/migrations/*.sql; do psql -d observatorio -f "$f"; done
+.venv/bin/python -m etl.common.divipola
+.venv/bin/python -m etl.common.capas_geo
 uvicorn api.main:app --reload
+# En otra terminal:
 python -m etl.run_all
 ```
 
-## Configuración de fuentes piloto
+## Dashboard
 
-Los conectores requieren variables de entorno (documentadas en `docs/fuentes/`; método de acceso verificado en auditoría 2026-08-02):
+```bash
+cd dashboard
+npm ci
+npm run dev        # http://localhost:5173
+npm run build      # compilación de producción
+npm test           # 22 tests
+```
 
-- `DANE_POBLACION_XLSX_URL` — URL del Excel oficial de proyecciones de población (DANE distribuye esta serie en XLSX, no vía API; `DANE_POBLACION_DATASET` Socrata solo para datasets locales)
-- `VICTIMAS_URL` — endpoint de Datos Paz (obligatoria, sin default: el path anterior responde 404)
-- `PDET_URL` — endpoint de proyectos PDET (obligatoria: la ART no tiene API JSON pública documentada; gestionar con `mesa.go@renovacionterritorio.gov.co`)
-- `DIVIPOLA_DEPT_DATASET` / `DIVIPOLA_MUN_DATASET` — datasets DIVIPOLA en datos.gov.co (opcional; defaults: `vcjz-niiq`, `gdxc-w37w`)
-
-## Configuración centralizada (plan2.md, Fase A)
-
-El `.env` se carga automáticamente al importar `etl.common.config` (vía
-pydantic-settings, disparado desde `etl/common/pipeline.py`) — ya no hace falta
-exportar variables a mano ni depender de que Compose las inyecte.
-
-- `python -m etl.common.config --check` — reporta qué variables de fuentes
-  activas faltan (fail-fast opt-in; nada falla al importar).
-- `GET /api/v1/health` — estado por fuente: variable configurada + última
-  corrida `data_quality_metrics` exitosa.
-- `config/fuentes.yaml` — catálogo estructurado de las fuentes nuevas (Fase B/C).
-- `config/investigacion_fuentes.yaml` — registro de la investigación en vivo de
-  endpoints (resource-ids y bloqueos reales, para no repetir el rastreo).
-
-Los 4 pipelines reales (DANE, Víctimas, PDET, World Bank) siguen leyendo sus
-variables con `os.getenv(...)`: no fueron tocados. `etl/common/config.py`
-inyecta los valores no vacíos del `.env` al entorno al importarse, así esos
-pipelines leen el `.env` sin cambios (las variables ya exportadas en el shell
-tienen prioridad).
-
-## Fuentes de Fase B (plan2.md)
-
-Pipelines implementados y verificados en vivo (2026-08-02):
-
-| Fuente | Pipeline | Cobertura cargada |
-|---|---|---|
-| UNHCR | `etl/internacional/unhcr.py` | país, 8 tipos de población, 1981–2025 |
-| CNMH SIEVCAC | `etl/memoria/pipeline.py` (6 hechos) | municipio-año, 1980–2027 |
-| HDX Conflict Events | `etl/internacional/hdx.py` | municipio-año, eventos y fatalidades, 2018–2026 |
-| Policía | `etl/policia/pipeline.py` (3 delitos) | municipio-año-tipo, 2010–2025 |
-| ACLED | `etl/internacional/acled.py` | país-año, 3 series, 1997–2026 (archivos en `data/external/`) |
-| Fiscalía | `etl/fiscalia/pipeline.py` | **no activa**: agregación inviable por volumen (23M filas) — ver ficha |
-
-`etl/run_all.py` ejecuta los conectores activos; los pendientes se suman al
-confirmar su viabilidad (`config/investigacion_fuentes.yaml` documenta qué
-falta y por qué).
-
-## Estructura (sección 6 del plan)
+## Estructura
 
 ```
-data/          raw (inmutable) -> processed -> curated -> external (ACLED, shapefiles)
+data/          raw (inmutable) → processed → curated → external
 etl/           pipelines por fuente + common (linaje, validación, calidad)
-database/      schema.sql + migrations + views + functions
+database/      schema.sql + 16 migraciones + views
 api/           FastAPI v1: routes / models / services
-dashboard/     React + MapLibre (pendiente de fase 5)
-docs/          fuentes (ficha por fuente) + metodologia (indicadores, privacidad)
-config/        catálogo de fuentes (fuentes.yaml) + investigación de endpoints
-tests/         pruebas de ETL y API
+dashboard/     React + TypeScript + MapLibre GL + Tailwind
+docs/          fuentes (ficha por fuente) + runbook + operaciones
+config/        catálogo de fuentes + investigación de endpoints
+tests/         165 tests backend + tests/load (k6)
 ```
 
 ## Principios clave
 
-- **Sin PII**: datos agregados, checklist de privacidad obligatorio antes de publicar (sección 3.1).
-- **Trazabilidad**: cada cifra rastrea hasta su fuente y fecha de extracción (sección 3, punto 4).
-- **Neutralidad**: solo fuentes oficiales, metodología pública, comité asesor plural (sección 3, punto 6).
-- **Licencias**: código open source; datos curados CC BY 4.0; datos crudos conservan licencia de su fuente (sección 19).
+- **Sin PII**: solo datos agregados por municipio/departamento, sin microdatos.
+- **Trazabilidad**: cada cifra conserva fuente, URL, fecha de extracción y licencia.
+- **Neutralidad**: fuentes oficiales + memoria histórica, mostrando ambas cuando discrepan.
+- **No daño**: umbral-k (k ≥ 5) en capa de consulta, sin exposición de territorios vulnerables.
+- **Licencias**: código MIT; datos curados CC BY 4.0; datos crudos conservan licencia de su fuente.
 
 ## Pruebas
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
-pytest tests/ -v          # 124 tests (ETL + API), sin tocar BD real
+pip install -r requirements.txt -r requirements-dev.txt
+pytest tests/ -v                     # 165 tests, sin BD real
+pytest tests/ -q --cov=api --cov=etl --cov-fail-under=65
+ruff check api/ etl/ tests/
 ```
-
-Los tests no requieren PostgreSQL: los pipelines se prueban con fakes de red y
-la API con TestClient y servicios monkeypatched.
 
 ## Auditoría de arquitectura (Graphify)
 
-Se ejecuta [Graphify](https://graphify.com/) (`graphifyy`, v0.9.32) contra el
-código fuente + esquema real de PostgreSQL/PostGIS para generar un grafo de
-dependencias completo. Resultado de la última corrida (2026-08-02, post-plan3):
+El grafo de dependencias se genera con [Graphify](https://graphify.com/) a partir
+del código fuente + esquema real de PostgreSQL/PostGIS.
 
 | Métrica | Valor |
 |---|---|
-| Nodos | 1323 (código + BD) |
-| Aristas | 1922 |
-| Comunidades | 74 |
+| Nodos | 1494 (código + BD) |
+| Aristas | 2432 |
+| Comunidades | 73 |
 | Ciclos de importación | 0 |
-| Aristas colgantes | 0 |
-| Extracción de código | 98% |
-
-### God nodes (abstracciones más conectadas)
-
-| Nodo | Aristas | Rol |
-|---|---|---|
-| `PipelineETL` | 32 | Clase base de los 13 pipelines |
-| `upsert_fuente()` | 29 | Catálogo de fuentes en `curated` |
-| `insertar_serie()` | 27 | Carga batch a `curated.serie_historica` |
-| `Internacional_ACLED` | 23 | Conector con capa país-año + admin1 |
-| `transaccion()` | 22 | Commit/rollback explícito |
-
-### Comunidades destacadas
-
-| Comunidad | Nodos | Descripción |
-|---|---|---|
-| C0 | 22 | Tablas `raw.*` y `curated.*` (capa de persistencia) |
-| C1 | 33 | Frontend: cliente API (`client.ts`), hooks (`useApi`), tipos |
-| C6 | 22 | `cargar.py`: `insertar_serie()`, `upsert_fuente()`, `slugificar()` |
-| C8 | 17 | ACLED: país-año + admin1 → departamento |
-| C9 | 15 | UNHCR + World Bank (conectores internacionales) |
-| C13 | 12 | `insertar_serie()` + `upsert_fuente()` + `upsert_indicador()` (hot path de carga) |
-| C15 | 14 | CNMH SIEVCAC (6 hechos + tests) |
-
-**Sin ciclos de importación:** confirmado por `graphify diagnose multigraph`
-(0 same-endpoint collapses, 0 dangling edges). Las comunidades están bien
-separadas: el frontend (C1, C3) se conecta al backend solo a través de
-`fetch`/HTTP, y cada pipeline forma su propia comunidad (ACLED=C8,
-CNMH=C15, Policía=C7, Fiscalía=C10, HDX=C11) conectada al núcleo común
-(`cargar.py`=C6, `db.py`=C4, `pipeline.py`).
+| God node #1 | `Lineage` (45 aristas) — trazabilidad |
 
 ### Regenerar
 
@@ -183,14 +150,18 @@ python3 -m venv /tmp/graphify-venv
 /tmp/graphify-venv/bin/graphify cluster-only grafiphy --no-label
 ```
 
-Los artefactos (HTML, JSON, reportes) quedan en `grafiphy/`. Ver `grafiphy/README.md`
-para el detalle completo de consultas y diagnóstico.
+Los artefactos quedan en `grafiphy/`. Ver `grafiphy/README.md` para consultas y
+diagnóstico.
 
-## Próximos pasos (sección 21)
+## Auditorías
 
-1. Sembrar municipios con `python -m etl.common.divipola` y verificar carga end-to-end contra una BD real
-2. Confirmar umbral de supresión k ≥ 5 con el comité asesor (checklist de víctimas)
-3. Inicializar el frontend con `npm install` y conectar más KPIs
-4. Validar catálogo de indicadores con organizaciones aliadas
-5. Gestionar acceso real a la ART (PDET) y confirmar endpoint de Datos Paz
-6. Añadir paginación de teselas y capas coropléticas al mapa (fase 5)
+El proyecto se audita con verificación en vivo desde la ronda 1:
+
+| Ronda | Fecha | Puntuación | Documento |
+|---|---|---|---|
+| 5 | 2026-08-03 | **8.1/10** | `auditoria_ronda5.md` |
+| 4 | 2026-08-03 | 7.9/10 | `auditoria2.md` |
+| 1–3 | 2026-08-02 | 6.4→7.4→7.8 | `auditoria2.md` (histórico) |
+
+Cada ronda ejecuta la plataforma de punta a punta contra fuentes reales y
+regenera el grafo de arquitectura.

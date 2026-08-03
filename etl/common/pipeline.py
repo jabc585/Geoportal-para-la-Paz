@@ -106,8 +106,18 @@ class PipelineETL(ABC):
                 }
                 for fila in df.to_dict("records")
             ]
-            insertar_raw(conn, self.tabla_raw, filas_raw)
+            nuevas_raw = insertar_raw(conn, self.tabla_raw, filas_raw)
             conn.commit()
+            if nuevas_raw != leidos_raw:
+                # Migración 0016: raw deduplica por (hash_fila, ocurrencia), así
+                # que reextraer un snapshot ya visto no lo reescribe entero.
+                log.info(
+                    "raw.%s: %d filas extraídas, %d nuevas (%d ya estaban)",
+                    self.tabla_raw,
+                    leidos_raw,
+                    nuevas_raw,
+                    leidos_raw - nuevas_raw,
+                )
 
             df_staging = self.transformar(df)
             # _leidos se re-evalúa tras transformar() porque los pipelines

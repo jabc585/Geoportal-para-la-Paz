@@ -7,7 +7,13 @@
     <meta property="og:title" content="Observatorio para la Paz en Colombia" />
     <meta property="og:description" content="Datos oficiales con trazabilidad completa por fuente. Cada cifra conserva su origen, fecha de extracción y licencia." />
     <meta name="theme-color" content="#06111e" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://tile.openstreetmap.org; connect-src 'self' ws: wss: https://tile.openstreetmap.org; object-src 'none'; base-uri 'self'; frame-ancestors 'none'" />
+    <!-- `frame-ancestors` NO va aquí: el navegador lo ignora cuando la CSP se
+         entrega por <meta> (solo funciona como cabecera HTTP), así que la
+         protección anti-clickjacking que parecía estar puesta no lo estaba y
+         además emitía un error en consola. Ahora se envía como cabecera desde
+         vite.config.ts (dev y preview) y desde la API; en producción debe
+         configurarla el servidor estático — ver docs/figma-brief.md §6.1. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob: https://tile.openstreetmap.org; connect-src 'self' ws: wss: https://tile.openstreetmap.org; object-src 'none'; base-uri 'self'" />
     <title>Observatorio para la Paz en Colombia</title>
   </head>
   <body>

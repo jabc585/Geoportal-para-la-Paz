@@ -29,6 +29,9 @@ services:
       - ../database/migrations/0012_pdet_dedup_hash.sql:/docker-entrypoint-initdb.d/13_pdet_dedup_hash.sql:ro
       - ../database/migrations/0013_privilegios_reales.sql:/docker-entrypoint-initdb.d/14_privilegios_reales.sql:ro
       - ../database/migrations/0014_rechazados_no_negativo.sql:/docker-entrypoint-initdb.d/15_rechazados_no_negativo.sql:ro
+      - ../database/migrations/0015_frescura_fuentes.sql:/docker-entrypoint-initdb.d/16_frescura_fuentes.sql:ro
+      - ../database/migrations/0016_raw_dedup.sql:/docker-entrypoint-initdb.d/17_raw_dedup.sql:ro
+      - ../database/migrations/0017_serie_dedup_nulls.sql:/docker-entrypoint-initdb.d/18_serie_dedup_nulls.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U observatorio -d observatorio"]
       interval: 5s

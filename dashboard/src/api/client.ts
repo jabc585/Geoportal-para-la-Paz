@@ -1,3 +1,6 @@
+/** Vigencia de una fuente según su propia periodicidad declarada. */
+export type Frescura = "al_dia" | "retrasada" | "obsoleta" | "sin_datos";
+
 export interface Fuente {
   fuente_id: number;
   nombre: string;
@@ -5,6 +8,10 @@ export interface Fuente {
   licencia: string;
   ultima_actualizacion: string | null;
   url_base: string | null;
+  fecha_corte_dato: string | null;
+  periodicidad: string | null;
+  dias_desde_extraccion: number | null;
+  frescura: Frescura | null;
 }
 
 export interface TotalAnual {

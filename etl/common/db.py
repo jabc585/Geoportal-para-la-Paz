@@ -78,15 +78,51 @@ def sanear_json(valor):
     return valor
 
 
+def ordinales_por_hash(filas: list[dict]) -> list[int]:
+    """Numera 0,1,2… cada repetición del mismo `hash_fila` dentro del lote.
+
+    Es la mitad que le faltaba a la deduplicación (migración 0016): un
+    UNIQUE(hash_fila) a secas descartaría filas que el origen sirve
+    legítimamente repetidas — raw.internacional_hdx trae 26 en un solo archivo.
+    Con el ordinal, la multiplicidad del snapshot se conserva y aun así dos
+    corridas del mismo extracto colisionan fila a fila.
+    """
+    vistos: dict[str, int] = {}
+    ordinales = []
+    for f in filas:
+        h = f["hash_fila"]
+        ordinal = vistos.get(h, 0)
+        vistos[h] = ordinal + 1
+        ordinales.append(ordinal)
+    return ordinales
+
+
 def insertar_raw(conn: psycopg.Connection, tabla: str, filas: list[dict]) -> int:
-    """Inserta filas en raw.<tabla> conservando linaje (sección 7.3)."""
+    """Inserta en raw.<tabla> el contenido no visto antes, conservando linaje.
+
+    Devuelve las filas **efectivamente insertadas**, no las recibidas: tras la
+    migración 0016 el espejo acumula contenido nuevo en vez de copias. Antes,
+    cada corrida reescribía el snapshot entero (raw.dane_poblacion llegó a tener
+    215.424 filas con 53.856 hashes únicos), lo que con el cron diario crecía sin
+    techo. Si la fuente corrige una fila, su hash cambia y entra como registro
+    nuevo: la versión anterior permanece, que es la promesa del espejo inmutable.
+    """
     if not filas:
         return 0
-    columnas = ["archivo", "contenido", "url_origen", "fecha_extraccion", "hash_fila"]
+    columnas = [
+        "archivo",
+        "contenido",
+        "url_origen",
+        "fecha_extraccion",
+        "hash_fila",
+        "ocurrencia",
+    ]
+    ordinales = ordinales_por_hash(filas)
     with conn.cursor() as cur:
         cur.executemany(
             f"INSERT INTO raw.{tabla} ({', '.join(columnas)}) "
-            f"VALUES ({', '.join(['%s'] * len(columnas))})",
+            f"VALUES ({', '.join(['%s'] * len(columnas))}) "
+            f"ON CONFLICT (hash_fila, ocurrencia) DO NOTHING",
             [
                 (
                     f["archivo"],
@@ -94,11 +130,14 @@ def insertar_raw(conn: psycopg.Connection, tabla: str, filas: list[dict]) -> int
                     f["url_origen"],
                     f["fecha_extraccion"],
                     f["hash_fila"],
+                    ordinal,
                 )
-                for f in filas
+                for f, ordinal in zip(filas, ordinales)
             ],
         )
-    return len(filas)
+        # rowcount de executemany suma las filas afectadas: con DO NOTHING, las
+        # que conflictúan afectan 0, así que es el conteo de novedad real.
+        return cur.rowcount
 
 
 def registrar_metricas(

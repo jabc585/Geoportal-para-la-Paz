@@ -10,7 +10,12 @@ import pandas as pd
 import pytest
 
 from etl.common.cargar import insertar_serie
-from etl.common.db import insertar_raw, registrar_metricas, transaccion
+from etl.common.db import (
+    insertar_raw,
+    ordinales_por_hash,
+    registrar_metricas,
+    transaccion,
+)
 
 
 class CursorFake:
@@ -88,7 +93,7 @@ def test_transaccion_hace_rollback_con_error():
 
 
 def test_insertar_raw_envia_todas_las_filas_en_un_executemany():
-    conn = ConexionFake()
+    conn = ConexionFake(rowcount=2)
     n = insertar_raw(
         conn,
         "victimas",
@@ -100,6 +105,31 @@ def test_insertar_raw_envia_todas_las_filas_en_un_executemany():
     assert n == 2
     assert len(conn.cur.ejecutemany_params) == 2
     assert "INSERT INTO raw.victimas" in conn.cur.sql_ejecutemany
+
+
+def test_insertar_raw_deduplica_por_hash_y_ocurrencia():
+    """Migración 0016: el INSERT lleva ON CONFLICT y devuelve las filas NUEVAS.
+
+    Sin esto, cada corrida reescribía el snapshot completo (raw.dane_poblacion
+    llegó a 215.424 filas con 53.856 hashes únicos en un solo día).
+    """
+    conn = ConexionFake(rowcount=1)  # de 2 enviadas, 1 conflictúa
+    fila = {"archivo": "a.json", "contenido": {"x": 1}, "url_origen": "u", "fecha_extraccion": date(2026, 1, 1), "hash_fila": "h1"}
+    n = insertar_raw(conn, "victimas", [fila, {**fila, "hash_fila": "h2"}])
+
+    assert "ON CONFLICT (hash_fila, ocurrencia) DO NOTHING" in conn.cur.sql_ejecutemany
+    assert n == 1, "devuelve las insertadas de verdad, no las recibidas"
+
+
+def test_ordinales_numeran_repeticiones_del_mismo_contenido():
+    """Las filas que el origen sirve duplicadas se conservan, no se pierden.
+
+    raw.internacional_hdx trae 26 filas idénticas en un mismo archivo: con
+    UNIQUE(hash_fila) a secas el espejo las descartaría.
+    """
+    filas = [{"hash_fila": h} for h in ["a", "b", "a", "a", "c", "b"]]
+    assert ordinales_por_hash(filas) == [0, 0, 1, 2, 0, 1]
+    assert ordinales_por_hash([]) == []
 
 
 def test_insertar_raw_vacio_no_consulta():
@@ -142,8 +172,35 @@ def test_insertar_serie_resuelve_territorio_una_vez_por_codigo():
         1 for c in conn.cursors for s in c.ejecutadas if s.startswith("SELECT")
     )
     assert selects == 2  # memoizado por código único; sin memo serían 3
-    assert len(conn.cur.ejecutemany_params) == 3
+    # El executemany puede no ser el último cursor: tras insertar, insertar_serie
+    # sella la fuente (migración 0015) abriendo otro cursor.
+    lote = next(c for c in conn.cursors if c.ejecutemany_params is not None)
+    assert len(lote.ejecutemany_params) == 3
     assert n == 3
+
+
+def test_insertar_serie_sella_la_fuente_con_el_periodo_maximo():
+    """Tras cargar, la fuente queda marcada con la extracción y el corte real.
+
+    Sin este sello, curated.fuentes.ultima_actualizacion quedaba siempre NULL y
+    no había forma de validar frescura (migración 0015).
+    """
+    conn = ConexionFake(fetchone_result=(7, 25), rowcount=2)
+    df = pd.DataFrame(
+        {
+            "indicador_id": [1, 1],
+            "codigo_divipola": ["05001", "05001"],
+            "periodo_inicio": [date(2024, 1, 1), date(2025, 1, 1)],
+            "periodo_fin": [date(2024, 12, 31), date(2025, 12, 31)],
+            "valor": [1.0, 2.0],
+        }
+    )
+    insertar_serie(conn, df, fuente_id=3, url_origen="u", fecha_extraccion=date(2026, 1, 1))
+
+    sellados = [
+        s for c in conn.cursors for s in c.ejecutadas if "UPDATE curated.fuentes" in s
+    ]
+    assert len(sellados) == 1
 
 
 def test_insertar_serie_descarta_sin_territorio_y_avisa(capsys):

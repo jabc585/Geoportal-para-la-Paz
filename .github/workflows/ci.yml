@@ -36,12 +36,16 @@ jobs:
       - name: Tests + coverage
         run: pytest tests/ -q --cov=api --cov=etl --cov-fail-under=65
       - name: Integration tests (PostgreSQL + migrations)
+        # Sin `|| echo`: este paso terminaba en "integration tests skipped" sobre
+        # un archivo que nunca se creó, así que el SQL de la API no se ejecutaba
+        # en CI. Por eso llegó a producción un `SELECT nombre` ambiguo que daba
+        # 500 en toda ficha de territorio. Si el archivo falta, debe fallar.
         run: |
           psql -U observatorio -h localhost -d observatorio -f database/schema.sql
           for f in database/migrations/*.sql; do
             psql -U observatorio -h localhost -d observatorio -v ON_ERROR_STOP=1 -f "$f"
           done
-          PGUSER=observatorio PGPASSWORD=observatorio_ci PGHOST=localhost pytest tests/test_consulta_db.py -v || echo "integration tests skipped (tests/test_consulta_db.py not created yet)"
+          PGUSER=observatorio PGPASSWORD=observatorio_ci PGHOST=localhost pytest tests/test_consulta_db.py -v
       - name: Dependency audit
         run: pip-audit -r requirements.txt
       - name: Migraciones sincronizadas con docker-compose

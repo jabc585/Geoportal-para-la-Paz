@@ -97,6 +97,52 @@ def resolver_territorio(conn: psycopg.Connection, codigo_divipola: str) -> tuple
         return cur.fetchone() or (None, None)
 
 
+def marcar_fuente_actualizada(
+    conn: psycopg.Connection,
+    fuente_id: int,
+    fecha_extraccion,
+    fecha_corte_dato=None,
+) -> None:
+    """Sella en curated.fuentes cuándo se extrajo y hasta qué periodo llegan los datos.
+
+    `curated.fuentes.ultima_actualizacion` existía en el esquema desde el
+    principio pero ningún pipeline la escribía: la API la exponía siempre como
+    NULL y el dashboard mostraba un guion. Sin este sello no hay forma de
+    validar frescura (migración 0015).
+
+    Las fechas solo avanzan: una recarga de datos históricos no debe hacer
+    retroceder el sello de una carga más reciente.
+    """
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE curated.fuentes
+               SET ultima_actualizacion = GREATEST(
+                       COALESCE(ultima_actualizacion, %(extraccion)s), %(extraccion)s),
+                   fecha_corte_dato = GREATEST(
+                       COALESCE(fecha_corte_dato, %(corte)s), %(corte)s)
+             WHERE fuente_id = %(fuente_id)s
+            """,
+            {
+                "fuente_id": fuente_id,
+                "extraccion": fecha_extraccion,
+                "corte": fecha_corte_dato,
+            },
+        )
+
+
+def periodo_maximo(df: pd.DataFrame, columna: str = "periodo_fin"):
+    """Fecha de corte real de un lote: el periodo más reciente que trae la fuente.
+
+    Se deriva de los datos en vez de declararse a mano — ACLED tenía la suya
+    escrita como literal en el código, que envejece sin que nadie lo note.
+    """
+    if df.empty or columna not in df.columns:
+        return None
+    serie = pd.to_datetime(df[columna], errors="coerce").dropna()
+    return None if serie.empty else serie.max().date()
+
+
 def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, url_origen: str, fecha_extraccion) -> int:
     """Inserta filas normalizadas en curated.serie_historica con deduplicación por hash.
 
@@ -160,11 +206,25 @@ def insertar_serie(conn: psycopg.Connection, df: pd.DataFrame, fuente_id: int, u
                  valor, fuente_id, url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (indicador_id, municipio_id, departamento_id, periodo_inicio, periodo_fin, fuente_id)
-            DO NOTHING
+            -- Las fuentes oficiales revisan sus cifras (el DANE ajusta
+            -- proyecciones, la Policía corrige consolidados). Con DO NOTHING el
+            -- primer valor observado quedaba congelado para siempre y la
+            -- corrección se perdía en silencio. Se actualiza solo cuando el
+            -- valor cambia de verdad; el histórico completo de cada extracción
+            -- sigue intacto en raw.*, que es inmutable.
+            DO UPDATE SET
+                valor            = EXCLUDED.valor,
+                url_origen       = EXCLUDED.url_origen,
+                fecha_extraccion = EXCLUDED.fecha_extraccion,
+                fecha_corte_dato = EXCLUDED.fecha_corte_dato,
+                hash_registro    = EXCLUDED.hash_registro
+            WHERE curated.serie_historica.valor IS DISTINCT FROM EXCLUDED.valor
             """,
             registros,
         )
         insertadas = cur.rowcount
+    # Sella la fuente con esta extracción y con el periodo más reciente cargado.
+    marcar_fuente_actualizada(conn, fuente_id, fecha_extraccion, periodo_maximo(df))
     if sin_territorio:
         log = obtener_logger_etl("cargar")
         log.warning(
@@ -220,11 +280,29 @@ def insertar_indicador_internacional(
                 (fuente_id, pais, indicador, periodo, valor, unidad,
                  url_origen, fecha_extraccion, fecha_corte_dato, hash_registro)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-            ON CONFLICT (fuente_id, pais, indicador, periodo) DO NOTHING
+            ON CONFLICT (fuente_id, pais, indicador, periodo)
+            -- Mismo criterio que serie_historica: el Banco Mundial y ACNUR
+            -- revisan sus series retroactivamente; congelar el primer valor
+            -- dejaría la cifra desactualizada sin aviso.
+            DO UPDATE SET
+                valor            = EXCLUDED.valor,
+                unidad           = EXCLUDED.unidad,
+                url_origen       = EXCLUDED.url_origen,
+                fecha_extraccion = EXCLUDED.fecha_extraccion,
+                fecha_corte_dato = EXCLUDED.fecha_corte_dato,
+                hash_registro    = EXCLUDED.hash_registro
+            WHERE curated.indicador_internacional.valor IS DISTINCT FROM EXCLUDED.valor
             """,
             registros,
         )
         insertadas = cur.rowcount
+    # El periodo más reciente de estas series es el año máximo cargado.
+    corte = fecha_corte_dato
+    if corte is None and "anio" in df.columns:
+        anios = pd.to_numeric(df["anio"], errors="coerce").dropna()
+        if not anios.empty:
+            corte = date(int(anios.max()), 12, 31)
+    marcar_fuente_actualizada(conn, fuente_id, fecha_extraccion, corte)
     return insertadas
 
 

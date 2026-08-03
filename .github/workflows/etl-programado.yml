@@ -1,0 +1,73 @@
+name: ETL programado
+
+# Acumulación continua: los pipelines solo insertan y actualizan (nunca borran),
+# así que cada corrida añade los periodos nuevos que publiquen las fuentes y
+# recoge las revisiones de cifras ya cargadas.
+#
+# REQUISITO: este workflow necesita alcanzar la base de datos de producción.
+# Un runner alojado por GitHub no puede llegar a un Postgres en una red privada.
+# Opciones:
+#   a) usar un self-hosted runner con acceso a la BD, o
+#   b) exponer la BD gestionada con credenciales en secrets, o
+#   c) desactivar este workflow y usar el cron del servidor (ver docs/operacion.md).
+
+on:
+  schedule:
+    # Diario a las 07:00 UTC (02:00 en Colombia): las fuentes oficiales
+    # publican de madrugada y así el dashboard amanece actualizado.
+    - cron: "0 7 * * *"
+  workflow_dispatch:
+    inputs:
+      pipeline:
+        description: "Pipeline concreto a ejecutar (vacío = todos)"
+        required: false
+        default: ""
+
+concurrency:
+  # Dos corridas simultáneas competirían por las mismas filas.
+  group: etl-produccion
+  cancel-in-progress: false
+
+jobs:
+  extraer:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      DANE_POBLACION_XLSX_URL: ${{ secrets.DANE_POBLACION_XLSX_URL }}
+      VICTIMAS_URL: ${{ secrets.VICTIMAS_URL }}
+      PDET_URL: ${{ secrets.PDET_URL }}
+      SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+      ACLED_KEY: ${{ secrets.ACLED_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install -r requirements.txt
+
+      - name: Migraciones al día
+        run: |
+          for f in database/migrations/*.sql; do
+            psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f "$f"
+          done
+
+      - name: Ejecutar pipelines
+        run: |
+          if [ -n "${{ inputs.pipeline }}" ]; then
+            python -m etl.${{ inputs.pipeline }}.pipeline
+          else
+            python -m etl.run_all
+          fi
+
+      - name: Validar frescura de las fuentes
+        # No corta la corrida: informa. Que una fuente esté retrasada es
+        # información, no un fallo del ETL.
+        run: python -m etl.common.frescura || true
+
+      - name: Estado de la última corrida
+        run: python -m etl.estado
+
+      - name: Avisar si algo quedó obsoleto
+        if: failure()
+        run: echo "::warning::El ETL programado falló o dejó fuentes obsoletas. Revisar docs/runbook.md"

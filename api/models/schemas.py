@@ -17,6 +17,27 @@ class FuenteOut(BaseModel):
     licencia: str
     ultima_actualizacion: datetime | None
     url_base: str | None
+    # Vigencia (migración 0015): fecha_corte_dato es hasta qué periodo llegan
+    # los datos, distinta de cuándo se extrajeron.
+    fecha_corte_dato: date | None = None
+    periodicidad: str | None = None
+    dias_desde_extraccion: int | None = None
+    frescura: str | None = None
+
+
+class FrescuraOut(BaseModel):
+    """Vigencia de una fuente: al_dia | retrasada | obsoleta | sin_datos."""
+
+    fuente_id: int
+    codigo: str
+    nombre: str
+    entidad: str
+    periodicidad: str
+    periodicidad_dias: int | None
+    ultima_actualizacion: datetime | None
+    fecha_corte_dato: date | None
+    dias_desde_extraccion: int | None
+    frescura: str
 
 
 class MunicipioOut(BaseModel):

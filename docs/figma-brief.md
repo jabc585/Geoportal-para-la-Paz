@@ -418,9 +418,16 @@ font-src 'self' https://fonts.gstatic.com data:;
 img-src 'self' data: blob: https://tile.openstreetmap.org;
 connect-src 'self' ws: wss: https://tile.openstreetmap.org;
 object-src 'none';
-base-uri 'self';
-frame-ancestors 'none'
+base-uri 'self'
 ```
+
+> **`frame-ancestors` no va en el meta tag.** El navegador la descarta cuando la
+> CSP se entrega por `<meta>` —solo surte efecto como cabecera HTTP— y además
+> emite un error en consola. Estuvo declarada ahí, de modo que la protección
+> anti-clickjacking parecía puesta sin estarlo. Ahora se envía como cabecera
+> desde `vite.config.ts` (`server` y `preview`) y desde el middleware de la API.
+> **En producción debe configurarla el servidor estático que sirva el build**;
+> el `<meta>` no basta.
 
 #### Decisiones de la CSP
 
@@ -429,7 +436,7 @@ frame-ancestors 'none'
 | `worker-src blob:` | MapLibre carga su motor de renderizado en un Web Worker desde URL blob | Sin esto, el mapa no dibuja nada (bug de plan4.md) |
 | `connect-src https://tile.openstreetmap.org` | MapLibre pide teselas con `fetch()`, no con `<img>` | `img-src` tenía el host pero no aplica; `connect-src` es la directiva correcta |
 | `script-src 'self'` | Sin `blob:` ni `unsafe-inline` | Solo se abre la excepción en `worker-src`, no en `script-src` |
-| `frame-ancestors 'none'` | Previene clickjacking | La SPA no debe embeberse en iframes de terceros |
+| `frame-ancestors 'none'` | Previene clickjacking | La SPA no debe embeberse en iframes de terceros — **por cabecera HTTP, no por meta** |
 
 ### 6.2 Otras cabeceras de seguridad
 
@@ -438,6 +445,8 @@ El backend añade (middleware en `api/main.py`):
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: no-referrer`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- `Content-Security-Policy: frame-ancestors 'none'` y `X-Frame-Options: DENY`
+  (cubren también `/docs`, que es superficie real de enmarcado)
 
 ### 6.3 Popup del mapa
 
