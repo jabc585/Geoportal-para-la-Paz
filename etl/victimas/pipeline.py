@@ -22,7 +22,12 @@ from datetime import datetime
 import pandas as pd
 import requests
 
-from etl.common.cargar import insertar_serie, periodo_anual, upsert_fuente, upsert_indicador
+from etl.common.cargar import (
+    insertar_serie,
+    periodo_anual,
+    upsert_fuente,
+    upsert_indicador,
+)
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage, hash_registro
 from etl.common.pipeline import PipelineETL

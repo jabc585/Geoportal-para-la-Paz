@@ -30,9 +30,9 @@ import requests
 from rasterstats import zonal_stats
 
 from etl.common.cargar import insertar_serie, upsert_fuente, upsert_indicador
-from etl.common.descargas import descargar_con_limite
-from etl.common.db import transaccion
 from etl.common.config import settings
+from etl.common.db import transaccion
+from etl.common.descargas import descargar_con_limite
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 

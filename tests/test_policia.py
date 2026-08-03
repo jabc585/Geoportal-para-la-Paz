@@ -12,9 +12,9 @@ import pandas as pd
 import pytest
 
 from etl.policia.pipeline import (
+    DELITOS,
     HOMICIDIOS_ANIOS_DEFAULT,
     HOMICIDIOS_URL_PATRON,
-    DELITOS,
     Policia_Delitos,
     Policia_Homicidios,
 )

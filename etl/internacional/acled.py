@@ -23,7 +23,11 @@ from pathlib import Path
 
 import pandas as pd
 
-from etl.common.cargar import insertar_indicador_internacional, slugificar, upsert_fuente
+from etl.common.cargar import (
+    insertar_indicador_internacional,
+    slugificar,
+    upsert_fuente,
+)
 from etl.common.config import settings
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage
@@ -213,7 +217,7 @@ class Internacional_ACLED(PipelineETL):
             if not admin1.empty:
                 try:
                     self.cargar_curated_admin1(admin1)
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:
                     print(f"[acled] AVISO: capa departamental falló ({exc}) — no afecta los país-año")
 
     def cargar_curated_admin1(self, df: pd.DataFrame) -> None:

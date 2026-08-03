@@ -132,7 +132,9 @@ def insertar_raw(conn: psycopg.Connection, tabla: str, filas: list[dict]) -> int
                     f["hash_fila"],
                     ordinal,
                 )
-                for f, ordinal in zip(filas, ordinales)
+                # strict: `ordinales_por_hash` devuelve un ordinal por fila; si
+                # esa invariante se rompe, truncar en silencio perdería filas.
+                for f, ordinal in zip(filas, ordinales, strict=True)
             ],
         )
         # rowcount de executemany suma las filas afectadas: con DO NOTHING, las

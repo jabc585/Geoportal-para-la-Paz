@@ -59,5 +59,5 @@ def test_validar_datos_vacios_no_falla():
 def test_validar_codigos_digitos_ok(codigo):
     df = _df_valido()
     df["codigo_divipola"] = codigo
-    validos, rechazados = validar(df, EsquemaSerieNormalizada)
+    _validos, rechazados = validar(df, EsquemaSerieNormalizada)
     assert rechazados == 0

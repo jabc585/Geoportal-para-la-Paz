@@ -16,7 +16,13 @@ import os
 
 import pandas as pd
 
-from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
+from etl.common.cargar import (
+    insertar_serie,
+    periodo_anual,
+    slugificar,
+    upsert_fuente,
+    upsert_indicador,
+)
 from etl.common.db import transaccion
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL

@@ -3,11 +3,8 @@
 from __future__ import annotations
 
 from datetime import date, datetime
-from typing import Generic, TypeVar
 
 from pydantic import BaseModel, Field
-
-T = TypeVar("T")
 
 
 class FuenteOut(BaseModel):
@@ -57,7 +54,7 @@ class SerieOut(BaseModel):
     fecha_extraccion: datetime
 
 
-class Pagina(BaseModel, Generic[T]):
+class Pagina[T](BaseModel):
     items: list[T]
     next_cursor: str | None = Field(
         description="Cursor opaco para la siguiente página; null si no hay más."

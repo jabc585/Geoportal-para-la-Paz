@@ -2,7 +2,7 @@
 
 import pandas as pd
 
-from etl.internacional.unhcr import Internacional_UNHCR, TIPOS_POBLACION
+from etl.internacional.unhcr import TIPOS_POBLACION, Internacional_UNHCR
 from etl.internacional.world_bank import Internacional_WorldBank
 
 

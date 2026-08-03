@@ -90,9 +90,12 @@ async def _cache_control(request: Request, call_next) -> Response:
     if request.url.path in _RUTAS_LARGA_DURACION:
         cache = "public, max-age=3600"
     response = await call_next(request)
-    if request.method == "GET" and response.status_code < 400:
-        if "cache-control" not in response.headers:
-            response.headers["Cache-Control"] = cache
+    if (
+        request.method == "GET"
+        and response.status_code < 400
+        and "cache-control" not in response.headers
+    ):
+        response.headers["Cache-Control"] = cache
     return response
 
 

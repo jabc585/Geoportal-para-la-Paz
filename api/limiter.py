@@ -4,10 +4,10 @@ Un solo limiter para main.py y routes/v1.py evita que la instancia del router
 quede sin conexión al middleware global.
 """
 
+import os
+
 from slowapi import Limiter
 from slowapi.util import get_remote_address
-
-import os
 
 limiter = Limiter(
     key_func=get_remote_address,

@@ -17,7 +17,7 @@ from etl.internacional.acled import Internacional_ACLED
 from etl.internacional.hdx import Internacional_HDX
 from etl.internacional.unhcr import Internacional_UNHCR
 from etl.internacional.world_bank import Internacional_WorldBank
-from etl.memoria.pipeline import CNMH_Memoria, HECHOS
+from etl.memoria.pipeline import HECHOS, CNMH_Memoria
 from etl.pdet.pipeline import ART_PDET
 from etl.policia.pipeline import DELITOS, Policia_Delitos, Policia_Homicidios
 from etl.victimas.pipeline import Victimas_Hechos
@@ -47,7 +47,7 @@ def run_all() -> None:
             pipeline = construir()
             pipeline.ejecutar()
             log.info("[OK] %s", pipeline.pipeline_id)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             pipeline_id = getattr(construir, "pipeline_id", None)
             log.error("[FALLO] %s: %s", pipeline_id or construir, exc)
             fallidos.append(str(pipeline_id or construir))

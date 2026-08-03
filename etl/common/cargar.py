@@ -257,22 +257,21 @@ def insertar_indicador_internacional(
     if df.empty:
         return 0
     es_col_unidad = unidad is not None and unidad in df.columns
-    registros = []
-    for fila in df.to_dict("records"):
-        registros.append(
-            (
-                fuente_id,
-                pais,
-                str(fila[col_indicador]),
-                f"{int(fila['anio'])}-01-01",
-                float(fila["valor"]),
-                str(fila[unidad]) if es_col_unidad else unidad,
-                url_origen,
-                fecha_extraccion,
-                fecha_corte_dato,
-                hash_registro(fila),
-            )
+    registros = [
+        (
+            fuente_id,
+            pais,
+            str(fila[col_indicador]),
+            f"{int(fila['anio'])}-01-01",
+            float(fila["valor"]),
+            str(fila[unidad]) if es_col_unidad else unidad,
+            url_origen,
+            fecha_extraccion,
+            fecha_corte_dato,
+            hash_registro(fila),
         )
+        for fila in df.to_dict("records")
+    ]
     with conn.cursor() as cur:
         cur.executemany(
             """

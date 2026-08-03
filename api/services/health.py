@@ -62,7 +62,7 @@ def estado_fuentes() -> list[dict]:
             ultimos = {fila["pipeline_id"]: fila["ultima_corrida"] for fila in cur.fetchall()}
     except psycopg.OperationalError:
         logger.info("Base de datos no disponible — healthcheck sin ultima_corrida")
-    except Exception:  # noqa: BLE001
+    except Exception:
         logger.warning("Error inesperado en healthcheck", exc_info=True)
     resultado = []
     for variable, fuente, ayuda in FUENTES_ACTIVAS:

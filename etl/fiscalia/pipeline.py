@@ -21,9 +21,15 @@ from __future__ import annotations
 import pandas as pd
 import requests
 
-from etl.common.cargar import insertar_serie, periodo_anual, slugificar, upsert_fuente, upsert_indicador
-from etl.common.db import transaccion
+from etl.common.cargar import (
+    insertar_serie,
+    periodo_anual,
+    slugificar,
+    upsert_fuente,
+    upsert_indicador,
+)
 from etl.common.config import get_source_url
+from etl.common.db import transaccion
 from etl.common.lineage import Lineage
 from etl.common.pipeline import PipelineETL
 from etl.common.validation import EsquemaSerieNormalizada, validar

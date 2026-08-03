@@ -11,13 +11,13 @@ import json
 import logging
 import sys
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 
 class _JSONFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         payload = {
-            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "timestamp": datetime.now(UTC).isoformat(),
             "level": record.levelname.lower(),
             "message": record.getMessage(),
             "module": record.name,
@@ -45,7 +45,7 @@ def obtener_logger_etl(nombre: str) -> logging.Logger:
     """Logger con ``run_id`` fijo para toda la corrida de un pipeline."""
     logger = _setup_logger(f"etl.{nombre}")
     run_id = getattr(logger, "_run_id", None) or str(uuid.uuid4())[:8]
-    setattr(logger, "_run_id", run_id)
+    logger._run_id = run_id
     logger = logging.LoggerAdapter(logger, {"run_id": run_id})  # type: ignore[arg-type]
     return logger  # type: ignore[return-value]
 

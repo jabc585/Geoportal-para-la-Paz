@@ -16,7 +16,7 @@ import pytest
 import rasterio
 
 from etl.common.config import settings
-from etl.ideam.pipeline import CLASES, IDEAM_Ambiental, _PATRON_PERIODO
+from etl.ideam.pipeline import _PATRON_PERIODO, CLASES, IDEAM_Ambiental
 
 CRS = "EPSG:3116"
 
@@ -82,7 +82,7 @@ def test_transformar_estadistica_zonal(pipeline_sintetico):
     assert len(bosque) == 1 and bosque[0]["valor"] == pytest.approx(5.0)
     # 05002 cubre 3x2 px, todo bosque estable (la celda 5 queda fuera)
     assert not [f for f in filas if f["codigo_divipola"] == "05002" and f["indicador_codigo"] == "ideam_deforestacion"]
-    assert [f for f in filas if f["codigo_divipola"] == "05002" and f["indicador_codigo"] == "ideam_bosque_estable"][0]["valor"] == pytest.approx(6.0)
+    assert next(f for f in filas if f["codigo_divipola"] == "05002" and f["indicador_codigo"] == "ideam_bosque_estable")["valor"] == pytest.approx(6.0)
     # La clase 5 (sin información) nunca produce fila
     assert not [f for f in filas if "ideam" in f["indicador_codigo"] and f["valor"] == 1.0 and f["codigo_divipola"] == "05002"]
     assert all(f["unidad"] == "ha" for f in filas)
@@ -100,9 +100,8 @@ def test_zip_sin_raster_lanza(monkeypatch, tmp_path):
     zip_ruta = tmp_path / "vacio.zip"
     with zipfile.ZipFile(zip_ruta, "w") as z:
         z.writestr("nota.txt", "sin raster")
-    with pytest.raises(StopIteration):
-        with zipfile.ZipFile(zip_ruta) as z:
-            next(n for n in z.namelist() if n.lower().endswith(".img"))
+    with pytest.raises(StopIteration), zipfile.ZipFile(zip_ruta) as z:
+        next(n for n in z.namelist() if n.lower().endswith(".img"))
 
 
 def test_url_zip_configurada_tiene_prioridad(monkeypatch):
@@ -174,7 +173,7 @@ def test_extraer_guarda_zip_e_img_y_parsea_periodo(monkeypatch, tmp_path):
 
     monkeypatch.setattr("etl.ideam.pipeline.requests.get", fake_get)
     p = IDEAM_Ambiental()
-    monkeypatch.setattr(p, "_cargar_municipios", lambda: [])
+    monkeypatch.setattr(p, "_cargar_municipios", list)
     df, lineage = p.extraer()
     assert df.iloc[0]["periodo"] == "2020-2021"
     assert p._anio_inicio == 2020 and p._anio_fin == 2021

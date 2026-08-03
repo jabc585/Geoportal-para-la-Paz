@@ -18,8 +18,8 @@ def _app_con_limite(monkeypatch, limite: str = "5/minute") -> TestClient:
     monkeypatch.setenv("API_RATE_LIMIT", limite)
     # Recargar el router para re-evaluar os.getenv en los decoradores
     import api.limiter
-    import api.routes.v1
     import api.main
+    import api.routes.v1
 
     importlib.reload(api.limiter)
     importlib.reload(api.routes.v1)
