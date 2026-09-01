@@ -22,7 +22,7 @@ slowapi==0.1.10
 
 # Geoespacial: capa municipal DIVIPOLA + estadística zonal del raster IDEAM
 geopandas==1.1.4
-rasterio==1.5.0
+rasterio==1.5.1
 rasterstats==0.21.0
 
 # Tests (suite completa: pytest + TestClient de FastAPI)
